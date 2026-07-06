@@ -222,7 +222,7 @@ function Organizations() {
             <Reveal delay={80}>
               <h1 className="mt-7 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
                 The investment is real.<br />
-                <em className="text-[var(--gold)] not-italic font-light">The returns have not been.</em>
+                <em className="text-[var(--gold)] italic font-light">The returns have not been.</em>
               </h1>
             </Reveal>
             <Reveal delay={160}>

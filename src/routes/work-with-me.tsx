@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import {
   Container,
   Eyebrow,
@@ -11,6 +13,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import amnaAboutRealization from "@/assets/amna-about-realization.png";
+import amnaFullPortrait from "@/assets/amna-full-portrait.png";
 
 export const Route = createFileRoute("/work-with-me")({
   head: () => ({
@@ -125,6 +129,130 @@ const LT_OUTCOMES = [
   "Reduced self-doubt and increased clarity",
 ];
 
+/**
+ * ELEVATE vertical timeline — a scroll-driven gold gradient spine that fills
+ * as the section scrolls past a viewport anchor, lighting up each month's
+ * serif numeral as the fill reaches it. Works in all browsers (JS-driven);
+ * respects prefers-reduced-motion by rendering fully filled and static.
+ */
+const SPINE_INSET = 8; // px — top/bottom breathing room for the spine
+
+function ElevateTimeline() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const numberRefs = useRef<(HTMLElement | null)[]>([]);
+  const [active, setActive] = useState<boolean[]>(() =>
+    ELEVATE_TIMELINE.map(() => false),
+  );
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const fill = fillRef.current;
+    if (!container || !fill) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      fill.style.height = `${container.offsetHeight - SPINE_INSET * 2}px`;
+      setActive(ELEVATE_TIMELINE.map(() => true));
+      return;
+    }
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = container.getBoundingClientRect();
+      const anchor = window.innerHeight * 0.55;
+      const p = Math.max(0, Math.min(1, (anchor - rect.top) / rect.height));
+      const span = container.offsetHeight - SPINE_INSET * 2;
+      const fillPx = p * span;
+      fill.style.height = `${fillPx}px`;
+
+      const fillBottom = rect.top + SPINE_INSET + fillPx;
+      setActive((prev) => {
+        let changed = false;
+        const next = numberRefs.current.map((el, i) => {
+          if (!el) return prev[i] ?? false;
+          const r = el.getBoundingClientRect();
+          const on = r.top + r.height / 2 <= fillBottom + 2;
+          if (on !== prev[i]) changed = true;
+          return on;
+        });
+        return changed ? next : prev;
+      });
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative mt-20 max-w-4xl">
+      {/* spine — track */}
+      <div
+        aria-hidden
+        className="absolute left-[2.25rem] w-0.5 -translate-x-1/2 bg-background/20 md:left-16"
+        style={{ top: SPINE_INSET, bottom: SPINE_INSET }}
+      />
+      {/* spine — gold gradient fill (height set on scroll) */}
+      <div
+        ref={fillRef}
+        aria-hidden
+        className="absolute left-[2.25rem] w-0.5 -translate-x-1/2 md:left-16"
+        style={{
+          top: SPINE_INSET,
+          height: 0,
+          backgroundImage:
+            "linear-gradient(to bottom, var(--gold), var(--gold-deep))",
+        }}
+      />
+      <ol className="relative space-y-12 md:space-y-16">
+        {ELEVATE_TIMELINE.map((step, i) => (
+          <Reveal
+            key={step.m}
+            delay={i * 60}
+            as="li"
+            className="relative grid grid-cols-[4.5rem_minmax(0,1fr)] gap-8 md:grid-cols-[8rem_minmax(0,34rem)] md:gap-12"
+          >
+            <div className="relative flex justify-center">
+              <div
+                ref={(el) => {
+                  numberRefs.current[i] = el;
+                }}
+                className={cn(
+                  "relative z-10 self-start bg-foreground px-1 py-1.5 font-serif italic text-[3rem] leading-[0.72] md:text-[3.9rem] transition-[color,opacity] duration-500 ease-out",
+                  active[i]
+                    ? "text-[var(--gold)] opacity-100"
+                    : "text-background/25 opacity-60",
+                )}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </div>
+            </div>
+            <div>
+              <div className="eyebrow text-[var(--gold)]">{step.m}</div>
+              <h3 className="mt-3 font-serif text-[1.65rem] md:text-[1.85rem] leading-tight text-background">
+                {step.t}
+              </h3>
+              <p className="mt-4 text-[14.5px] md:text-[15px] text-background/75 leading-relaxed">
+                {step.d}
+              </p>
+            </div>
+          </Reveal>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 function WorkWithMe() {
   return (
     <>
@@ -132,9 +260,9 @@ function WorkWithMe() {
       <section className="relative overflow-hidden bg-background">
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-[-138px] left-[-10vw] right-[-10vw] h-52 rounded-t-[100%] bg-[var(--cream)]/70 md:bottom-[-200px] md:h-80"
+          className="pointer-events-none absolute bottom-[-158px] left-[-10vw] right-[-10vw] h-52 rounded-t-[100%] bg-[var(--cream)] md:bottom-[-225px] md:h-80"
         />
-        <Container className="relative pt-16 md:pt-28 pb-20 md:pb-32">
+        <Container className="relative grid gap-12 pt-16 pb-20 md:pt-28 md:pb-32 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           <div className="relative max-w-4xl">
             <Reveal>
               <Eyebrow>For Individuals</Eyebrow>
@@ -164,27 +292,43 @@ function WorkWithMe() {
               </p>
             </Reveal>
             <Reveal delay={280}>
-              <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <div className="mt-12 flex flex-nowrap items-center gap-x-6">
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] shadow-[0_18px_45px_rgba(36,32,28,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-foreground/90"
+                  className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] shadow-[0_18px_45px_rgba(36,32,28,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-foreground/90"
                 >
                   Book a Strategic Clarity Call <span aria-hidden>→</span>
                 </Link>
                 <Link
                   to="/organizations"
-                  className="inline-flex items-center gap-2 border-b border-[var(--gold)]/70 pb-1 text-[11px] uppercase tracking-[0.22em] transition-all duration-300 hover:border-foreground hover:text-foreground"
+                  className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap border-b border-[var(--gold)]/70 pb-1 text-[11px] uppercase tracking-[0.22em] transition-all duration-300 hover:border-foreground hover:text-foreground"
                 >
                   Exploring corporate support? Visit Organizations <span aria-hidden>→</span>
                 </Link>
               </div>
             </Reveal>
           </div>
+          <Reveal delay={180} className="relative hidden min-h-[520px] lg:block">
+            <div className="absolute left-[-28px] top-[56px] z-20 h-[140px] w-[128px] overflow-hidden bg-[var(--cream)] xl:left-[-36px] xl:top-[54px] xl:h-[170px] xl:w-[150px]">
+              <img
+                src={amnaFullPortrait}
+                alt=""
+                className="h-[128%] w-full object-cover object-[43%_36%]"
+              />
+            </div>
+            <div className="absolute right-10 top-[118px] h-[289px] w-[204px] overflow-hidden bg-[var(--gold)]/75 xl:h-[332px] xl:w-[238px]">
+              <img
+                src={amnaAboutRealization}
+                alt=""
+                className="absolute bottom-0 left-[47%] h-[118%] max-w-none -translate-x-1/2 object-contain"
+              />
+            </div>
+          </Reveal>
         </Container>
       </section>
 
-      {/* WHO THIS IS FOR — orbit/staggered cluster */}
-      <section className="relative overflow-hidden bg-[var(--cream)]/70 border-b border-[var(--hairline)]/60 pt-6 pb-20 md:pt-8 md:pb-28">
+      {/* WHO THIS IS FOR */}
+      <section className="relative overflow-hidden bg-[var(--cream)] border-b border-[var(--hairline)]/60 pt-6 pb-20 md:pt-8 md:pb-28">
         <div
           aria-hidden
           className="pointer-events-none absolute right-[-5vw] top-12 hidden font-serif text-[9rem] leading-none text-foreground/[0.035] lg:block"
@@ -203,33 +347,21 @@ function WorkWithMe() {
               <Eyebrow>Who This Is For</Eyebrow>
               <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
                 Designed for high-performing women approaching advancement{" "}
-                <em className="text-[var(--gold)] not-italic font-light">intentionally.</em>
+                <em className="text-[var(--gold)] italic font-light">intentionally.</em>
               </h2>
             </div>
           </Reveal>
 
-          {/* Cluster grid with staggered offsets */}
-          <div className="mt-16 grid gap-x-6 gap-y-6 md:grid-cols-12 md:items-start">
-            {FOR_YOU.map((f, i) => {
-              // Cluster placement for editorial feel
-              const layout = [
-                "md:col-span-5",
-                "md:col-span-7 md:mt-8",
-                "md:col-span-6 md:-mt-2",
-                "md:col-span-6 md:mt-6",
-                "md:col-span-7",
-                "md:col-span-5 md:mt-10",
-                "md:col-span-8 md:ml-10",
-              ][i];
-              return (
-                <Reveal key={f} delay={i * 60} as="article" className={`${layout} group bg-background/60 border border-[var(--hairline)] px-7 py-6 flex items-baseline gap-5 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--gold)]/70 hover:bg-background hover:shadow-[0_18px_45px_rgba(36,32,28,0.08)]`}>
-                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--gold)]/45 font-serif italic text-[var(--gold)] text-lg md:text-xl transition-colors duration-300 group-hover:bg-[var(--gold)] group-hover:text-background">
+          <div className="mt-12 grid gap-x-8 gap-y-4 md:grid-cols-2 md:gap-y-5">
+            {FOR_YOU.map((f, i) => (
+                <Reveal key={f} delay={i * 60} as="article" className={`group relative flex min-h-[118px] items-center gap-6 bg-background/70 px-8 py-6 transition-all duration-300 hover:-translate-y-1 hover:bg-background hover:shadow-[0_18px_45px_rgba(36,32,28,0.08)] ${i === 6 ? "md:max-w-[34rem]" : ""}`}>
+                  <span aria-hidden className="absolute left-0 top-7 h-[calc(100%-3.5rem)] w-px bg-[var(--gold)]/85" />
+                  <span className="shrink-0 font-serif italic text-[var(--gold)]/80 text-2xl md:text-[1.8rem] leading-none">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <p className="text-[15px] md:text-[16px] text-foreground/85 leading-relaxed font-light">{f}</p>
                 </Reveal>
-              );
-            })}
+            ))}
           </div>
 
           <Reveal>
@@ -348,35 +480,7 @@ function WorkWithMe() {
           </Reveal>
 
           {/* Vertical timeline */}
-          <div className="mt-20 relative">
-            <div
-              aria-hidden
-              className="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-background/20"
-            />
-            <ol className="space-y-12 md:space-y-16">
-              {ELEVATE_TIMELINE.map((step, i) => (
-                <Reveal key={step.m} delay={i * 60} as="li" className="relative">
-                  <div className={`grid md:grid-cols-2 gap-6 md:gap-16 items-start ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}>
-                    {/* timeline dot */}
-                    <div
-                      aria-hidden
-                      className="absolute left-3 md:left-1/2 top-2 -translate-x-1/2 w-4 h-4 rounded-full bg-[var(--gold)] ring-4 ring-foreground"
-                    />
-                    <div className={`pl-12 md:pl-0 md:pr-12 md:[direction:ltr] ${i % 2 === 0 ? "md:text-right" : ""}`}>
-                      <div className="eyebrow text-[var(--gold)]">{step.m}</div>
-                      <h3 className="mt-3 font-serif text-[1.65rem] md:text-[1.85rem] leading-tight text-background">
-                        {step.t}
-                      </h3>
-                      <p className="mt-4 text-[14.5px] md:text-[15px] text-background/75 leading-relaxed">
-                        {step.d}
-                      </p>
-                    </div>
-                    <div className="hidden md:block md:[direction:ltr]" />
-                  </div>
-                </Reveal>
-              ))}
-            </ol>
-          </div>
+          <ElevateTimeline />
 
           {/* Deliverables */}
           <div className="mt-20">
@@ -434,7 +538,11 @@ function WorkWithMe() {
       </section>
 
       {/* LEAD & THRIVE THROUGH MOTHERHOOD */}
-      <section id="lead-thrive" className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-32 scroll-mt-24">
+      <section
+        id="lead-thrive"
+        className="border-t border-[var(--hairline)]/60 py-20 md:py-32 scroll-mt-24"
+        style={{ backgroundColor: "var(--cream)" }}
+      >
         <Container>
           <Reveal>
             <Eyebrow>Career Continuity</Eyebrow>
@@ -475,29 +583,29 @@ function WorkWithMe() {
 
           {/* Large stat callouts */}
           <div className="mt-14 grid gap-px bg-[var(--hairline)] border border-[var(--hairline)] md:grid-cols-3">
-            <Reveal as="div" className="bg-background p-8 md:p-10">
+            <Reveal as="div" className="flex flex-col bg-background p-8 md:p-10">
               <div className="font-serif text-[3.5rem] md:text-[4.5rem] text-[var(--gold)] leading-none">
                 75%
               </div>
               <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed">
                 of expecting mothers intend to re-engage fully with their careers.
               </p>
-              <p className="mt-3 text-[11px] text-foreground/45">Source label to confirm</p>
+              <p className="mt-auto pt-8 text-[11px] text-foreground/45">Source label to confirm</p>
             </Reveal>
-            <Reveal delay={80} as="div" className="bg-background p-8 md:p-10">
+            <Reveal delay={80} as="div" className="flex flex-col bg-background p-8 md:p-10">
               <div className="font-serif text-[3.5rem] md:text-[4.5rem] text-[var(--gold)] leading-none">
                 43%
               </div>
               <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed">
                 leave the workforce within a year of having a child.
               </p>
-              <p className="mt-3 text-[11px] text-foreground/45">Source label to confirm</p>
+              <p className="mt-auto pt-8 text-[11px] text-foreground/45">Source label to confirm</p>
             </Reveal>
-            <Reveal delay={160} as="div" className="bg-background p-8 md:p-10">
-              <div className="font-serif text-[2rem] md:text-[2.4rem] text-foreground leading-snug">
+            <Reveal delay={160} as="div" className="flex flex-col bg-background p-8 md:p-10">
+              <div className="text-[21px] md:text-[22.5px] text-foreground/80 leading-relaxed">
                 How a return is managed often matters more than the length of leave.
               </div>
-              <p className="mt-4 text-[11px] text-foreground/45">Harvard Business Review</p>
+              <p className="mt-auto pt-8 text-[11px] text-foreground/45">Harvard Business Review</p>
             </Reveal>
           </div>
 
@@ -610,8 +718,25 @@ function WorkWithMe() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="bg-foreground text-background">
-        <Container className="py-20 md:py-28">
+      <section className="relative overflow-hidden bg-foreground text-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 md:h-32"
+          style={{ color: "var(--cream)" }}
+        >
+          <svg
+            className="h-full w-full"
+            viewBox="0 0 1440 160"
+            preserveAspectRatio="none"
+            focusable="false"
+          >
+            <path
+              fill="currentColor"
+              d="M0 0H1440V118C1220 60 995 18 725 10C430 1 205 45 0 114V0Z"
+            />
+          </svg>
+        </div>
+        <Container className="relative py-20 pt-20 md:py-28 md:pt-[6.5rem]">
           <div className="max-w-3xl">
             <Reveal>
               <Eyebrow className="text-[var(--gold)]">Begin</Eyebrow>

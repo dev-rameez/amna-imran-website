@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Container, Eyebrow, Reveal } from "@/components/site/primitives";
 import heroPortrait from "@/assets/amna-about-hero.png";
 import realizationPortrait from "@/assets/amna-full-portrait.png";
@@ -34,6 +34,12 @@ const FIVE_SHIFTS = [
   { n: "05.", label: "Building influence without", accent: "self-erasure", tail: "" },
 ];
 
+const GOLD_UNDERLINE_PATHS = [
+  "M1,6 C22,3 34,8 50,5 C68,2 82,8 99,4",
+  "M1,5 C18,8 40,3 55,6 C72,9 86,4 99,6",
+  "M2,6 C25,4 38,7 52,5 C70,3 84,7 98,5",
+];
+
 const POSITIONING = [
   {
     n: "01",
@@ -51,6 +57,61 @@ const POSITIONING = [
     d: "Rather than offering generic confidence advice, this work provides structured, research-informed approaches to leadership presence, stakeholder influence, advancement, and sustainable success.",
   },
 ];
+
+function GoldKeyword({
+  children,
+  className = "",
+  drawOnLoad = false,
+  path = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  drawOnLoad?: boolean;
+  path?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [isDrawn, setIsDrawn] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsDrawn(true);
+      return;
+    }
+
+    if (drawOnLoad) {
+      const frame = window.requestAnimationFrame(() => setIsDrawn(true));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsDrawn(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35, rootMargin: "0px 0px -10% 0px" },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [drawOnLoad]);
+
+  return (
+    <span
+      ref={ref}
+      className={`gold-keyword ${isDrawn ? "is-drawn" : ""} ${className}`}
+    >
+      {children}
+      <svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+        <path d={GOLD_UNDERLINE_PATHS[path % GOLD_UNDERLINE_PATHS.length]} pathLength="1" />
+      </svg>
+    </span>
+  );
+}
 
 function PersonalLabel({ children }: { children: ReactNode }) {
   return (
@@ -88,7 +149,7 @@ function About() {
               <Reveal delay={80}>
                 <h1 className="mt-7 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
                   The goal is not to fix women. It is to equip them to navigate — and ultimately{" "}
-                  <em className="text-[var(--gold)] not-italic font-light">influence</em> — the systems in which they lead.
+                  <GoldKeyword drawOnLoad path={0} className="font-light">influence</GoldKeyword> — the systems in which they lead.
                 </h1>
               </Reveal>
               <Reveal delay={160}>
@@ -321,7 +382,7 @@ function About() {
             <Reveal delay={80}>
               <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
                 Equipping women to navigate — and{" "}
-                <em className="text-[var(--gold)] not-italic font-light">ultimately influence</em>{" "}
+                <GoldKeyword drawOnLoad path={0} className="font-light">ultimately influence</GoldKeyword>{" "}
                 the systems in which they lead.
               </h2>
             </Reveal>
@@ -341,7 +402,7 @@ function About() {
           {/* Five shifts — clean two-column */}
           <Reveal delay={100}>
             <ol className="mt-10 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-8">
-              {FIVE_SHIFTS.map((s) => (
+              {FIVE_SHIFTS.map((s, i) => (
                 <li key={s.n} className="group flex gap-5 items-baseline">
                   <div
                     aria-hidden
@@ -354,7 +415,9 @@ function About() {
                   <div>
                     <p className="font-serif text-[20px] md:text-[24px] lg:text-[26px] leading-[1.25] text-foreground">
                       {s.label}{" "}
-                      <em className="not-italic text-[var(--gold)] font-light italic">{s.accent}</em>
+                      <GoldKeyword path={(i + 1) % GOLD_UNDERLINE_PATHS.length} className="font-light italic">
+                        {s.accent}
+                      </GoldKeyword>
                       {s.tail ? <> {s.tail}</> : null}
                     </p>
                   </div>
@@ -379,7 +442,7 @@ function About() {
 
           {/* Pull quote */}
           <Reveal delay={80}>
-            <figure className="mt-10 md:mt-12 max-w-3xl">
+            <figure className="mt-10 md:mt-12 max-w-3xl rounded-[2px] bg-[var(--cream)]/85 px-8 py-9 md:px-12 md:py-11">
               <span
                 aria-hidden
                 className="block font-serif text-[var(--gold)] text-[44px] md:text-[52px] leading-none select-none -mb-2 md:-mb-3"
@@ -388,7 +451,7 @@ function About() {
               </span>
               <blockquote className="font-serif text-xl md:text-2xl lg:text-[1.65rem] leading-[1.3] text-foreground">
                 The goal is not to fix women. It is to equip them to navigate — and ultimately{" "}
-                <em className="text-[var(--gold)] not-italic font-light">influence</em> — the systems in which they lead.
+                <GoldKeyword path={2} className="font-light">influence</GoldKeyword> — the systems in which they lead.
               </blockquote>
               <figcaption className="mt-4 text-[11px] uppercase tracking-[0.28em] text-foreground/55">
                 — The Work

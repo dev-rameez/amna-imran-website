@@ -59,6 +59,7 @@
   --cream:    oklch(0.945 0.013 75);   /* #F2EDE5 */
   --sand:     oklch(0.855 0.022 75);   /* #D8CCBA */
   --gold:     oklch(0.685 0.065 75);   /* #B89A6A */
+  --gold-deep: oklch(0.585 0.058 68);  /* deeper gold — timeline gradient */
 
   --background: var(--offwhite);
   --foreground: var(--charcoal);
@@ -123,4 +124,45 @@
     color: var(--color-foreground);
   }
   .hairline { background-color: var(--color-hairline); height: 1px; width: 100%; }
+}
+
+.gold-keyword {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 0;
+}
+
+.gold-keyword svg {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -0.18em;
+  width: calc(100% + 4px);
+  height: 0.4em;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.gold-keyword path {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1s cubic-bezier(.22, 1, .36, 1);
+}
+
+.gold-keyword.is-drawn path {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-keyword path {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
 }

@@ -794,9 +794,9 @@ function MotherhoodSection() {
           className="mt-14 md:mt-20 max-w-3xl mx-auto text-center text-[15px] md:text-[16px] leading-relaxed font-light text-foreground/80"
         >
           Over time, this leads not to quitting ambition &mdash; but to{" "}
-          <em className="font-serif italic text-[#9b6f3d]">disengaging from</em>
+          <em className="italic text-[#9b6f3d]">disengaging from</em>
           <br />
-          <em className="font-serif italic text-[#9b6f3d]">
+          <em className="italic text-[#9b6f3d]">
             a game whose rules were never explained.
           </em>
         </p>
