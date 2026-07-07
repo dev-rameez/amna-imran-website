@@ -80,13 +80,45 @@ function About() {
   return (
     <>
       {/* HERO */}
-      <section className="border-b border-[var(--hairline)]/60">
-        <Container className="pt-16 md:pt-24 pb-16 md:pb-24">
+      <section className="relative isolate overflow-hidden border-b border-[var(--hairline)]/60 bg-[var(--background)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklch, var(--cream) 96%, var(--gold)) 0%, color-mix(in oklch, var(--cream) 88%, var(--gold-subtle)) 100%)",
+          }}
+        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+          <div
+            className="absolute left-[42%] top-[15%] bottom-[12%] w-px"
+            style={{
+              background:
+                "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--gold) 35%, transparent) 30%, color-mix(in oklch, var(--gold) 35%, transparent) 70%, transparent)",
+            }}
+          />
+          <div
+            className="absolute left-[6%] w-[32%] h-px bottom-[14%]"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklch, var(--gold) 50%, transparent), transparent)",
+            }}
+          />
+        </div>
+
+        <Container className="relative pt-16 md:pt-24 pb-16 md:pb-24" style={{ zIndex: 10 }}>
           <div className="grid gap-12 md:gap-16 md:grid-cols-12 items-start">
             <div className="md:col-span-7">
-              <Reveal><Eyebrow>About · Amna Imran</Eyebrow></Reveal>
-              <Reveal delay={80}>
-                <h1 className="mt-7 leading-[1.05] text-[clamp(2.1rem,4.2vw,3.2rem)]">
+              <Reveal variant="fade-in" duration="slow">
+                <div className="flex items-center gap-4 mb-8">
+                  <span className="h-px w-10" style={{ background: "var(--gold)" }} />
+                  <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.22em" }}>
+                    About · Amna Imran
+                  </span>
+                </div>
+              </Reveal>
+              <Reveal variant="slide-right" duration="slow" delay={80}>
+                <h1 className="leading-[1.05] text-[clamp(2.1rem,4.2vw,3.2rem)]">
                   <span className="voice-serif-light text-foreground">The goal is not to fix women. </span>
                   <span className="voice-sans-bold text-foreground/90">It is to equip them to navigate</span>
                   <span className="voice-serif-light text-foreground"> — and ultimately </span>
@@ -94,16 +126,26 @@ function About() {
                   <span className="voice-serif-light text-foreground"> — the systems in which they lead.</span>
                 </h1>
               </Reveal>
-              <Reveal delay={160}>
-                <p className="mt-7 max-w-xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
+              <Reveal variant="fade-in" delay={180}>
+                <div
+                  className="mt-8 mb-7"
+                  style={{ height: "1px", width: "3rem", background: "var(--gold)", opacity: 0.65 }}
+                />
+                <p
+                  className="max-w-xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light"
+                  style={{
+                    borderLeft: "1px solid color-mix(in oklch, var(--gold) 38%, transparent)",
+                    paddingLeft: "1.25rem",
+                  }}
+                >
                   My work sits at the intersection of individual capability and organizational reality —
                   combining coaching, evidence-based gender insight, strengths science, and systems
                   awareness to help high-potential women progress without compromising authenticity or
                   wellbeing.
                 </p>
               </Reveal>
-              <Reveal delay={280}>
-                <div className="mt-9 flex flex-wrap gap-4">
+              <Reveal variant="fade-up" duration="fast" delay={260}>
+                <div className="mt-9 flex flex-wrap gap-4" style={{ paddingLeft: "1.25rem" }}>
                   <Link to="/contact" className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-foreground/90 transition-colors">
                     Book a Strategic Clarity Call <span aria-hidden>→</span>
                   </Link>
@@ -114,14 +156,14 @@ function About() {
               </Reveal>
             </div>
             <div className="md:col-span-5 mt-10">
-              <Reveal delay={140}>
+              <Reveal variant="scale" duration="slow" delay={140}>
                 <div className="border border-[var(--hairline)]/70 pt-3 md:pt-4 px-3 md:px-4 pb-0 bg-[var(--cream)]/30 inline-block w-full">
                   <div className="relative overflow-hidden aspect-[4/5]">
                     <img
                       src={heroPortrait}
                       alt="Amna Imran portrait"
                       className="absolute inset-0 h-full w-full object-cover object-bottom"
-                      style={{ transform: 'scale(1.1)', transformOrigin: 'bottom center' }}
+                      style={{ transform: "scale(1.1)", transformOrigin: "bottom center" }}
                     />
                   </div>
                 </div>
@@ -134,7 +176,7 @@ function About() {
       {/* POSITIONING — At the intersection of capability */}
       <section className="border-b border-[var(--hairline)]/60 py-20 md:py-28">
         <Container>
-          <Reveal delay={80}>
+          <Reveal variant="slide-right" duration="slow">
             <h2 className="max-w-4xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
               <span className="voice-serif-light text-foreground">At the intersection of </span>
               <span className="voice-serif-italic">capability</span>
@@ -407,19 +449,30 @@ function About() {
       <section className="bg-foreground text-background">
         <Container className="py-20 md:py-28">
           <div className="max-w-3xl">
-            <Eyebrow className="text-[var(--gold)]">Begin</Eyebrow>
-            <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-              <span className="voice-serif-light text-background">Ready to move forward </span>
-              <span className="voice-serif-italic">strategically?</span>
-            </h2>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link to="/contact" className="inline-flex items-center gap-2 bg-background text-foreground px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--cream)] transition-colors">
-                Book a Strategic Clarity Call <span aria-hidden>→</span>
-              </Link>
-              <Link to="/organizations" className="inline-flex items-center gap-2 border border-background/50 px-7 py-4 text-[11px] uppercase tracking-[0.22em] text-background hover:bg-background hover:text-foreground transition-colors">
-                For Organizations <span aria-hidden>→</span>
-              </Link>
-            </div>
+            <Reveal variant="fade-in" duration="slow">
+              <div className="flex items-center gap-4">
+                <span className="h-px w-10 bg-[var(--gold)]" />
+                <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
+                  Begin
+                </span>
+              </div>
+            </Reveal>
+            <Reveal variant="slide-right" duration="slow" delay={80}>
+              <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-serif-light text-background">Ready to move forward </span>
+                <span className="voice-serif-italic">strategically?</span>
+              </h2>
+            </Reveal>
+            <Reveal variant="fade-up" duration="fast" delay={260}>
+              <div className="mt-10 flex flex-wrap gap-4">
+                <Link to="/contact" className="inline-flex items-center gap-2 bg-background text-foreground px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--cream)] transition-colors">
+                  Book a Strategic Clarity Call <span aria-hidden>→</span>
+                </Link>
+                <Link to="/organizations" className="inline-flex items-center gap-2 border border-background/50 px-7 py-4 text-[11px] uppercase tracking-[0.22em] text-background hover:bg-background hover:text-foreground transition-colors">
+                  For Organizations <span aria-hidden>→</span>
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </Container>
       </section>

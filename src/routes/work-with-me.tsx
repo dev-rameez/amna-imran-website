@@ -129,33 +129,72 @@ function WorkWithMe() {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-background">
+      <section className="relative isolate overflow-hidden border-b border-[var(--hairline)]/60 bg-[var(--background)]">
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-[-138px] left-[-10vw] right-[-10vw] h-52 rounded-t-[100%] bg-[var(--cream)]/70 md:bottom-[-200px] md:h-80"
+          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklch, var(--cream) 96%, var(--gold)) 0%, color-mix(in oklch, var(--cream) 88%, var(--gold-subtle)) 100%)",
+          }}
         />
-        <Container className="relative pt-16 md:pt-28 pb-20 md:pb-32">
+        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+          <div
+            className="absolute left-[42%] top-[15%] bottom-[12%] w-px"
+            style={{
+              background:
+                "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--gold) 35%, transparent) 30%, color-mix(in oklch, var(--gold) 35%, transparent) 70%, transparent)",
+            }}
+          />
+          <div
+            className="absolute left-[6%] w-[32%] h-px bottom-[14%]"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklch, var(--gold) 50%, transparent), transparent)",
+            }}
+          />
+        </div>
+
+        <Container className="relative pt-16 md:pt-28 pb-20 md:pb-32" style={{ zIndex: 10 }}>
           <div className="relative max-w-4xl">
-            <Reveal>
-              <Eyebrow>For Individuals</Eyebrow>
+            <Reveal variant="fade-in" duration="slow">
+              <div className="flex items-center gap-4 mb-8">
+                <span className="h-px w-10" style={{ background: "var(--gold)" }} />
+                <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.22em" }}>
+                  For Individuals
+                </span>
+              </div>
             </Reveal>
-            <Reveal delay={80}>
-              <h1 className="mt-7 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
+            <Reveal variant="slide-right" duration="slow" delay={80}>
+              <h1 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
                 Strategic coaching for women ready to advance with{" "}
                 <em className="text-[var(--gold)] not-italic font-light">
                   clarity, visibility, and influence.
                 </em>
               </h1>
             </Reveal>
-            <Reveal delay={160}>
-              <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
+            <Reveal variant="fade-in" delay={180}>
+              <div
+                className="mt-8 mb-6"
+                style={{ height: "1px", width: "3rem", background: "var(--gold)", opacity: 0.65 }}
+              />
+              <p
+                className="max-w-2xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light"
+                style={{
+                  borderLeft: "1px solid color-mix(in oklch, var(--gold) 38%, transparent)",
+                  paddingLeft: "1.25rem",
+                }}
+              >
                 For high-performing professionals preparing for promotion, navigating complex
                 organizational dynamics, or protecting leadership trajectory through major career
                 transitions.
               </p>
             </Reveal>
-            <Reveal delay={220}>
-              <p className="mt-6 max-w-2xl font-serif italic text-xl md:text-2xl leading-snug text-foreground/85">
+            <Reveal variant="fade-in" delay={220}>
+              <p
+                className="mt-6 max-w-2xl font-serif italic text-xl md:text-2xl leading-snug text-foreground/85"
+                style={{ paddingLeft: "1.25rem" }}
+              >
                 This is not generic confidence coaching. It is{" "}
                 <span className="text-[var(--gold)] not-italic font-normal">
                   evidence-informed advancement strategy
@@ -163,8 +202,8 @@ function WorkWithMe() {
                 for women operating within real organizational systems.
               </p>
             </Reveal>
-            <Reveal delay={280}>
-              <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <Reveal variant="fade-up" duration="fast" delay={300}>
+              <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4" style={{ paddingLeft: "1.25rem" }}>
                 <Link
                   to="/contact"
                   className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] shadow-[0_18px_45px_rgba(36,32,28,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-foreground/90"
@@ -615,14 +654,21 @@ function WorkWithMe() {
       <section className="bg-foreground text-background">
         <Container className="py-20 md:py-28">
           <div className="max-w-3xl">
-            <Reveal>
-              <Eyebrow className="text-[var(--gold)]">Begin</Eyebrow>
+            <Reveal variant="fade-in" duration="slow">
+              <div className="flex items-center gap-4">
+                <span className="h-px w-10 bg-[var(--gold)]" />
+                <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
+                  Begin
+                </span>
+              </div>
+            </Reveal>
+            <Reveal variant="slide-right" duration="slow" delay={80}>
               <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
                 <span className="voice-serif-light text-background">Ready to Advance With </span>
                 <span className="voice-serif-italic">Intention?</span>
               </h2>
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal variant="fade-up" duration="fast" delay={260}>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Link
                   to="/contact"

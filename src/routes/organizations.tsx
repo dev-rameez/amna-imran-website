@@ -201,26 +201,67 @@ function Organizations() {
   return (
     <>
       {/* HERO */}
-      <section className="relative bg-background pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute -right-24 top-8 h-72 w-72 rounded-full border border-[color-mix(in_oklch,var(--gold)_16%,transparent)]" />
-        <Container className="relative">
+      <section className="relative isolate overflow-hidden border-b border-[var(--hairline)]/60 bg-[var(--background)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklch, var(--cream) 96%, var(--gold)) 0%, color-mix(in oklch, var(--cream) 88%, var(--gold-subtle)) 100%)",
+          }}
+        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+          <div
+            className="absolute left-[42%] top-[15%] bottom-[12%] w-px"
+            style={{
+              background:
+                "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--gold) 35%, transparent) 30%, color-mix(in oklch, var(--gold) 35%, transparent) 70%, transparent)",
+            }}
+          />
+          <div
+            className="absolute left-[6%] w-[32%] h-px bottom-[14%]"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklch, var(--gold) 50%, transparent), transparent)",
+            }}
+          />
+        </div>
+
+        <Container className="relative pt-20 pb-28 md:pt-28 md:pb-36" style={{ zIndex: 10 }}>
           <div className="max-w-4xl">
-            <Reveal><Eyebrow>For Organizations</Eyebrow></Reveal>
-            <Reveal delay={80}>
-              <h1 className="mt-7 leading-[0.95] text-[clamp(2.4rem,5.5vw,4.2rem)]">
+            <Reveal variant="fade-in" duration="slow">
+              <div className="flex items-center gap-4 mb-8">
+                <span className="h-px w-10" style={{ background: "var(--gold)" }} />
+                <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.22em" }}>
+                  For Organizations
+                </span>
+              </div>
+            </Reveal>
+            <Reveal variant="slide-right" duration="slow" delay={80}>
+              <h1 className="leading-[0.95] text-[clamp(2.4rem,5.5vw,4.2rem)]">
                 <span className="voice-serif-light block text-foreground">The investment is real.</span>
                 <span className="voice-sans-bold block mt-1 text-foreground/90">The returns </span>
                 <span className="voice-serif-italic block -mt-1">have not been.</span>
               </h1>
             </Reveal>
-            <Reveal delay={160}>
-              <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
+            <Reveal variant="fade-in" delay={180}>
+              <div
+                className="mt-8 mb-2"
+                style={{ height: "1px", width: "3rem", background: "var(--gold)", opacity: 0.65 }}
+              />
+              <p
+                className="max-w-2xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light"
+                style={{
+                  borderLeft: "1px solid color-mix(in oklch, var(--gold) 38%, transparent)",
+                  paddingLeft: "1.25rem",
+                }}
+              >
                 A decade of DEI programs. The pipeline is still broken. Here is what the research says
                 about why — and what actually changes things.
               </p>
             </Reveal>
-            <Reveal delay={220}>
-              <div className="mt-10">
+            <Reveal variant="fade-up" duration="fast" delay={260}>
+              <div className="mt-10" style={{ paddingLeft: "1.25rem" }}>
                 <Link to="/contact" className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-foreground/90 transition-colors">
                   Schedule an Organizational Consultation <span aria-hidden>→</span>
                 </Link>
@@ -253,7 +294,7 @@ function Organizations() {
       {/* DIAGNOSIS — toggle + accordion */}
       <section className="relative bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
         <Container>
-          <Reveal>
+          <Reveal variant="slide-right" duration="slow">
             <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
               <span className="voice-serif-light text-foreground">The diagnostic is clear</span>
               <span className="voice-sans-bold text-foreground/85"> — the </span>
@@ -560,25 +601,36 @@ function Organizations() {
         <Container className="py-12 md:py-16">
           <div className="grid gap-10 md:grid-cols-12 items-end">
             <div className="md:col-span-8">
-            <div className="eyebrow text-[var(--gold)]">Begin</div>
-            <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-              <span className="voice-serif-light text-background">Strengthen the pipeline. </span>
-              <span className="voice-sans-bold text-background/90">Support the leaders </span>
-              <span className="voice-serif-italic">already within it.</span>
-            </h2>
-            <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-background/70 leading-relaxed font-light">
-              A confidential discussion to explore your leadership goals, current challenges, and
-              how structured advancement coaching could support your talent strategy.
-            </p>
+              <Reveal variant="fade-in" duration="slow">
+                <div className="flex items-center gap-4">
+                  <span className="h-px w-10 bg-[var(--gold)]" />
+                  <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
+                    Begin
+                  </span>
+                </div>
+              </Reveal>
+              <Reveal variant="slide-right" duration="slow" delay={80}>
+                <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                  <span className="voice-serif-light text-background">Strengthen the pipeline. </span>
+                  <span className="voice-sans-bold text-background/90">Support the leaders </span>
+                  <span className="voice-serif-italic">already within it.</span>
+                </h2>
+              </Reveal>
+              <Reveal variant="fade-in" delay={180}>
+                <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-background/70 leading-relaxed font-light">
+                  A confidential discussion to explore your leadership goals, current challenges, and
+                  how structured advancement coaching could support your talent strategy.
+                </p>
+              </Reveal>
             </div>
-            <div className="md:col-span-4 flex flex-col gap-4">
+            <Reveal variant="fade-up" duration="fast" delay={260} className="md:col-span-4 flex flex-col gap-4">
               <Link to="/contact" className="inline-flex items-center justify-between gap-2 bg-background text-foreground px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--cream)] transition-colors">
                 Schedule an Organizational Consultation <span aria-hidden>→</span>
               </Link>
               <Link to="/work-with-me" className="inline-flex items-center justify-between gap-2 border border-background/50 px-7 py-4 text-[11px] uppercase tracking-[0.22em] text-background hover:bg-background hover:text-foreground transition-colors">
                 Explore Individual Coaching <span aria-hidden>→</span>
               </Link>
-            </div>
+            </Reveal>
           </div>
         </Container>
       </section>

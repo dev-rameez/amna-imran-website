@@ -359,7 +359,7 @@ function Hero() {
               className="absolute bottom-0 select-none pointer-events-none"
               style={{
                 right: "-4%",
-                height: "96%",
+                height: "112%",
                 width: "auto",
                 maxWidth: "none",
                 objectFit: "contain",
@@ -386,7 +386,7 @@ function Hero() {
           aria-hidden
           draggable={false}
           className="absolute bottom-0 left-1/2 -translate-x-1/2 select-none pointer-events-none"
-          style={{ height: "110%", width: "auto", objectFit: "contain", objectPosition: "bottom" }}
+          style={{ height: "130%", width: "auto", objectFit: "contain", objectPosition: "bottom" }}
         />
       </div>
     </section>
@@ -1116,7 +1116,7 @@ function HowISupportSection() {
         </Reveal>
         )}
 
-        <div className="relative mt-12 md:mt-24 grid grid-cols-1 gap-14 md:grid-cols-12 md:gap-0 items-center">
+        <div className="relative mt-2 md:mt-4 grid grid-cols-1 gap-14 md:grid-cols-12 md:gap-0 items-center">
           <Reveal as="article" variant="fade-up" className="md:col-span-5 md:text-center relative z-20 md:translate-x-6 lg:translate-x-10">
             <div className="font-serif leading-none text-gold text-[clamp(2.4rem,4.2vw,3.6rem)]">
               ELEVATE<sup className="text-xl align-super">™</sup>
@@ -1308,6 +1308,8 @@ function WhyDifferentSection() {
                 draggable={false}
                 className="relative z-10 w-full h-auto select-none pointer-events-none"
                 style={{
+                  transform: "scale(1.35) translateY(6%)",
+                  transformOrigin: "bottom center",
                   filter: "drop-shadow(0 12px 40px color-mix(in oklch, var(--charcoal) 14%, transparent))",
                   maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%)",
                   WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%)",
@@ -1602,12 +1604,12 @@ function TestimonialsSection() {
 
 function FounderSection() {
   return (
-    <Section as="section" surface="cream" pad="none" flow="top" className="relative z-10 overflow-hidden border-t border-[color-mix(in_oklch,var(--blush)_22%,transparent)]" style={{ background: "color-mix(in oklch, var(--blush-subtle) 55%, var(--cream))" }}>
+    <Section as="section" surface="cream" pad="none" className="relative z-10 overflow-hidden border-t border-[color-mix(in_oklch,var(--blush)_22%,transparent)]" style={{ background: "color-mix(in oklch, var(--blush-subtle) 55%, var(--cream))" }}>
       <Container className="relative section-pad-minor pb-0 md:pb-0">
-        <div className="grid min-h-[360px] gap-4 md:min-h-[430px] md:grid-cols-12 md:items-end lg:min-h-[500px]">
+        <div className="grid min-h-[300px] gap-4 md:min-h-[360px] md:grid-cols-12 md:items-center lg:min-h-[420px]">
           <div className="md:col-span-5">
             <Reveal variant="scale" duration="slow">
-              <div className="relative h-[360px] md:h-[450px] lg:h-[520px] overflow-visible">
+              <div className="relative h-[300px] md:h-[360px] lg:h-[420px] overflow-visible">
                 <div aria-hidden className="absolute bottom-0 left-[8%] h-[84%] w-[78%] rounded-t-[48%] border border-[color-mix(in_oklch,var(--gold)_30%,transparent)] bg-[color-mix(in_oklch,var(--gold-subtle)_42%,var(--cream))]" />
                 <img
                   src={founderPortrait}
@@ -1618,7 +1620,7 @@ function FounderSection() {
               </div>
             </Reveal>
           </div>
-          <div className="relative z-20 pb-12 md:col-span-7 md:pb-20 md:pl-8 lg:pb-24 lg:pl-12">
+          <div className="relative z-20 pb-8 md:col-span-7 md:pb-12 md:pl-8 lg:pb-16 lg:pl-12">
             <Reveal variant="slide-left">
               <h2 className="type-h1 text-[clamp(3.4rem,7vw,6.5rem)] leading-[0.85]">
                 <em className="not-italic italic font-light text-gold">

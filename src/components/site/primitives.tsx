@@ -14,31 +14,118 @@ export function Eyebrow({ children, number, className }: { children: React.React
   return null;
 }
 
-export function Hairline({ className }: { className?: string }) {
-  return <div className={cn("hairline", className)} />;
+export function Hairline({ className, tone }: { className?: string; tone?: "default" | "gold" }) {
+  return <div className={cn(tone === "gold" ? "hairline-gold" : "hairline", className)} />;
+}
+
+type SectionSurface = "default" | "cream" | "warm" | "panel" | "blush" | "paper";
+type SectionPad = "none" | "hero" | "major" | "minor";
+type SectionFlow = "both" | "top" | "bottom";
+
+export function Section({
+  as: Tag = "section",
+  surface = "default",
+  pad,
+  flow,
+  className,
+  style,
+  children,
+}: {
+  as?: "section" | "div";
+  surface?: SectionSurface;
+  pad?: SectionPad;
+  flow?: SectionFlow;
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  const surfaceClass = {
+    default: "section-surface-default",
+    cream: "section-surface-cream",
+    warm: "section-surface-warm",
+    panel: "section-surface-panel",
+    blush: "section-surface-blush",
+    paper: "section-surface-paper",
+  }[surface];
+
+  const padClass =
+    pad && pad !== "none"
+      ? { hero: "section-pad-hero", major: "section-pad-major", minor: "section-pad-minor" }[pad]
+      : undefined;
+
+  const flowClass =
+    flow === "both"
+      ? "section-flow-top section-flow-bottom"
+      : flow === "top"
+        ? "section-flow-top"
+        : flow === "bottom"
+          ? "section-flow-bottom"
+          : undefined;
+
+  const Comp = Tag as React.ElementType;
+  return (
+    <Comp className={cn(surfaceClass, padClass, flowClass, className)} style={style}>
+      {children}
+    </Comp>
+  );
+}
+
+type EditorialCardVariant = "editorial" | "rail" | "dark" | "elevated" | "panel" | "ghost";
+
+export function EditorialCard({
+  variant = "editorial",
+  accent,
+  className,
+  children,
+}: {
+  variant?: EditorialCardVariant;
+  accent?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const variantClass = {
+    editorial: "card-editorial",
+    rail: "card-rail",
+    dark: "card-dark",
+    elevated: "card-elevated",
+    panel: "card-panel",
+    ghost: "card-ghost",
+  }[variant];
+
+  return <div className={cn(variantClass, accent && "card-gold-accent", className)}>{children}</div>;
 }
 
 /**
  * Subtle scroll reveal — fade-up when the element enters the viewport.
  * Falls back to immediately visible on no-JS or reduced motion.
  */
+type RevealVariant = "fade-up" | "fade-in" | "slide-left" | "slide-right" | "scale";
+type RevealDuration = "default" | "fast" | "slow";
+
 export function Reveal({
   children,
   className,
   delay = 0,
   as: Tag = "div",
+  variant = "fade-up",
+  duration = "default",
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
   as?: "div" | "section" | "article" | "header" | "li";
+  variant?: RevealVariant;
+  duration?: RevealDuration;
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLElement | null>(null);
   const [shown, setShown] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined") return;
     const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduce) { setShown(true); return; }
+    if (prefersReduce) {
+      setShown(true);
+      return;
+    }
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -56,16 +143,20 @@ export function Reveal({
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  const durationClass = {
+    default: "reveal-duration-default",
+    fast: "reveal-duration-fast",
+    slow: "reveal-duration-slow",
+  }[duration];
+  const stateClass = shown ? `reveal-from-${variant}-shown` : `reveal-from-${variant}-hidden`;
+
   const Comp = Tag as unknown as React.ElementType;
   return (
     <Comp
-      ref={ref as React.MutableRefObject<HTMLDivElement | null>}
+      ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={cn(
-        "transition-all duration-[900ms] ease-out will-change-transform",
-        shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-        className,
-      )}
+      className={cn("reveal-base", durationClass, stateClass, className)}
     >
       {children}
     </Comp>

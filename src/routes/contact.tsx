@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Container, Eyebrow, Hairline, Reveal } from "@/components/site/primitives";
+import { Container, Hairline, Reveal } from "@/components/site/primitives";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -29,17 +29,59 @@ function Contact() {
   return (
     <>
       {/* HERO */}
-      <section className="border-b border-[var(--hairline)]/60">
-        <Container className="pt-16 md:pt-24 pb-14 md:pb-20">
-          <Reveal><Eyebrow>Contact</Eyebrow></Reveal>
-          <Reveal delay={80}>
-            <h1 className="mt-7 leading-[1.05] text-[clamp(2.1rem,4.2vw,3rem)] max-w-4xl">
+      <section className="relative isolate overflow-hidden border-b border-[var(--hairline)]/60 bg-[var(--background)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklch, var(--cream) 96%, var(--gold)) 0%, color-mix(in oklch, var(--cream) 88%, var(--gold-subtle)) 100%)",
+          }}
+        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+          <div
+            className="absolute left-[42%] top-[15%] bottom-[12%] w-px"
+            style={{
+              background:
+                "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--gold) 35%, transparent) 30%, color-mix(in oklch, var(--gold) 35%, transparent) 70%, transparent)",
+            }}
+          />
+          <div
+            className="absolute left-[6%] w-[32%] h-px bottom-[14%]"
+            style={{
+              background:
+                "linear-gradient(to right, color-mix(in oklch, var(--gold) 50%, transparent), transparent)",
+            }}
+          />
+        </div>
+
+        <Container className="relative pt-16 md:pt-24 pb-14 md:pb-20" style={{ zIndex: 10 }}>
+          <Reveal variant="fade-in" duration="slow">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="h-px w-10" style={{ background: "var(--gold)" }} />
+              <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.22em" }}>
+                Contact
+              </span>
+            </div>
+          </Reveal>
+          <Reveal variant="slide-right" duration="slow" delay={80}>
+            <h1 className="leading-[1.05] text-[clamp(2.1rem,4.2vw,3rem)] max-w-4xl">
               <span className="voice-serif-light text-foreground">Begin with a strategic </span>
               <span className="voice-serif-italic">conversation.</span>
             </h1>
           </Reveal>
-          <Reveal delay={140}>
-            <p className="mt-6 max-w-2xl text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light">
+          <Reveal variant="fade-in" delay={180}>
+            <div
+              className="mt-8 mb-2"
+              style={{ height: "1px", width: "3rem", background: "var(--gold)", opacity: 0.65 }}
+            />
+            <p
+              className="max-w-2xl text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light"
+              style={{
+                borderLeft: "1px solid color-mix(in oklch, var(--gold) 38%, transparent)",
+                paddingLeft: "1.25rem",
+              }}
+            >
               Whether you are exploring private coaching or organizational support, the first step is
               a confidential conversation to understand your context, goals, and the most appropriate
               pathway.
@@ -51,8 +93,14 @@ function Contact() {
       {/* PATHWAYS */}
       <section className="py-14 md:py-20">
         <Container>
+          <Reveal variant="slide-right" duration="slow">
+            <h2 className="leading-[1.05] text-[clamp(1.6rem,3vw,2.2rem)] mb-10 md:mb-12">
+              <span className="voice-serif-light text-foreground">Two ways to </span>
+              <span className="voice-serif-italic">begin.</span>
+            </h2>
+          </Reveal>
           <div className="grid gap-6 md:gap-8 md:grid-cols-2 items-stretch">
-            <Reveal as="article" className="relative h-full border border-[var(--hairline)] bg-background p-8 md:p-10 flex flex-col">
+            <Reveal as="article" variant="fade-up" delay={0} className="relative h-full border border-[var(--hairline)] bg-background p-8 md:p-10 flex flex-col transition-transform duration-300 hover:-translate-y-1">
               <span aria-hidden className="absolute left-0 top-0 h-1 w-24 bg-[var(--gold)]" />
               <div className="eyebrow text-[var(--gold)]">For Individuals</div>
               <h2 className="mt-5 font-serif text-[1.85rem] md:text-[2rem] leading-tight text-foreground">
@@ -67,7 +115,7 @@ function Contact() {
               </a>
             </Reveal>
 
-            <Reveal delay={100} as="article" className="relative h-full border border-[var(--hairline)] bg-foreground text-background p-8 md:p-10 flex flex-col">
+            <Reveal delay={120} as="article" variant="fade-up" className="relative h-full border border-[var(--hairline)] bg-foreground text-background p-8 md:p-10 flex flex-col transition-transform duration-300 hover:-translate-y-1">
               <span aria-hidden className="absolute left-0 top-0 h-1 w-24 bg-[var(--gold)]" />
               <div className="eyebrow text-[var(--gold)]">For Organizations</div>
               <h2 className="mt-5 font-serif text-[1.85rem] md:text-[2rem] leading-tight text-background">
@@ -88,17 +136,28 @@ function Contact() {
       {/* BOOKING EMBED */}
       <section id="book" className="py-14 md:py-20 bg-[var(--cream)] border-y border-[var(--hairline)]/60">
         <Container>
-          <Eyebrow>Schedule</Eyebrow>
-          <h2 className="mt-5 max-w-2xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-            <span className="voice-serif-light text-foreground">Book a </span>
-            <span className="voice-serif-italic">time.</span>
-          </h2>
-          <div className="mt-8 border border-[var(--hairline)] bg-background min-h-[240px] flex flex-col items-center justify-center px-8 py-12 text-center">
-            <div className="eyebrow text-copy-muted">Booking Embed</div>
-            <p className="mt-4 max-w-md font-serif italic text-foreground/75 text-lg leading-relaxed">
-              Calendly or booking system embed to be added here.
-            </p>
-          </div>
+          <Reveal variant="fade-in" duration="slow">
+            <div className="flex items-center gap-4">
+              <span className="h-px w-10 bg-[var(--gold)]" />
+              <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
+                Schedule
+              </span>
+            </div>
+          </Reveal>
+          <Reveal variant="slide-right" duration="slow" delay={80}>
+            <h2 className="mt-5 max-w-2xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-serif-light text-foreground">Book a </span>
+              <span className="voice-serif-italic">time.</span>
+            </h2>
+          </Reveal>
+          <Reveal variant="fade-up" delay={160}>
+            <div className="mt-8 border border-[var(--hairline)] bg-background min-h-[240px] flex flex-col items-center justify-center px-8 py-12 text-center">
+              <div className="eyebrow text-copy-muted">Booking Embed</div>
+              <p className="mt-4 max-w-md font-serif italic text-foreground/75 text-lg leading-relaxed">
+                Calendly or booking system embed to be added here.
+              </p>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
@@ -106,8 +165,13 @@ function Contact() {
       <section className="py-14 md:py-20">
         <Container>
           <div className="grid gap-10 md:gap-14 md:grid-cols-12">
-            <div className="md:col-span-5">
-              <Eyebrow>Message</Eyebrow>
+            <Reveal variant="fade-in" className="md:col-span-5">
+              <div className="flex items-center gap-4">
+                <span className="h-px w-10 bg-[var(--gold)]" />
+                <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
+                  Message
+                </span>
+              </div>
               <h2 className="mt-5 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
                 <span className="voice-serif-light text-foreground">Prefer to send a </span>
                 <span className="voice-serif-italic">message?</span>
@@ -115,9 +179,10 @@ function Contact() {
               <p className="mt-5 text-[15px] text-foreground/75 leading-relaxed font-light">
                 Share a few details and we will respond with a recommended next step.
               </p>
-            </div>
+            </Reveal>
 
-            <form className="md:col-span-7 space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <Reveal variant="fade-up" delay={120} className="md:col-span-7">
+            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <label htmlFor="name" className="eyebrow text-copy-muted">Full Name</label>
@@ -165,6 +230,7 @@ function Contact() {
                 </button>
               </div>
             </form>
+            </Reveal>
           </div>
         </Container>
       </section>
