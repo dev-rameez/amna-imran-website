@@ -54,7 +54,7 @@ const POSITIONING = [
 
 function PersonalLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-center gap-3 text-[10.5px] uppercase tracking-[0.28em] text-foreground/55">
+    <div className="type-micro flex items-center gap-3 uppercase tracking-[0.28em]">
       <span aria-hidden className="h-px w-6 bg-[var(--gold)]" />
       <span>{children}</span>
     </div>
@@ -86,9 +86,12 @@ function About() {
             <div className="md:col-span-7">
               <Reveal><Eyebrow>About · Amna Imran</Eyebrow></Reveal>
               <Reveal delay={80}>
-                <h1 className="mt-7 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                  The goal is not to fix women. It is to equip them to navigate — and ultimately{" "}
-                  <em className="text-[var(--gold)] not-italic font-light">influence</em> — the systems in which they lead.
+                <h1 className="mt-7 leading-[1.05] text-[clamp(2.1rem,4.2vw,3.2rem)]">
+                  <span className="voice-serif-light text-foreground">The goal is not to fix women. </span>
+                  <span className="voice-sans-bold text-foreground/90">It is to equip them to navigate</span>
+                  <span className="voice-serif-light text-foreground"> — and ultimately </span>
+                  <span className="voice-serif-italic">influence</span>
+                  <span className="voice-serif-light text-foreground"> — the systems in which they lead.</span>
                 </h1>
               </Reveal>
               <Reveal delay={160}>
@@ -132,9 +135,10 @@ function About() {
       <section className="border-b border-[var(--hairline)]/60 py-20 md:py-28">
         <Container>
           <Reveal delay={80}>
-            <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-4xl">
-              At the intersection of{" "}
-              <em className="text-[var(--gold)] not-italic font-light">capability</em> and organizational reality.
+            <h2 className="max-w-4xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-serif-light text-foreground">At the intersection of </span>
+              <span className="voice-serif-italic">capability</span>
+              <span className="voice-sans-bold text-foreground/90"> and organizational reality.</span>
             </h2>
           </Reveal>
 
@@ -168,7 +172,7 @@ function About() {
       </section>
 
       {/* A PERSONAL REALIZATION — letter-style */}
-      <section className="bg-[var(--cream)]/70 border-b border-[var(--hairline)]/60 py-16 md:py-24">
+      <section className="border-b border-[var(--hairline)]/60 py-16 md:py-24" style={{ background: "color-mix(in oklch, var(--blush-subtle) 50%, var(--cream))" }}>
         <Container>
           <div className="grid gap-10 md:gap-16 lg:gap-20 md:grid-cols-12 items-start">
             {/* LEFT — sticky portrait + heading */}
@@ -319,10 +323,11 @@ function About() {
               <Eyebrow>Why This Matters</Eyebrow>
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Equipping women to navigate — and{" "}
-                <em className="text-[var(--gold)] not-italic font-light">ultimately influence</em>{" "}
-                the systems in which they lead.
+              <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-sans-bold text-foreground/90">Equipping women to navigate</span>
+                <span className="voice-serif-light text-foreground"> — and </span>
+                <span className="voice-serif-italic">ultimately influence</span>
+                <span className="voice-serif-light text-foreground"> the systems in which they lead.</span>
               </h2>
             </Reveal>
             <Reveal delay={120}>
@@ -390,7 +395,7 @@ function About() {
                 The goal is not to fix women. It is to equip them to navigate — and ultimately{" "}
                 <em className="text-[var(--gold)] not-italic font-light">influence</em> — the systems in which they lead.
               </blockquote>
-              <figcaption className="mt-4 text-[11px] uppercase tracking-[0.28em] text-foreground/55">
+              <figcaption className="type-micro mt-4 uppercase tracking-[0.28em]">
                 — The Work
               </figcaption>
             </figure>
@@ -403,9 +408,9 @@ function About() {
         <Container className="py-20 md:py-28">
           <div className="max-w-3xl">
             <Eyebrow className="text-[var(--gold)]">Begin</Eyebrow>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-background">
-              Ready to move forward{" "}
-              <em className="text-[var(--gold)] not-italic font-light">strategically?</em>
+            <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-serif-light text-background">Ready to move forward </span>
+              <span className="voice-serif-italic">strategically?</span>
             </h2>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link to="/contact" className="inline-flex items-center gap-2 bg-background text-foreground px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--cream)] transition-colors">

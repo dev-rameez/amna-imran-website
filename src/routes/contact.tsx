@@ -33,9 +33,9 @@ function Contact() {
         <Container className="pt-16 md:pt-24 pb-14 md:pb-20">
           <Reveal><Eyebrow>Contact</Eyebrow></Reveal>
           <Reveal delay={80}>
-            <h1 className="mt-7 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-4xl">
-              Begin with a strategic{" "}
-              <em className="text-[var(--gold)] not-italic font-light">conversation.</em>
+            <h1 className="mt-7 leading-[1.05] text-[clamp(2.1rem,4.2vw,3rem)] max-w-4xl">
+              <span className="voice-serif-light text-foreground">Begin with a strategic </span>
+              <span className="voice-serif-italic">conversation.</span>
             </h1>
           </Reveal>
           <Reveal delay={140}>
@@ -89,11 +89,12 @@ function Contact() {
       <section id="book" className="py-14 md:py-20 bg-[var(--cream)] border-y border-[var(--hairline)]/60">
         <Container>
           <Eyebrow>Schedule</Eyebrow>
-          <h2 className="mt-5 max-w-2xl font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-            Book a time.
+          <h2 className="mt-5 max-w-2xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+            <span className="voice-serif-light text-foreground">Book a </span>
+            <span className="voice-serif-italic">time.</span>
           </h2>
           <div className="mt-8 border border-[var(--hairline)] bg-background min-h-[240px] flex flex-col items-center justify-center px-8 py-12 text-center">
-            <div className="eyebrow text-foreground/50">Booking Embed</div>
+            <div className="eyebrow text-copy-muted">Booking Embed</div>
             <p className="mt-4 max-w-md font-serif italic text-foreground/75 text-lg leading-relaxed">
               Calendly or booking system embed to be added here.
             </p>
@@ -107,9 +108,9 @@ function Contact() {
           <div className="grid gap-10 md:gap-14 md:grid-cols-12">
             <div className="md:col-span-5">
               <Eyebrow>Message</Eyebrow>
-              <h2 className="mt-5 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Prefer to send a{" "}
-                <em className="text-[var(--gold)] not-italic font-light">message?</em>
+              <h2 className="mt-5 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-serif-light text-foreground">Prefer to send a </span>
+                <span className="voice-serif-italic">message?</span>
               </h2>
               <p className="mt-5 text-[15px] text-foreground/75 leading-relaxed font-light">
                 Share a few details and we will respond with a recommended next step.
@@ -119,17 +120,17 @@ function Contact() {
             <form className="md:col-span-7 space-y-6" onSubmit={(e) => e.preventDefault()}>
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="eyebrow text-foreground/55">Full Name</label>
+                  <label htmlFor="name" className="eyebrow text-copy-muted">Full Name</label>
                   <input id="name" type="text" required className="mt-2.5 w-full bg-transparent border-0 border-b border-foreground/30 px-0 py-2.5 text-[15px] focus:outline-none focus:border-foreground transition-colors" />
                 </div>
                 <div>
-                  <label htmlFor="email" className="eyebrow text-foreground/55">Email Address</label>
+                  <label htmlFor="email" className="eyebrow text-copy-muted">Email Address</label>
                   <input id="email" type="email" required className="mt-2.5 w-full bg-transparent border-0 border-b border-foreground/30 px-0 py-2.5 text-[15px] focus:outline-none focus:border-foreground transition-colors" />
                 </div>
               </div>
 
               <div>
-                <span className="eyebrow text-foreground/55">I am enquiring as</span>
+                <span className="eyebrow text-copy-muted">I am enquiring as</span>
                 <div className="mt-3 flex flex-wrap gap-3">
                   {["Individual", "Organization"].map((v) => (
                     <label key={v} className="inline-flex items-center gap-2.5 px-4 py-2.5 border border-[var(--hairline)] cursor-pointer text-[13px] text-foreground/80 hover:border-foreground/60 has-[:checked]:border-foreground has-[:checked]:bg-foreground has-[:checked]:text-background transition-colors">
@@ -141,7 +142,7 @@ function Contact() {
               </div>
 
               <div>
-                <label htmlFor="interest" className="eyebrow text-foreground/55">Area of Interest</label>
+                <label htmlFor="interest" className="eyebrow text-copy-muted">Area of Interest</label>
                 <select id="interest" className="mt-2.5 w-full bg-transparent border-0 border-b border-foreground/30 px-0 py-2.5 text-[15px] focus:outline-none focus:border-foreground transition-colors">
                   <option value="">Select an option</option>
                   {INTEREST.map((opt) => (
@@ -151,14 +152,14 @@ function Contact() {
               </div>
 
               <div>
-                <label htmlFor="message" className="eyebrow text-foreground/55">Message</label>
+                <label htmlFor="message" className="eyebrow text-copy-muted">Message</label>
                 <textarea id="message" rows={4} className="mt-2.5 w-full bg-transparent border border-foreground/25 px-3 py-3 text-[15px] focus:outline-none focus:border-foreground transition-colors" />
               </div>
 
               <Hairline />
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <p className="text-[12px] text-foreground/55">Your message will be reviewed confidentially.</p>
+                <p className="type-micro">Your message will be reviewed confidentially.</p>
                 <button type="submit" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-foreground text-background uppercase text-xs tracking-[0.22em] hover:bg-foreground/90 transition-colors">
                   Send Enquiry <span aria-hidden>→</span>
                 </button>

@@ -201,28 +201,16 @@ function Organizations() {
   return (
     <>
       {/* HERO */}
-      <section className="bg-background py-20 md:py-28">
-        <Container>
-          <Reveal className="hidden">
-            <div className="max-w-4xl">
-              <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Four ways to move from{" "}
-                <em className="text-[var(--gold)] not-italic font-light">
-                  intention to measurable outcome.
-                </em>
-              </h2>
-              <p className="mt-6 max-w-4xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
-                Designed for HR, L&amp;D, and leadership teams ready to go beyond programs — into
-                structural change that actually retains and advances talent.
-              </p>
-            </div>
-          </Reveal>
+      <section className="relative bg-background pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute -right-24 top-8 h-72 w-72 rounded-full border border-[color-mix(in_oklch,var(--gold)_16%,transparent)]" />
+        <Container className="relative">
           <div className="max-w-4xl">
             <Reveal><Eyebrow>For Organizations</Eyebrow></Reveal>
             <Reveal delay={80}>
-              <h1 className="mt-7 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                The investment is real.<br />
-                <em className="text-[var(--gold)] not-italic font-light">The returns have not been.</em>
+              <h1 className="mt-7 leading-[0.95] text-[clamp(2.4rem,5.5vw,4.2rem)]">
+                <span className="voice-serif-light block text-foreground">The investment is real.</span>
+                <span className="voice-sans-bold block mt-1 text-foreground/90">The returns </span>
+                <span className="voice-serif-italic block -mt-1">have not been.</span>
               </h1>
             </Reveal>
             <Reveal delay={160}>
@@ -231,17 +219,6 @@ function Organizations() {
                 about why — and what actually changes things.
               </p>
             </Reveal>
-            <div className="mt-12 grid gap-px bg-[var(--hairline)] border border-[var(--hairline)] md:grid-cols-3">
-              {STATS.map((s, i) => (
-                <Reveal key={s.l} delay={i * 80} as="div" className="bg-background p-8 md:p-10 text-center">
-                  <div className="font-serif text-[3rem] md:text-[4rem] text-[var(--gold)] leading-none">
-                    {s.n}<span className="text-foreground/40 text-[1.5rem] md:text-[2rem]">{s.suffix}</span>
-                  </div>
-                  <p className="mt-5 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed max-w-xs mx-auto">{s.l}</p>
-                  <p className="mt-3 text-[11px] text-foreground/45">{s.s}</p>
-                </Reveal>
-              ))}
-            </div>
             <Reveal delay={220}>
               <div className="mt-10">
                 <Link to="/contact" className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-foreground/90 transition-colors">
@@ -250,16 +227,37 @@ function Organizations() {
               </div>
             </Reveal>
           </div>
+
+          {/* Stats — no longer a flat grid; staggered, bridges into next section */}
+          <div className="relative mt-16 md:mt-20 grid gap-8 sm:grid-cols-3 sm:gap-6">
+            {STATS.map((s, i) => (
+              <Reveal
+                key={s.l}
+                delay={i * 80}
+                as="div"
+                className={`relative pl-6 border-l-2 border-[var(--gold)]/50 ${i === 1 ? "sm:mt-8" : ""}`}
+              >
+                <div className="font-serif text-[3rem] md:text-[4rem] text-[var(--gold)] leading-none">
+                  {s.n}<span className="text-copy-muted text-[1.5rem] md:text-[2rem]">{s.suffix}</span>
+                </div>
+                <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed max-w-xs">{s.l}</p>
+                <p className="type-micro mt-3">{s.s}</p>
+              </Reveal>
+            ))}
+          </div>
         </Container>
+        {/* Connector bridging hero into the diagnostic panel below */}
+        <div aria-hidden className="connector-thread h-24 bottom-0" />
       </section>
 
       {/* DIAGNOSIS — toggle + accordion */}
-      <section className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
+      <section className="relative bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
         <Container>
           <Reveal>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-3xl">
-              The diagnostic is clear — the{" "}
-              <em className="text-[var(--gold)] not-italic font-light">prescriptions have not been.</em>
+            <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-serif-light text-foreground">The diagnostic is clear</span>
+              <span className="voice-sans-bold text-foreground/85"> — the </span>
+              <span className="voice-serif-italic">prescriptions have not been.</span>
             </h2>
           </Reveal>
 
@@ -291,11 +289,11 @@ function Organizations() {
         <Container>
           <Reveal>
             <div className="max-w-4xl">
-              <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Four ways to move from{" "}
-                <em className="text-[var(--gold)] not-italic font-light">
-                  intention to measurable outcome.
-                </em>
+              <h2 className="leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-serif-light text-foreground">Four ways to move from </span>
+                <span className="voice-serif-italic">intention</span>
+                <span className="voice-serif-light text-foreground"> to </span>
+                <span className="voice-sans-bold text-foreground/90">measurable outcome.</span>
               </h2>
               <p className="mt-6 max-w-4xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
                 Designed for HR, L&amp;D, and leadership teams ready to go beyond programs &mdash; into
@@ -330,7 +328,7 @@ function Organizations() {
                 <p className="font-serif italic text-[17px] md:text-[18px] text-foreground/85 leading-relaxed">
                   {q}
                 </p>
-                <div className="mt-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-foreground/45">
+                <div className="type-micro mt-5 flex items-center gap-3 uppercase tracking-[0.22em]">
                   <span className="h-px w-6 bg-foreground/25" />
                   From conversations with HR leaders
                 </div>
@@ -443,11 +441,14 @@ function Organizations() {
                 key={r.l}
                 delay={i * 80}
                 as="div"
-                className="border border-[var(--hairline)] p-10 text-center min-h-[260px] flex flex-col items-center justify-center"
+                className={`relative text-center px-6 py-8 ${i === 1 ? "md:-translate-y-4" : ""}`}
               >
+                {i > 0 && (
+                  <span aria-hidden className="hidden md:block absolute left-0 top-8 bottom-8 w-px bg-[color-mix(in_oklch,var(--gold)_25%,transparent)]" />
+                )}
                 <div className="font-serif text-[4rem] md:text-[5rem] text-[var(--gold)] leading-none">{r.n}</div>
-                <p className="mt-6 text-[15px] md:text-[16px] text-foreground/80 leading-relaxed max-w-[260px]">{r.l}</p>
-                <p className="mt-5 font-serif italic text-[13px] text-foreground/50">{r.s}</p>
+                <p className="mt-6 text-[15px] md:text-[16px] text-foreground/80 leading-relaxed max-w-[260px] mx-auto">{r.l}</p>
+                <p className="type-micro mt-5 font-serif italic">{r.s}</p>
               </Reveal>
             ))}
           </div>
@@ -458,9 +459,9 @@ function Organizations() {
       <section className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
         <Container>
           <Reveal>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-3xl">
-              What partners typically{" "}
-              <em className="text-[var(--gold)] not-italic font-light">achieve.</em>
+            <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-sans-bold text-foreground/90">What partners typically </span>
+              <span className="voice-serif-italic">achieve.</span>
             </h2>
           </Reveal>
           <div className="mt-14 max-w-4xl border-t border-[var(--hairline)]">
@@ -486,9 +487,9 @@ function Organizations() {
         <Container>
           <div className="grid gap-12 md:gap-16 md:grid-cols-2 items-start">
             <Reveal>
-              <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Organizations serious about{" "}
-                <em className="text-[var(--gold)] not-italic font-light">progression.</em>
+              <h2 className="leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-serif-light text-foreground">Organizations serious about </span>
+                <span className="voice-serif-italic">progression.</span>
               </h2>
               <p className="mt-7 max-w-md text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light">
                 Leadership equity is not achieved through intention alone. It requires deliberate
@@ -498,11 +499,6 @@ function Organizations() {
                 If your organization is committed to strengthening its leadership pipeline through
                 strategic, evidence-based coaching and consulting, I welcome a conversation.
               </p>
-              <div className="hidden">
-                <Link to="/contact" className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-foreground/90 transition-colors">
-                  Schedule an Organizational Consultation <span aria-hidden>→</span>
-                </Link>
-              </div>
             </Reveal>
             <Reveal delay={120}>
               <div className="border border-[var(--hairline)] bg-background p-8 md:p-10">
@@ -528,24 +524,31 @@ function Organizations() {
       <section className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
         <Container>
           <Reveal>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-3xl">
-              The training behind the{" "}
-              <em className="text-[var(--gold)] not-italic font-light">methodology.</em>
+            <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-serif-light text-foreground">The training behind the </span>
+              <span className="voice-sans-bold text-foreground/90">methodology.</span>
             </h2>
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-4">
+          <div className="relative mt-14 grid gap-y-10 gap-x-6 grid-cols-2 md:grid-cols-4">
             {CREDENTIAL_LOGOS.map((c, i) => (
-              <Reveal key={c.label} delay={i * 60} as="article" className="bg-background border border-[var(--hairline)] p-7 min-h-[220px] flex flex-col items-center justify-start text-center">
-                <div className="flex items-center justify-center w-full h-28 md:h-32">
+              <Reveal
+                key={c.label}
+                delay={i * 60}
+                as="article"
+                className={`flex flex-col items-center text-center gap-5 px-3 ${
+                  i > 0 ? "md:border-l md:border-[color-mix(in_oklch,var(--hairline)_55%,transparent)]" : ""
+                }`}
+              >
+                <div className="flex items-center justify-center w-full h-20 md:h-24">
                   <img
                     src={c.logo}
                     alt={c.label}
                     loading="lazy"
-                    className="object-contain h-16 md:h-20 w-auto max-w-[280px]"
+                    className="object-contain h-14 md:h-16 w-auto max-w-[220px]"
                     style={{ transform: `scale(${c.scale})`, transformOrigin: "center" }}
                   />
                 </div>
-                <p className="mt-6 min-h-[2.75rem] flex items-start justify-center text-[13px] md:text-[14px] text-foreground/75 leading-snug">{c.label}</p>
+                <p className="type-micro min-h-[2.5rem]">{c.label}</p>
               </Reveal>
             ))}
           </div>
@@ -558,9 +561,10 @@ function Organizations() {
           <div className="grid gap-10 md:grid-cols-12 items-end">
             <div className="md:col-span-8">
             <div className="eyebrow text-[var(--gold)]">Begin</div>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-background">
-              Strengthen the pipeline. Support the leaders{" "}
-              <em className="text-[var(--gold)] not-italic font-light">already within it.</em>
+            <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+              <span className="voice-serif-light text-background">Strengthen the pipeline. </span>
+              <span className="voice-sans-bold text-background/90">Support the leaders </span>
+              <span className="voice-serif-italic">already within it.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-background/70 leading-relaxed font-light">
               A confidential discussion to explore your leadership goals, current challenges, and

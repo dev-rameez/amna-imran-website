@@ -201,9 +201,9 @@ function WorkWithMe() {
           <Reveal>
             <div className="max-w-3xl">
               <Eyebrow>Who This Is For</Eyebrow>
-              <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Designed for high-performing women approaching advancement{" "}
-                <em className="text-[var(--gold)] not-italic font-light">intentionally.</em>
+              <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-serif-light text-foreground">Designed for high-performing women approaching advancement </span>
+                <span className="voice-serif-italic">intentionally.</span>
               </h2>
             </div>
           </Reveal>
@@ -250,9 +250,10 @@ function WorkWithMe() {
         <Container>
           <Reveal>
             <Eyebrow>Programs</Eyebrow>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-3xl">
-              Two Programs. <span className="text-[var(--gold)] font-light">One</span>{" "}
-              <em className="text-[var(--gold)] not-italic font-light">Strategic Foundation.</em>
+            <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)] max-w-3xl">
+              <span className="voice-serif-light text-foreground">Two Programs. </span>
+              <span className="voice-sans-bold text-foreground/90">One </span>
+              <span className="voice-serif-italic">Strategic Foundation.</span>
             </h2>
           </Reveal>
 
@@ -304,8 +305,9 @@ function WorkWithMe() {
                 <Eyebrow className="text-[var(--gold)]">ELEVATE™</Eyebrow>
               </Reveal>
               <Reveal delay={80}>
-                <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-background">
-                  ELEVATE<span className="text-[var(--gold)]">™</span> — Strategic Advancement Program
+                <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                  <span className="voice-sans-bold text-background/90">ELEVATE<span className="text-[var(--gold)]">™</span> — </span>
+                  <span className="voice-serif-italic">Strategic Advancement Program</span>
                 </h2>
               </Reveal>
               <Reveal delay={140}>
@@ -482,7 +484,7 @@ function WorkWithMe() {
               <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed">
                 of expecting mothers intend to re-engage fully with their careers.
               </p>
-              <p className="mt-3 text-[11px] text-foreground/45">Source label to confirm</p>
+              <p className="mt-3 type-micro">Source label to confirm</p>
             </Reveal>
             <Reveal delay={80} as="div" className="bg-background p-8 md:p-10">
               <div className="font-serif text-[3.5rem] md:text-[4.5rem] text-[var(--gold)] leading-none">
@@ -491,13 +493,13 @@ function WorkWithMe() {
               <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed">
                 leave the workforce within a year of having a child.
               </p>
-              <p className="mt-3 text-[11px] text-foreground/45">Source label to confirm</p>
+              <p className="mt-3 type-micro">Source label to confirm</p>
             </Reveal>
             <Reveal delay={160} as="div" className="bg-background p-8 md:p-10">
               <div className="font-serif text-[2rem] md:text-[2.4rem] text-foreground leading-snug">
                 How a return is managed often matters more than the length of leave.
               </div>
-              <p className="mt-4 text-[11px] text-foreground/45">Harvard Business Review</p>
+              <p className="mt-4 type-micro">Harvard Business Review</p>
             </Reveal>
           </div>
 
@@ -518,9 +520,9 @@ function WorkWithMe() {
           <div className="mt-24 grid gap-12 md:gap-16 md:grid-cols-12">
             <div className="md:col-span-5">
               <Reveal>
-                <h3 className="font-serif text-3xl md:text-4xl lg:text-[2.6rem] leading-[1.06] text-foreground">
-                  A Different Approach to{" "}
-                  <em className="text-[var(--gold)] not-italic font-light">Working Parenthood.</em>
+                <h3 className="leading-[1.05] text-[clamp(1.8rem,3.5vw,2.6rem)]">
+                  <span className="voice-serif-light text-foreground">A Different Approach to </span>
+                  <span className="voice-serif-italic">Working Parenthood.</span>
                 </h3>
               </Reveal>
               <Reveal delay={80}>
@@ -615,9 +617,9 @@ function WorkWithMe() {
           <div className="max-w-3xl">
             <Reveal>
               <Eyebrow className="text-[var(--gold)]">Begin</Eyebrow>
-              <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-background">
-                Ready to Advance With{" "}
-                <em className="text-[var(--gold)] not-italic font-light">Intention?</em>
+              <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
+                <span className="voice-serif-light text-background">Ready to Advance With </span>
+                <span className="voice-serif-italic">Intention?</span>
               </h2>
             </Reveal>
             <Reveal delay={120}>
