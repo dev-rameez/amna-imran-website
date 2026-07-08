@@ -12,7 +12,6 @@ import heroCutout from "@/assets/amna-hero.png";
 import supportPortrait from "@/assets/amna-support.png";
 import approachPortrait from "@/assets/amna-approach.png";
 import founderPortrait from "@/assets/amna-founder.png";
-import motherhoodTitleBackground from "@/assets/motherhood-title-background.png";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
 import cdpLogo from "@/assets/cdp.png";
@@ -834,71 +833,46 @@ function MotherhoodSection() {
       as="section"
       surface="panel"
       pad="none"
-      className="relative z-20 -mt-10 md:-mt-20 overflow-visible"
+      flow="top"
+      className="relative overflow-hidden section-pad-top-major section-pad-bottom-major"
       style={{ background: "color-mix(in oklch, var(--blush-subtle) 45%, var(--warm-panel))" }}
     >
-      <svg
-        aria-hidden
-        viewBox="0 0 1440 120"
-        preserveAspectRatio="none"
-        className="pointer-events-none absolute left-0 top-0 z-10 h-20 w-full text-[var(--cream)] opacity-90 md:h-28"
-      >
-        <path
-          d="M0,0 H1440 V46 C1260,16 1160,94 970,78 C770,61 646,20 460,42 C300,61 158,102 0,74 Z"
-          fill="currentColor"
-        />
-      </svg>
-      <div className="relative z-20">
-        <div className="relative h-[205px] md:h-[265px]">
-          <img
-            src={motherhoodTitleBackground}
-            alt=""
-            aria-hidden
-            className="absolute left-[-4vw] top-[-18px] h-[175px] w-[78vw] max-w-none object-fill md:top-[-28px] md:h-[225px] md:w-[62vw] lg:left-[-2vw] lg:w-[54vw]"
-            draggable={false}
-          />
-          <Container className="relative h-full flex items-start justify-start pt-9 md:pt-10">
-            <Reveal variant="slide-right" duration="slow">
-              <h2 className="type-h1 text-background max-w-4xl text-left md:ml-8 lg:ml-12 leading-[0.92]">
-                <span className="text-gold-warm">The </span>
-                <span className="type-display-accent text-background text-[3.7rem] md:text-[5.8rem] leading-none">
-                  Motherhood
-                </span>{" "}
-                <em className="not-italic font-light text-gold-warm">
-                  Penalty
-                </em>
-                <span className="block text-[1.55rem] md:text-[2rem]">
-                  <span className="text-gold-warm">and</span> Life Transitions
-                </span>
-              </h2>
-            </Reveal>
-          </Container>
-        </div>
+      <Container>
+        <Reveal variant="slide-right" duration="slow">
+          <h2 className="type-h1 max-w-5xl text-[clamp(2.8rem,6vw,5.5rem)] leading-[0.9]">
+            <span className="text-gold-warm">The </span>
+            <span className="type-display-accent text-[clamp(3rem,8vw,5.5rem)] leading-none text-foreground">
+              Motherhood
+            </span>{" "}
+            <em className="not-italic font-light text-gold-warm">Penalty</em>
+            <span className="block text-[clamp(1.4rem,3vw,2rem)] mt-2 md:mt-3">
+              <span className="text-gold-warm">and</span> Life Transitions
+            </span>
+          </h2>
+        </Reveal>
 
-        <Container className="relative -mt-8 md:-mt-14">
-          <div className="ml-auto max-w-4xl stack-md border-l border-[color-mix(in_oklch,var(--gold)_35%,transparent)] pl-6 pt-4 md:pl-10">
-            <Reveal variant="fade-in">
-              <p className="type-body text-copy">
-                Research across regions consistently shows that career interruptions associated
-                with caregiving — particularly motherhood — can significantly alter advancement
-                trajectories. Even when women return with equal or greater capability, they may be
-                perceived as less committed, less available, or less leadership-ready.
-              </p>
-            </Reveal>
-            <Reveal delay={100} variant="fade-in">
-              <p className="type-body text-copy">
-                Meanwhile, men often experience neutral or even positive career effects from
-                fatherhood (the fatherhood bonus).
-              </p>
-            </Reveal>
-            <Reveal delay={160} variant="fade-in">
-              <p className="type-body text-copy">
-                These patterns persist despite formal policies designed to support work-life balance.
-              </p>
-            </Reveal>
-          </div>
-        </Container>
-      </div>
+        <div className="mt-10 md:mt-12 ml-auto max-w-4xl stack-md border-l border-[color-mix(in_oklch,var(--gold)_35%,transparent)] pl-6 md:pl-10">
+          <Reveal variant="fade-in">
+            <p className="type-body text-copy">
+              Research across regions consistently shows that career interruptions associated
+              with caregiving — particularly motherhood — can significantly alter advancement
+              trajectories. Even when women return with equal or greater capability, they may be
+              perceived as less committed, less available, or less leadership-ready.
+            </p>
+          </Reveal>
+          <Reveal delay={100} variant="fade-in">
+            <p className="type-body text-copy">
+              Meanwhile, men often experience neutral or even positive career effects from
+              fatherhood (the fatherhood bonus).
+            </p>
+          </Reveal>
+          <Reveal delay={160} variant="fade-in">
+            <p className="type-body text-copy">
+              These patterns persist despite formal policies designed to support work-life balance.
+            </p>
+          </Reveal>
+        </div>
+      </Container>
 
       <Container className="section-pad-minor relative">
         <Reveal variant="scale" duration="slow">
