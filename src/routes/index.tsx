@@ -325,25 +325,6 @@ function Hero() {
               </Link>
             </div>
           </Reveal>
-
-          {/* Scroll cue */}
-          <Reveal variant="fade-in" delay={500} duration="slow">
-            <div
-              className="hidden lg:flex items-center gap-3 mt-16"
-              style={{ color: "color-mix(in oklch, var(--foreground) 35%, transparent)" }}
-            >
-              <div
-                className="h-10 w-px"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 30%, transparent), transparent)",
-                }}
-              />
-              <span className="eyebrow" style={{ fontSize: "10px", letterSpacing: "0.22em" }}>
-                Scroll
-              </span>
-            </div>
-          </Reveal>
         </div>
 
         {/* RIGHT — Portrait column (desktop only) */}
@@ -1084,7 +1065,6 @@ function HowISupportSection() {
           </h2>
         </Reveal>
 
-        {false && (
         <Reveal delay={80}>
           <div className="mt-8 md:mt-10 max-w-5xl">
             <p className="max-w-3xl type-body text-copy">
@@ -1114,7 +1094,6 @@ function HowISupportSection() {
             </div>
           </div>
         </Reveal>
-        )}
 
         <div className="relative mt-2 md:mt-4 grid grid-cols-1 gap-14 md:grid-cols-12 md:gap-0 items-center">
           <Reveal as="article" variant="fade-up" className="md:col-span-5 md:text-center relative z-20 md:translate-x-6 lg:translate-x-10">
@@ -1128,12 +1107,12 @@ function HowISupportSection() {
               </div>
             </div>
             <EditorialCard variant="dark" className="relative overflow-hidden border-0 border-l-4 border-l-[var(--gold)] p-8 md:p-10 space-y-4 text-[16px] md:text-[18px] leading-[1.55] text-left min-h-[420px] shadow-[0_30px_80px_color-mix(in_oklch,var(--charcoal)_22%,transparent)] md:-rotate-[1.25deg]">
-              <p>
+              <p className="text-background">
                 A structured 6 month engagement designed to help{" "}
                 <em className="italic text-gold">high-potential women</em>{" "}
                 translate capability into progression within complex organizational environments.
               </p>
-              <p>
+              <p className="text-background">
                 Through the{" "}
                 <em className="italic text-gold">ELEVATE Framework</em>, we work
                 systematically across{" "}
