@@ -12,7 +12,7 @@ import heroCutout from "@/assets/amna-hero.png";
 import supportPortrait from "@/assets/amna-support.png";
 import approachPortrait from "@/assets/amna-approach.png";
 import founderPortrait from "@/assets/amna-founder.png";
-import motherhoodTitleBackground from "@/assets/dark brown background.png";
+import motherhoodTitleBackground from "@/assets/motherhood-title-background.png";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
 import cdpLogo from "@/assets/cdp.png";

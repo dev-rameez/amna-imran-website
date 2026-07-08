@@ -49,7 +49,8 @@ const server = http.createServer(async (req, res) => {
   try {
     // Try to serve static files first
     if (req.url.startsWith('/assets/')) {
-      const filePath = join(STATIC_DIR, req.url);
+      const assetPath = decodeURIComponent(req.url.split('?')[0]);
+      const filePath = join(STATIC_DIR, assetPath);
       if (serveStatic(filePath, res)) {
         return;
       }
