@@ -75,8 +75,8 @@ export function SiteFooter() {
 
         {/* Mission + credentials */}
         <div className="mt-10 grid gap-10 md:grid-cols-12 md:gap-8 md:items-start">
-          <Reveal variant="fade-up" delay={80} className="md:col-span-5 max-w-sm type-body text-background/65 md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
-            <p>
+          <Reveal variant="fade-up" delay={80} className="md:col-span-5 max-w-sm md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
+            <p className="type-body text-background/70">
               Executive coaching and organizational consulting for high-potential women navigating
               advancement in complex environments.
             </p>
