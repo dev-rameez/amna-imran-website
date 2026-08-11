@@ -142,7 +142,8 @@ function Hero() {
       className="relative isolate overflow-hidden"
       style={{
         height: "100svh",
-        minHeight: "640px",
+        minHeight: "min(100svh, 560px)",
+        maxHeight: "920px",
         background:
           "radial-gradient(ellipse 90% 75% at 50% 40%, color-mix(in oklch, var(--blush) 35%, white) 0%, color-mix(in oklch, var(--blush) 88%, white) 55%, var(--blush) 100%)",
       }}
@@ -163,7 +164,7 @@ function Hero() {
         <span
           className="hero-enter absolute inset-x-0 top-[max(2.5rem,5vh)] flex justify-center font-serif font-light uppercase leading-none text-white"
           style={{
-            fontSize: "clamp(4.5rem, 20vw, 16rem)",
+            fontSize: "clamp(3.25rem, 18vw, 16rem)",
             letterSpacing: "-0.045em",
             animationDelay: "120ms",
           }}
@@ -182,8 +183,8 @@ function Hero() {
         <span
           className="hero-enter absolute inset-x-0 top-[52%] z-[1] flex justify-center font-serif font-light uppercase leading-none text-white w-full"
           style={{
-            fontSize: "clamp(3.75rem, 18vw, 14rem)",
-            letterSpacing: "0.12em",
+            fontSize: "clamp(2.6rem, 15vw, 14rem)",
+            letterSpacing: "clamp(0.04em, 2vw, 0.12em)",
             paddingInline: "2vw",
             animationDelay: "380ms",
           }}
@@ -200,8 +201,8 @@ function Hero() {
         <span
           className="hero-enter absolute inset-x-0 top-[52%] z-[3] flex justify-center font-serif font-light uppercase leading-none text-white w-full pointer-events-none"
           style={{
-            fontSize: "clamp(3.75rem, 18vw, 14rem)",
-            letterSpacing: "0.12em",
+            fontSize: "clamp(2.6rem, 15vw, 14rem)",
+            letterSpacing: "clamp(0.04em, 2vw, 0.12em)",
             paddingInline: "2vw",
             animationDelay: "480ms",
           }}
@@ -224,12 +225,11 @@ function Hero() {
           src={heroCutout}
           alt="Amna Imran — Executive Coach"
           draggable={false}
-          className="select-none object-contain object-bottom"
+          className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none"
           style={{
             height: "100%",
             width: "auto",
-            maxWidth: "100vw",
-            transform: "scale(1.12)",
+            transform: "scale(1.06)",
             transformOrigin: "bottom center",
             filter: "drop-shadow(0 16px 40px color-mix(in oklch, var(--charcoal) 12%, transparent))",
           }}
@@ -238,7 +238,7 @@ function Hero() {
 
       <div
         aria-hidden
-        className="hero-enter-soft pointer-events-none absolute inset-x-0 bottom-8 z-[4] flex justify-center"
+        className="hero-enter-soft pointer-events-none absolute inset-x-0 z-[4] flex justify-center bottom-[max(1.5rem,env(safe-area-inset-bottom,0px))]"
         style={{ animationDelay: "900ms" }}
       >
         <div className="flex h-11 w-6 items-start justify-center rounded-full border border-white/55 pt-2">
@@ -294,13 +294,13 @@ function HeroIntro() {
             <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-x-8">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-foreground text-background text-[11px] uppercase tracking-[0.22em] font-medium transition-all duration-300 hover:bg-foreground/90 hover:-translate-y-0.5 px-7 py-4"
+                className="inline-flex items-center justify-center gap-2 bg-foreground text-background text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] font-medium transition-all duration-300 hover:bg-foreground/90 hover:-translate-y-0.5 px-5 py-4 text-center sm:px-7"
               >
                 Book a Strategic Clarity Call <span aria-hidden>→</span>
               </Link>
               <Link
                 to="/organizations"
-                className="inline-flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-foreground transition-colors hover:text-[var(--gold)] border-b border-[var(--gold)] pb-0.5"
+                className="inline-flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-foreground transition-colors hover:text-[var(--gold)] border-b border-[var(--gold)] pb-0.5 text-center"
               >
                 For Corporate &amp; HR Enquiries <span aria-hidden>→</span>
               </Link>
@@ -601,7 +601,7 @@ function LegacyHighPerformanceSection() {
                 <span className="text-foreground">Yet </span>
                 <span className="text-gold">progression</span>
                 <br />
-                <span className="pl-16 text-foreground">often </span>
+                <span className="pl-6 sm:pl-16 text-foreground">often </span>
                 <span className="text-gold">stalls</span>
               </p>
             </Reveal>
@@ -637,10 +637,10 @@ function LegacyHighPerformanceSection() {
         <div className="relative mt-10 md:mt-14 grid gap-10 md:gap-8 md:grid-cols-12 items-end">
           {/* LEFT — small circle with title, quotes wrap around it */}
           <div className="md:col-span-7 relative">
-            <div className="relative flex items-center gap-0">
+            <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-0">
               {/* Compact circle sized to its text */}
               <div
-                className="relative shrink-0 rounded-full w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] md:w-[230px] md:h-[230px] flex items-center justify-center text-center -mr-8 sm:-mr-10 md:-mr-12 bg-[var(--gold)]"
+                className="relative shrink-0 rounded-full w-[160px] h-[160px] sm:w-[200px] sm:h-[200px] md:w-[230px] md:h-[230px] flex items-center justify-center text-center sm:-mr-10 md:-mr-12 bg-[var(--gold)]"
               >
                 <p
                   className="font-serif font-normal text-[2rem] md:text-[2.3rem] leading-[1.15] text-black px-4"
@@ -651,9 +651,9 @@ function LegacyHighPerformanceSection() {
                   <br />
                   <span className="text-white" style={{ fontFamily: '"Rastanty Cortez", cursive', fontFeatureSettings: "normal", fontVariantLigatures: "none" }}>narratives</span>
                 </p>
-                {/* Speech bubble tail pointing right */}
+                {/* Speech bubble tail pointing right — desktop/tablet row only */}
                 <div
-                  className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-0 h-0"
+                  className="absolute right-[-20px] top-1/2 hidden w-0 h-0 -translate-y-1/2 sm:block"
                   style={{
                     borderTop: "16px solid transparent",
                     borderBottom: "16px solid transparent",
@@ -662,25 +662,32 @@ function LegacyHighPerformanceSection() {
                 />
               </div>
               {/* Quotes wrapping around the circle */}
-              <ul className="flex-1 space-y-3 relative z-10 pl-6 md:pl-10">
+              <ul className="relative z-10 w-full flex-1 space-y-3 pl-0 text-center sm:pl-6 sm:text-left md:pl-10">
                 {INTERNAL_NARRATIVES.map((q, i) => (
                   <Reveal key={q} delay={i * 60}>
                     <li
-                      className={`font-sans italic text-[16px] md:text-[18px] text-foreground leading-snug ${
-                        i === 1 ? "md:pl-[26px]" : i === 3 ? "md:pl-2" : ""
-                      }`}
-                      style={
-                        i === 1
-                          ? { transform: "translateX(-4px)" }
-                          : i === 2
-                          ? { transform: "translateX(30px)" }
-                          : undefined
-                      }
+                      className={`font-sans italic text-[15px] sm:text-[16px] md:text-[18px] text-foreground leading-snug ${
+                        i === 1 ? "md:pl-[26px] sm:-translate-x-1" : ""
+                      } ${i === 2 ? "sm:translate-x-7" : ""} ${i === 3 ? "md:pl-2" : ""}`}
                     >
                       {i === 2 ? (
-                        <>"Others seem to be doing<br />something I'm not."</>
+                        <>
+                          <span className="sm:hidden">"{q}"</span>
+                          <span className="hidden sm:inline">
+                            "Others seem to be doing
+                            <br />
+                            something I'm not."
+                          </span>
+                        </>
                       ) : i === 3 ? (
-                        <>"Perhaps I'm not<br />leadership material after all."</>
+                        <>
+                          <span className="sm:hidden">"{q}"</span>
+                          <span className="hidden sm:inline">
+                            "Perhaps I'm not
+                            <br />
+                            leadership material after all."
+                          </span>
+                        </>
                       ) : (
                         `"${q}"`
                       )}
@@ -1217,7 +1224,7 @@ function WhyDifferentSection() {
                   src={approachPortrait}
                   alt="Amna Imran"
                   draggable={false}
-                  className="relative z-10 mx-auto h-[360px] w-auto max-w-none select-none object-contain object-bottom sm:h-[440px] md:h-[500px] lg:h-[640px] xl:h-[720px]"
+                  className="relative z-10 mx-auto h-[300px] w-auto max-w-[90vw] select-none object-contain object-bottom sm:h-[440px] sm:max-w-none md:h-[500px] lg:h-[640px] xl:h-[720px]"
                 />
               </Reveal>
             </div>
@@ -1235,7 +1242,7 @@ function WhyDifferentSection() {
                         : ""
                     }
                   >
-                    <h3 className="whitespace-nowrap font-serif font-semibold text-[clamp(0.95rem,1.2vw,1.15rem)] leading-snug text-foreground">
+                    <h3 className="font-serif font-semibold text-[clamp(0.95rem,1.2vw,1.15rem)] leading-snug text-foreground sm:whitespace-normal lg:whitespace-nowrap">
                       {offer.title}
                     </h3>
                     <p className="mt-3 type-micro text-copy-muted">{offer.body}</p>
@@ -1516,7 +1523,7 @@ function FounderSection() {
       <Container className="relative !px-6 md:!px-10 py-0">
         <div className="grid min-h-0 grid-cols-1 items-center gap-4 md:grid-cols-12 md:gap-x-3 lg:gap-x-4">
           {/* Copy — vertically centered with portrait */}
-          <div className="relative z-20 py-8 md:col-span-5 md:py-0 lg:col-span-5 md:pr-0">
+          <div className="relative z-20 py-8 md:col-span-5 md:py-0 lg:col-span-5 md:pr-0 text-center md:text-left">
             <Reveal variant="fade-up">
               <p className="eyebrow text-gold mb-3">Founder</p>
               <h2 className="font-serif font-semibold text-[clamp(2.5rem,5.5vw,4.75rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
@@ -1529,7 +1536,7 @@ function FounderSection() {
             </Reveal>
 
             <Reveal delay={80} variant="fade-up">
-              <p className="mt-5 max-w-sm type-body text-copy md:border-l md:border-[color-mix(in_oklch,var(--gold)_38%,transparent)] md:pl-8">
+              <p className="mt-5 max-w-sm mx-auto md:mx-0 type-body text-copy md:border-l md:border-[color-mix(in_oklch,var(--gold)_38%,transparent)] md:pl-8">
                 Gender-informed leadership strategist helping high-potential women progress without
                 burnout or compromise.
               </p>
@@ -1546,7 +1553,7 @@ function FounderSection() {
           </div>
 
           {/* Portrait — pulled toward copy, flush bottom */}
-          <div className="relative z-10 h-[360px] sm:h-[420px] md:col-span-7 md:col-start-6 md:h-[480px] lg:h-[520px]">
+          <div className="relative z-10 h-[320px] sm:h-[420px] md:col-span-7 md:col-start-6 md:h-[480px] lg:h-[520px]">
             <Reveal variant="scale" duration="slow" className="h-full">
               <div className="relative h-full overflow-hidden">
                 <img
