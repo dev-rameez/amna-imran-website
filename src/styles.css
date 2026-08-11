@@ -150,10 +150,10 @@
   --shadow-soft:      0 6px 24px -10px oklch(0.22 0.018 60 / 0.1);
   --shadow-inset:     inset 0 1px 0 oklch(1 0 0 / 0.55);
 
-  /* Motion */
-  --motion-reveal:       900ms;
-  --motion-reveal-fast:  650ms;
-  --motion-reveal-slow:  1100ms;
+  /* Motion — kept deliberately slow for a calm editorial pace */
+  --motion-reveal:       1500ms;
+  --motion-reveal-fast:  1100ms;
+  --motion-reveal-slow:  2100ms;
   --ease-editorial:      cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-soft:       cubic-bezier(0.33, 1, 0.68, 1);
 
@@ -551,15 +551,15 @@
   .reveal-duration-fast    { transition-duration: var(--motion-reveal-fast); }
   .reveal-duration-slow    { transition-duration: var(--motion-reveal-slow); }
 
-  .reveal-from-fade-up-hidden    { opacity: 0; transform: translateY(1rem); }
+  .reveal-from-fade-up-hidden    { opacity: 0; transform: translateY(1.75rem); }
   .reveal-from-fade-up-shown     { opacity: 1; transform: translateY(0); }
   .reveal-from-fade-in-hidden    { opacity: 0; transform: none; }
   .reveal-from-fade-in-shown     { opacity: 1; transform: none; }
-  .reveal-from-slide-left-hidden { opacity: 0; transform: translateX(-1.25rem); }
+  .reveal-from-slide-left-hidden { opacity: 0; transform: translateX(-2rem); }
   .reveal-from-slide-left-shown  { opacity: 1; transform: translateX(0); }
-  .reveal-from-slide-right-hidden { opacity: 0; transform: translateX(1.25rem); }
+  .reveal-from-slide-right-hidden { opacity: 0; transform: translateX(2rem); }
   .reveal-from-slide-right-shown  { opacity: 1; transform: translateX(0); }
-  .reveal-from-scale-hidden      { opacity: 0; transform: scale(0.98); }
+  .reveal-from-scale-hidden      { opacity: 0; transform: scale(0.96); }
   .reveal-from-scale-shown       { opacity: 1; transform: scale(1); }
   .reveal-from-none-hidden       { opacity: 0; }
   .reveal-from-none-shown        { opacity: 1; }
@@ -588,15 +588,41 @@
       opacity: 1;
       transform: none;
     }
-    .hero-scroll-dot { animation: none !important; }
+    .hero-scroll-dot,
+    .hero-enter,
+    .hero-enter-soft { animation: none !important; opacity: 1 !important; transform: none !important; }
   }
 }
 
 @keyframes hero-scroll-dot {
   0%, 100% { opacity: 0.35; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(10px); }
+  50% { opacity: 1; transform: translateY(8px); }
 }
 
 .hero-scroll-dot {
-  animation: hero-scroll-dot 1.8s ease-in-out infinite;
+  animation: hero-scroll-dot 2.8s ease-in-out infinite;
+}
+
+@keyframes hero-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-enter-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hero-enter {
+  animation: hero-enter-up var(--motion-reveal-slow) var(--ease-editorial) both;
+}
+
+.hero-enter-soft {
+  animation: hero-enter-fade var(--motion-reveal-slow) var(--ease-out-soft) both;
 }

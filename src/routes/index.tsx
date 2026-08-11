@@ -150,8 +150,9 @@ function Hero() {
       {/* Soft center wash — same quiet field as the Marie reference */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 hero-enter-soft"
         style={{
+          animationDelay: "0ms",
           background:
             "radial-gradient(ellipse 45% 55% at 50% 48%, color-mix(in oklch, white 45%, transparent) 0%, transparent 70%)",
         }}
@@ -160,10 +161,11 @@ function Hero() {
       <h1 className="pointer-events-none absolute inset-0 select-none" aria-label="Amna Imran">
         {/* AMNA — outer A's in front of portrait; M & N behind it */}
         <span
-          className="absolute inset-x-0 top-[max(2.5rem,5vh)] flex justify-center font-serif font-light uppercase leading-none text-white"
+          className="hero-enter absolute inset-x-0 top-[max(2.5rem,5vh)] flex justify-center font-serif font-light uppercase leading-none text-white"
           style={{
             fontSize: "clamp(4.5rem, 20vw, 16rem)",
             letterSpacing: "-0.045em",
+            animationDelay: "120ms",
           }}
           aria-hidden
         >
@@ -178,11 +180,12 @@ function Hero() {
           R is a separate layer (not inside a transformed parent) so z-index wins.
         */}
         <span
-          className="absolute inset-x-0 top-[52%] z-[1] flex justify-center font-serif font-light uppercase leading-none text-white w-full"
+          className="hero-enter absolute inset-x-0 top-[52%] z-[1] flex justify-center font-serif font-light uppercase leading-none text-white w-full"
           style={{
             fontSize: "clamp(3.75rem, 18vw, 14rem)",
             letterSpacing: "0.12em",
             paddingInline: "2vw",
+            animationDelay: "380ms",
           }}
           aria-hidden
         >
@@ -195,11 +198,12 @@ function Hero() {
           <span>n</span>
         </span>
         <span
-          className="absolute inset-x-0 top-[52%] z-[3] flex justify-center font-serif font-light uppercase leading-none text-white w-full pointer-events-none"
+          className="hero-enter absolute inset-x-0 top-[52%] z-[3] flex justify-center font-serif font-light uppercase leading-none text-white w-full pointer-events-none"
           style={{
             fontSize: "clamp(3.75rem, 18vw, 14rem)",
             letterSpacing: "0.12em",
             paddingInline: "2vw",
+            animationDelay: "480ms",
           }}
           aria-hidden
         >
@@ -212,7 +216,10 @@ function Hero() {
       </h1>
 
       {/* Standing portrait — full banner height */}
-      <div className="absolute inset-0 z-[2] flex items-end justify-center pointer-events-none overflow-hidden">
+      <div
+        className="hero-enter absolute inset-0 z-[2] flex items-end justify-center pointer-events-none overflow-hidden"
+        style={{ animationDelay: "220ms" }}
+      >
         <img
           src={heroCutout}
           alt="Amna Imran — Executive Coach"
@@ -227,6 +234,16 @@ function Hero() {
             filter: "drop-shadow(0 16px 40px color-mix(in oklch, var(--charcoal) 12%, transparent))",
           }}
         />
+      </div>
+
+      <div
+        aria-hidden
+        className="hero-enter-soft pointer-events-none absolute inset-x-0 bottom-8 z-[4] flex justify-center"
+        style={{ animationDelay: "900ms" }}
+      >
+        <div className="flex h-11 w-6 items-start justify-center rounded-full border border-white/55 pt-2">
+          <span className="hero-scroll-dot block h-1.5 w-1.5 rounded-full bg-white/90" />
+        </div>
       </div>
     </section>
   );

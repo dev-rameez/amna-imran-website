@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Container } from "./primitives";
+import { Container, Reveal } from "./primitives";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
 import cdpLogo from "@/assets/cdp.png";
@@ -35,7 +35,7 @@ export function SiteFooter() {
 
       <Container className="relative py-14 md:py-16">
         {/* Masthead row */}
-        <div className="flex flex-col gap-8 border-b border-background/15 pb-10 md:flex-row md:items-end md:justify-between md:gap-10">
+        <Reveal variant="fade-up" duration="slow" className="flex flex-col gap-8 border-b border-background/15 pb-10 md:flex-row md:items-end md:justify-between md:gap-10">
           <Link to="/" aria-label="Amna Imran home" className="inline-flex items-center gap-3.5 group">
             <img
               src={logoSrc}
@@ -71,16 +71,18 @@ export function SiteFooter() {
               ))}
             </ul>
           </nav>
-        </div>
+        </Reveal>
 
         {/* Mission + credentials */}
         <div className="mt-10 grid gap-10 md:grid-cols-12 md:gap-8 md:items-start">
-          <p className="md:col-span-5 max-w-sm type-body text-background/65 md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
-            Executive coaching and organizational consulting for high-potential women navigating
-            advancement in complex environments.
-          </p>
+          <Reveal variant="fade-up" delay={80} className="md:col-span-5 max-w-sm type-body text-background/65 md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
+            <p>
+              Executive coaching and organizational consulting for high-potential women navigating
+              advancement in complex environments.
+            </p>
+          </Reveal>
 
-          <div className="md:col-span-7 md:pl-4">
+          <Reveal variant="fade-up" delay={140} className="md:col-span-7 md:pl-4">
             <p className="eyebrow text-gold mb-5">Credentials</p>
             <ul className="flex flex-wrap items-center gap-x-8 gap-y-5">
               {CREDENTIALS.map((c) => (
@@ -112,13 +114,13 @@ export function SiteFooter() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-background/12 pt-6 text-[12px] text-background/45 sm:flex-row sm:items-center sm:justify-between">
+        <Reveal variant="fade-in" delay={200} className="mt-12 flex flex-col gap-3 border-t border-background/12 pt-6 text-[12px] text-background/45 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} Amna Imran. All rights reserved.</div>
           <div className="eyebrow text-gold/70">Strategy · Coaching · Advancement</div>
-        </div>
+        </Reveal>
       </Container>
     </footer>
   );

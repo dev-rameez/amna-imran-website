@@ -201,7 +201,7 @@ export function SectionSeam({
 export function ParallaxLayer({
   children,
   className,
-  speed = 0.12,
+  speed = 0.08,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -269,6 +269,8 @@ export function Reveal({
 }) {
   const ref = useRef<HTMLElement | null>(null);
   const [shown, setShown] = useState(false);
+  // Stretch stagger so slower reveals still feel sequential.
+  const pacedDelay = Math.round(delay * 1.45);
   useEffect(() => {
     if (typeof window === "undefined") return;
     const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -288,7 +290,8 @@ export function Reveal({
           }
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      // Start a touch earlier so the slower motion finishes while still on screen.
+      { rootMargin: "0px 0px -2% 0px", threshold: 0.05 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -305,7 +308,7 @@ export function Reveal({
   return (
     <Comp
       ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={{ transitionDelay: `${pacedDelay}ms` }}
       className={cn("reveal-base", durationClass, stateClass, className)}
     >
       {children}
