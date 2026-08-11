@@ -1514,9 +1514,9 @@ function FounderSection() {
       style={{ background: "color-mix(in oklch, var(--blush-subtle) 52%, var(--warm-cream))" }}
     >
       <Container className="relative !px-6 md:!px-10 py-0">
-        <div className="grid min-h-0 grid-cols-1 items-center gap-6 md:grid-cols-12 md:gap-x-8 lg:gap-x-10">
+        <div className="grid min-h-0 grid-cols-1 items-center gap-4 md:grid-cols-12 md:gap-x-3 lg:gap-x-4">
           {/* Copy — vertically centered with portrait */}
-          <div className="relative z-20 py-8 md:col-span-6 md:py-0 lg:col-span-5 md:pr-2">
+          <div className="relative z-20 py-8 md:col-span-5 md:py-0 lg:col-span-5 md:pr-0">
             <Reveal variant="fade-up">
               <p className="eyebrow text-gold mb-3">Founder</p>
               <h2 className="font-serif font-semibold text-[clamp(2.5rem,5.5vw,4.75rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
@@ -1545,14 +1545,14 @@ function FounderSection() {
             </Reveal>
           </div>
 
-          {/* Portrait — crop empty headroom, flush bottom, same row height for centering */}
-          <div className="relative z-10 h-[360px] sm:h-[420px] md:col-span-6 md:h-[480px] lg:col-span-7 lg:h-[520px]">
+          {/* Portrait — pulled toward copy, flush bottom */}
+          <div className="relative z-10 h-[360px] sm:h-[420px] md:col-span-7 md:col-start-6 md:h-[480px] lg:h-[520px]">
             <Reveal variant="scale" duration="slow" className="h-full">
               <div className="relative h-full overflow-hidden">
                 <img
                   src={founderPortrait}
                   alt="Amna Imran — Founder"
-                  className="absolute bottom-0 left-1/2 h-[125%] w-auto max-w-none -translate-x-1/2 select-none object-contain object-bottom md:left-auto md:right-0 md:translate-x-0"
+                  className="absolute bottom-0 left-1/2 h-[125%] w-auto max-w-none -translate-x-1/2 select-none object-contain object-bottom md:left-0 md:translate-x-0"
                   draggable={false}
                 />
               </div>
