@@ -96,10 +96,160 @@ export function EditorialCard({
 }
 
 /**
+ * Section-ending pull quote — large, visible, editorial.
+ * Use at the close of narrative sections for a stronger presence than body type.
+ */
+export function SectionQuote({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <blockquote
+      className={cn(
+        "relative mx-auto max-w-[48rem] px-4 py-8 text-center md:px-8 md:py-10",
+        className,
+      )}
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[5.5rem] leading-none text-gold/40 md:text-[7rem]"
+      >
+        “
+      </span>
+      <div className="relative pt-8 font-serif text-[clamp(1.55rem,3.2vw,2.85rem)] leading-[1.3] tracking-[-0.02em] text-foreground md:pt-10">
+        {children}
+      </div>
+    </blockquote>
+  );
+}
+
+/**
+ * Soft layered hill/wave seam between sections.
+ * `from` paints the outgoing surface; `into` fills the rising hills of the next surface.
+ * Content never straddles two backgrounds.
+ */
+type SeamTone = "cream" | "blush" | "warm" | "dark" | "background";
+
+const SEAM_FILL: Record<SeamTone, string> = {
+  cream: "color-mix(in oklch, var(--cream) 55%, var(--background))",
+  blush: "color-mix(in oklch, var(--blush-subtle) 55%, var(--warm-cream))",
+  warm: "color-mix(in oklch, var(--warm-cream) 88%, var(--cream))",
+  dark: "var(--foreground)",
+  background: "var(--background)",
+};
+
+export function SectionSeam({
+  from,
+  into,
+  className,
+  intensity = "default",
+}: {
+  from: SeamTone;
+  into: SeamTone;
+  className?: string;
+  intensity?: "soft" | "default" | "bold";
+}) {
+  const fromFill = SEAM_FILL[from];
+  const intoFill = SEAM_FILL[into];
+  const height =
+    intensity === "soft"
+      ? "h-12 md:h-16"
+      : intensity === "bold"
+        ? "h-24 md:h-32"
+        : "h-16 md:h-24";
+
+  return (
+    <div
+      aria-hidden
+      className={cn("section-seam pointer-events-none relative z-[5] -mb-px", className)}
+      style={{ background: fromFill }}
+    >
+      <div className={cn("relative w-full overflow-hidden", height)}>
+        <svg
+          className="absolute inset-0 h-full w-full opacity-50"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          style={{ color: intoFill }}
+        >
+          <path
+            fill="currentColor"
+            d="M0 72 C180 28 320 96 480 64 C640 32 780 8 960 40 C1140 72 1280 20 1440 48 L1440 120 L0 120 Z"
+          />
+        </svg>
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          style={{ color: intoFill }}
+        >
+          <path
+            fill="currentColor"
+            d="M0 88 C200 48 360 110 540 78 C720 46 880 18 1080 52 C1240 78 1340 40 1440 58 L1440 120 L0 120 Z"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Light parallax for decorative layers. Disabled when reduced motion is preferred.
+ */
+export function ParallaxLayer({
+  children,
+  className,
+  speed = 0.12,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  speed?: number;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const el = ref.current;
+    if (!el) return;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = el.getBoundingClientRect();
+      const viewH = window.innerHeight || 1;
+      const progress = (viewH / 2 - (rect.top + rect.height / 2)) / viewH;
+      el.style.transform = `translate3d(0, ${progress * speed * 100}px, 0)`;
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, [speed]);
+
+  return (
+    <div ref={ref} className={cn("will-change-transform", className)}>
+      {children}
+    </div>
+  );
+}
+
+/**
  * Subtle scroll reveal — fade-up when the element enters the viewport.
  * Falls back to immediately visible on no-JS or reduced motion.
  */
-type RevealVariant = "fade-up" | "fade-in" | "slide-left" | "slide-right" | "scale";
+type RevealVariant = "fade-up" | "fade-in" | "slide-left" | "slide-right" | "scale" | "bridge";
 type RevealDuration = "default" | "fast" | "slow";
 
 export function Reveal({
@@ -113,7 +263,7 @@ export function Reveal({
   children: React.ReactNode;
   className?: string;
   delay?: number;
-  as?: "div" | "section" | "article" | "header" | "li";
+  as?: "div" | "section" | "article" | "header" | "li" | "span";
   variant?: RevealVariant;
   duration?: RevealDuration;
 }) {
