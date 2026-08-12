@@ -1061,12 +1061,12 @@ function HowISupportSection() {
               className="h-full space-y-4 p-7 md:p-8 text-[15px] md:text-[16px] leading-[1.55] text-background"
               style={{ background: "var(--foreground)" }}
             >
-              <p>
+              <p className="text-background/90">
                 A structured 6 month engagement designed to help{" "}
                 <em className="italic text-gold-warm">high-potential women</em> translate
                 capability into progression within complex organizational environments.
               </p>
-              <p>
+              <p className="text-background/90">
                 Through the{" "}
                 <em className="italic text-gold-warm">ELEVATE Framework</em>, we work
                 systematically across{" "}
