@@ -21,18 +21,15 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b border-[var(--hairline)]/60">
       <Container>
         <div className="flex h-20 items-center justify-between">
-          <Link to="/" aria-label="Amna Imran — Coaching &amp; Consulting" className="flex items-center gap-3">
+          <Link to="/" aria-label="Amna Imran home" className="flex items-center gap-3">
             <img
               src={logoSrc}
-              alt=""
+              alt="Amna Imran"
               className="h-12 md:h-14 w-auto select-none"
               draggable={false}
             />
             <span className="hidden sm:flex flex-col leading-none">
-              <span className="font-serif text-[18px] md:text-[20px] tracking-tight text-foreground">
-                Amna Imran
-              </span>
-              <span className="mt-1.5 text-[9px] uppercase tracking-[0.32em] text-foreground/60">
+              <span className="text-[9px] uppercase tracking-[0.32em] text-foreground/60">
                 Coaching · Consulting
               </span>
             </span>
