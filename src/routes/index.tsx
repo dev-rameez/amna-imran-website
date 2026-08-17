@@ -183,6 +183,21 @@ const ORG_QUALIFIERS = [
   "You have the policies in place and want the informal dynamics to match them.",
 ];
 
+/**
+ * One source of truth for the page's surface colours. Section backgrounds and the
+ * seams between them read from the same values, so a seam can never band against
+ * the section it is supposed to blend into.
+ */
+const SURFACE = {
+  warm: "var(--warm-cream)",
+  cream: "color-mix(in oklch, var(--cream) 82%, var(--background))",
+  creamSoft: "color-mix(in oklch, var(--cream) 55%, var(--background))",
+  blush: "color-mix(in oklch, var(--blush-subtle) 62%, var(--warm-cream))",
+  blushApproach: "color-mix(in oklch, var(--blush-subtle) 58%, var(--warm-cream))",
+  blushFounder: "color-mix(in oklch, var(--blush-subtle) 52%, var(--warm-cream))",
+  warmPathways: "color-mix(in oklch, var(--warm-cream) 88%, var(--cream))",
+} as const;
+
 const COMPARISON = [
   {
     a: "Evidence-Based",
@@ -215,20 +230,66 @@ function HomePage() {
   return (
     <>
       <Hero />
+      {/* Introduction and credentials are one continuous block, so the credentials
+          read as part of the introduction rather than a separate strip. */}
       <HeroIntro />
-      <CredentialsStrip />
       <HighPerformanceSection />
+      <SectionSeam
+        from="warm"
+        into="cream"
+        intensity="soft"
+        fromFill={SURFACE.warm}
+        intoFill={SURFACE.cream}
+      />
       <InternalNarrativesSection />
+      <SectionSeam
+        from="cream"
+        into="warm"
+        intensity="soft"
+        fromFill={SURFACE.cream}
+        intoFill={SURFACE.warm}
+      />
       <ProgressNarrativeSection />
+      <SectionSeam
+        from="warm"
+        into="blush"
+        intensity="default"
+        fromFill={SURFACE.warm}
+        intoFill={SURFACE.blush}
+      />
       <MotherhoodSection />
       <StrategicWayForwardSection />
-      <SectionSeam from="blush" into="cream" intensity="default" />
+      <SectionSeam
+        from="blush"
+        into="cream"
+        intensity="default"
+        fromFill={SURFACE.blush}
+        intoFill={SURFACE.creamSoft}
+      />
       <HowISupportSection />
-      <SectionSeam from="cream" into="blush" intensity="soft" />
+      <SectionSeam
+        from="cream"
+        into="blush"
+        intensity="soft"
+        fromFill={SURFACE.creamSoft}
+        intoFill={SURFACE.blushApproach}
+      />
       <WhyDifferentSection />
-      <SectionSeam from="blush" into="warm" intensity="soft" />
+      <SectionSeam
+        from="blush"
+        into="warm"
+        intensity="soft"
+        fromFill={SURFACE.blushApproach}
+        intoFill={SURFACE.warmPathways}
+      />
       <TwoPathwaysSection />
-      <SectionSeam from="warm" into="blush" intensity="default" />
+      <SectionSeam
+        from="warm"
+        into="blush"
+        intensity="default"
+        fromFill={SURFACE.warmPathways}
+        intoFill={SURFACE.blushFounder}
+      />
       <FounderSection />
       <FinalCTA />
     </>
@@ -346,25 +407,34 @@ function Hero() {
           src={heroCutout}
           alt="Amna Imran — Executive Coach"
           draggable={false}
-          className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none [mask-image:linear-gradient(to_bottom,black_84%,transparent_99%)]"
+          className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none [mask-image:linear-gradient(to_bottom,black_82%,transparent_99%)]"
           style={{
             height: "100%",
             width: "auto",
-            transform: "scale(1.06)",
+            /* Up ~6% on the previous 1.06 per review, making her the focal point.
+               Growth is from the bottom edge, so the ceiling here is the
+               transparent headroom above her head in the source cut-out. */
+            transform: "scale(1.12)",
             transformOrigin: "bottom center",
-            filter: "drop-shadow(0 16px 40px color-mix(in oklch, var(--charcoal) 12%, transparent))",
+            /* Two shadows: a tight one to blend the hair and shoulder edges into
+               the blush, and a wider one for depth. */
+            filter:
+              "drop-shadow(0 2px 6px color-mix(in oklch, var(--blush-deep) 30%, transparent)) drop-shadow(0 18px 44px color-mix(in oklch, var(--charcoal) 14%, transparent))",
           }}
         />
       </div>
 
       {/* Curve into HeroIntro — the next section's cream sweeps up into the
           hero, which both softens the hard rectangular edge and finishes the
-          masking of her lower body. */}
+          masking of her lower body. Two offset layers echo the SectionSeam
+          language used between the later sections, so the page has one
+          vocabulary for section transitions. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-12 overflow-hidden md:h-20"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-20 overflow-hidden md:h-32"
       >
-        <div className="absolute -bottom-6 left-1/2 h-[calc(100%+1.5rem)] w-[200%] -translate-x-1/2 rounded-t-[50%] bg-[var(--warm-cream)]" />
+        <div className="absolute -bottom-8 left-1/2 h-[calc(100%+2rem)] w-[250%] -translate-x-1/2 rounded-t-[50%] bg-[var(--warm-cream)] opacity-45" />
+        <div className="absolute -bottom-8 left-1/2 h-[calc(100%+1.25rem)] w-[190%] -translate-x-1/2 rounded-t-[50%] bg-[var(--warm-cream)]" />
       </div>
 
       <div
@@ -384,14 +454,20 @@ function Hero() {
 
 function HeroIntro() {
   return (
-    <section className="relative bg-[var(--warm-cream)]">
+    <section className="relative overflow-hidden bg-[var(--warm-cream)]">
+      {/* The hero's blush bleeds down into the cream rather than stopping at the
+          curve, so the two surfaces read as one field. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[color-mix(in_oklch,var(--blush)_34%,transparent)] to-transparent md:h-44"
+      />
       {/* Hairline dropping out of the hero's curve, so this block reads as a
           continuation of the hero rather than a detached slab. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-10 w-px -translate-x-1/2 bg-gradient-to-b from-[color-mix(in_oklch,var(--gold)_55%,transparent)] to-transparent md:h-14"
+        className="pointer-events-none absolute left-1/2 top-0 z-[2] h-10 w-px -translate-x-1/2 bg-gradient-to-b from-[color-mix(in_oklch,var(--gold)_55%,transparent)] to-transparent md:h-14"
       />
-      <Container className="pb-14 pt-12 md:pb-20 md:pt-16">
+      <Container className="relative z-[3] pb-10 pt-12 md:pb-12 md:pt-16">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal variant="fade-up" duration="slow" delay={60}>
             <h2 className="font-serif font-light leading-[1.05] tracking-[-0.02em] text-foreground">
@@ -435,14 +511,18 @@ function HeroIntro() {
             </div>
           </Reveal>
         </div>
+
+        {/* Credentials sit inside the introduction rather than in a strip of their
+            own, so they read as evidence for the claim above them. */}
+        <CredentialsBand />
       </Container>
     </section>
   );
 }
 
-/* ---------------- CREDENTIALS STRIP ---------------- */
+/* ---------------- CREDENTIALS ---------------- */
 
-function CredentialsStrip() {
+function CredentialsBand() {
   /* `scale` normalises apparent logo size — each mark carries a different amount
      of internal padding, so matching heights alone makes some look smaller than
      others. Tune these by eye rather than by measured height. */
@@ -453,50 +533,52 @@ function CredentialsStrip() {
     { logo: inseadLogo, label: "INSEAD-trained Gender Specialist", scale: 1.53 },
   ];
   return (
-    <section
-      className="relative z-30"
-      style={{
-        background: "var(--warm-cream)",
-        padding: "clamp(2rem, 4vw, 3rem) 0",
-      }}
-    >
-      <div style={{ maxWidth: "1440px", margin: "0 auto", padding: "0 clamp(1.5rem, 5vw, 5rem)" }}>
-        {/* Section label */}
-        <Reveal variant="fade-in" duration="slow">
-          <div className="flex items-center gap-4 mb-6 md:mb-8">
-            <span className="eyebrow" style={{ color: "color-mix(in oklch, var(--foreground) 45%, transparent)", letterSpacing: "0.22em" }}>
-              Credentials
-            </span>
-            <span className="h-px flex-1 max-w-[4rem]" style={{ background: "color-mix(in oklch, var(--gold) 22%, transparent)" }} />
-          </div>
-        </Reveal>
-        <ul className="grid grid-cols-2 md:grid-cols-4 gap-y-8 md:gap-y-0">
-          {items.map((c, i) => (
-            <Reveal key={c.label} delay={i * 60} variant="fade-in" duration="fast" as="li">
-              <div
-                className={`flex flex-col items-center text-center gap-4 px-4 md:px-8 ${
-                  i > 0 ? "md:border-l" : ""
-                }`}
-                style={i > 0 ? { borderColor: "color-mix(in oklch, var(--gold) 8%, transparent)" } : {}}
-              >
-                <div className="h-24 md:h-28 flex items-center justify-center w-full">
-                  <img
-                    src={c.logo}
-                    alt={c.label}
-                    loading="lazy"
-                    className="object-contain h-16 md:h-[4.5rem] w-auto max-w-[240px]"
-                    style={{ transform: `scale(${c.scale})`, transformOrigin: "center" }}
-                  />
-                </div>
-                <span className="eyebrow leading-snug max-w-[14rem] text-[length:var(--text-caption)] text-copy">
-                  {c.label}
-                </span>
+    <div className="relative pb-[clamp(2.5rem,5vw,4rem)] pt-[clamp(2.5rem,5vw,4rem)]">
+      {/* Centred label on the introduction's own axis, tying the two together */}
+      <Reveal variant="fade-in" duration="slow">
+        <div className="mb-8 flex items-center justify-center gap-4 md:mb-10">
+          <span
+            aria-hidden
+            className="h-px w-10 bg-[color-mix(in_oklch,var(--gold)_30%,transparent)]"
+          />
+          <span className="eyebrow text-copy-muted" style={{ letterSpacing: "0.22em" }}>
+            Credentials
+          </span>
+          <span
+            aria-hidden
+            className="h-px w-10 bg-[color-mix(in_oklch,var(--gold)_30%,transparent)]"
+          />
+        </div>
+      </Reveal>
+      <ul className="grid grid-cols-2 gap-y-8 md:grid-cols-4 md:gap-y-0">
+        {items.map((c, i) => (
+          <Reveal key={c.label} delay={i * 60} variant="fade-in" duration="fast" as="li">
+            <div
+              className={cn(
+                "flex flex-col items-center gap-4 px-4 text-center md:px-8",
+                i > 0 && "md:border-l",
+              )}
+              style={i > 0 ? { borderColor: "color-mix(in oklch, var(--gold) 8%, transparent)" } : {}}
+            >
+              <div className="flex h-24 w-full items-center justify-center md:h-28">
+                <img
+                  src={c.logo}
+                  alt={c.label}
+                  loading="lazy"
+                  className="h-16 w-auto max-w-[240px] object-contain md:h-[4.5rem]"
+                  style={{ transform: `scale(${c.scale})`, transformOrigin: "center" }}
+                />
               </div>
-            </Reveal>
-          ))}
-        </ul>
-      </div>
-    </section>
+              {/* Larger than the caption step per review, with tracking eased
+                  back so the longer marks still hold two lines. */}
+              <span className="eyebrow max-w-[15rem] text-[0.9375rem] leading-[1.45] tracking-[0.11em] text-copy">
+                {c.label}
+              </span>
+            </div>
+          </Reveal>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -552,7 +634,7 @@ function HighPerformanceSection() {
               </Reveal>
               <div
                 aria-hidden
-                className="absolute left-[1.15rem] top-14 bottom-2 w-px bg-gradient-to-b from-[var(--gold)] via-[color-mix(in_oklch,var(--gold)_40%,transparent)] to-transparent"
+                className="absolute left-[1.75rem] top-14 bottom-2 w-px bg-gradient-to-b from-[var(--gold)] via-[color-mix(in_oklch,var(--gold)_40%,transparent)] to-transparent"
               />
               <ol className="relative space-y-0">
                 {TRADITIONAL.map((t, i) => (
@@ -564,10 +646,12 @@ function HighPerformanceSection() {
                     delay={i * 80}
                     className="relative flex gap-5 pb-8 last:pb-0"
                   >
-                    <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] bg-[var(--warm-cream)] font-serif italic text-[1.05rem] text-gold-deep">
+                    {/* Heavier numerals per review, so the formula holds its own
+                        against the oversized "stalls" opposite it. */}
+                    <span className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] bg-[var(--warm-cream)] font-serif italic text-[1.3rem] text-gold-deep">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <p className="pt-1.5 font-serif text-[clamp(1.3rem,1.8vw,1.65rem)] leading-snug text-foreground">
+                    <p className="pt-3 font-serif text-[clamp(1.35rem,1.9vw,1.75rem)] leading-snug text-foreground">
                       {t}
                     </p>
                   </Reveal>
@@ -587,7 +671,7 @@ function HighPerformanceSection() {
               </h3>
             </Reveal>
             <Reveal variant="fade-in" delay={TRADITIONAL.length * 80 + 120}>
-              <div className="mt-8 max-w-xl space-y-5 type-body text-copy md:text-[1.08em]">
+              <div className="mt-8 max-w-xl space-y-5 type-body text-copy">
                 <p>
                   — sometimes subtly, sometimes abruptly. Research across organizations shows that
                   advancement depends on far more than performance alone. Factors such as{" "}
@@ -685,7 +769,8 @@ function InternalNarrativesSection() {
           </div>
         </div>
 
-        <Reveal variant="fade-in" duration="slow" delay={100} className="mt-12 md:mt-14">
+        {/* Round 2 asks for more breathing room here than Round 1 allowed. */}
+        <Reveal variant="fade-in" duration="slow" delay={100} className="mt-20 md:mt-28">
           <SectionQuote
             sub={
               <>
@@ -739,7 +824,7 @@ function ProgressNarrativeSection() {
         </Reveal>
 
         <Reveal delay={80} variant="fade-in">
-          <div className="mt-10 max-w-2xl space-y-5 type-body text-copy md:mt-12 md:text-[1.05em]">
+          <div className="mt-10 max-w-2xl space-y-5 type-body text-copy md:mt-12">
             <p>
               On the surface, it appears that gender equality at work has largely been achieved.
               Women are highly educated, widely represented in professional roles, and many
@@ -846,7 +931,7 @@ function ImpactPills() {
         data-state={panelState}
         className="selectable-panel mt-7 border-t border-[color-mix(in_oklch,var(--gold)_28%,transparent)] pt-6"
       >
-        <p className="type-body text-copy">{current.d}</p>
+        <p className="type-body-emphasis text-copy">{current.d}</p>
       </div>
     </div>
   );
@@ -875,24 +960,37 @@ function MotherhoodSection() {
           </h2>
         </Reveal>
 
-        <div className="mt-10 max-w-2xl space-y-5 type-body text-copy md:mt-12 md:ml-auto md:max-w-2xl md:border-l md:border-[color-mix(in_oklch,var(--gold)_35%,transparent)] md:pl-8 md:text-[1.05em]">
+        <div className="mt-10 max-w-2xl space-y-5 type-body text-copy md:mt-12 md:ml-auto md:max-w-2xl md:border-l md:border-[color-mix(in_oklch,var(--gold)_35%,transparent)] md:pl-8">
+          {/* Three deliberately different weights rather than three identical
+              paragraphs: the finding, the contrast that lands it, then the
+              conclusion. Review flagged this block as paragraph-heavy. */}
           <Reveal variant="fade-in">
             <p>
               Research across regions consistently shows that career interruptions associated
               with caregiving — particularly motherhood — can significantly alter advancement
               trajectories. Even when women return with equal or greater capability, they may be
-              perceived as less committed, less available, or less leadership-ready.
+              perceived as{" "}
+              <span className="emphasis-mark">
+                less committed, less available, or less leadership-ready
+              </span>
+              .
             </p>
           </Reveal>
           <Reveal delay={100} variant="fade-in">
-            <p>
+            <p className="font-serif text-[clamp(1.35rem,2vw,1.8rem)] leading-snug text-foreground">
               Meanwhile, men often experience neutral or even positive career effects from
-              fatherhood (the fatherhood bonus).
+              fatherhood —{" "}
+              <em className="type-display-accent not-italic italic text-gold-warm">
+                the fatherhood bonus
+              </em>
+              .
             </p>
           </Reveal>
           <Reveal delay={160} variant="fade-in">
             <p>
-              These patterns persist despite formal policies designed to support work-life balance.
+              These patterns persist{" "}
+              <span className="emphasis-mark">despite formal policies</span> designed to support
+              work-life balance.
             </p>
           </Reveal>
         </div>
@@ -1186,7 +1284,17 @@ function HowISupportSection() {
         </ul>
 
         {/* Two programmes flanking the centre portrait */}
-        <div className="mt-16 grid items-end gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+        <div className="relative mt-16 grid items-end gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+          {/* Shared ground line across all three columns, so the portrait and the
+              two cards read as one composition standing on the same floor. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-px lg:block"
+            style={{
+              background:
+                "linear-gradient(to right, transparent, color-mix(in oklch, var(--gold) 30%, transparent) 18%, color-mix(in oklch, var(--gold) 30%, transparent) 82%, transparent)",
+            }}
+          />
           <ProgrammeColumn
             className="lg:col-span-4"
             tone="dark"
@@ -1224,12 +1332,17 @@ function HowISupportSection() {
             }
           />
 
-          {/* Centre portrait — grounded on an arc with a contact shadow */}
-          <div className="order-first lg:order-none lg:col-span-4 lg:self-end">
+          {/* Centre portrait — grounded on an arc with a contact shadow. The arc
+              bleeds into both gutters and she sits above the cards, so she reads
+              as part of the surrounding layout rather than parked inside a
+              circle of her own. */}
+          <div className="relative order-first lg:order-none lg:col-span-4 lg:self-end">
             <div className="relative mx-auto flex max-w-[22rem] justify-center lg:max-w-none">
+              {/* -z-10 keeps the widened arc tucked behind both cards while she
+                  stays in front of them, so the bleed never washes a card edge. */}
               <div
                 aria-hidden
-                className="absolute inset-x-2 bottom-0 top-10 rounded-t-[999px] lg:top-16"
+                className="absolute inset-x-2 bottom-0 top-10 -z-10 rounded-t-[999px] lg:-inset-x-8 lg:top-16"
                 style={{
                   background:
                     "linear-gradient(to bottom, color-mix(in oklch, var(--gold-subtle) 70%, transparent), color-mix(in oklch, var(--gold-subtle) 20%, transparent))",
@@ -1239,13 +1352,17 @@ function HowISupportSection() {
                 aria-hidden
                 className="absolute bottom-1 left-1/2 h-8 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-2xl lg:h-10"
               />
-              <Reveal variant="scale" duration="slow" className="relative">
+              <Reveal variant="scale" duration="slow" className="relative lg:z-20">
                 <img
                   src={programmePortrait}
                   alt="Amna Imran"
                   draggable={false}
                   loading="lazy"
-                  className="relative z-10 h-[340px] w-auto select-none object-contain object-bottom sm:h-[430px] lg:h-[500px] xl:h-[560px]"
+                  className="relative z-10 h-[340px] w-auto select-none object-contain object-bottom sm:h-[430px] lg:h-[540px] xl:h-[600px]"
+                  style={{
+                    filter:
+                      "drop-shadow(0 18px 36px color-mix(in oklch, var(--charcoal) 16%, transparent))",
+                  }}
                 />
               </Reveal>
             </div>
@@ -1363,10 +1480,12 @@ function WhyDifferentSection() {
               grounded rather than floating, and masked at the base so the
               cut-out does not end on a hard edge. */}
           <div className="relative lg:col-span-6">
-            <div className="relative mx-auto flex max-w-[26rem] justify-center lg:max-w-none lg:justify-end">
+            <div className="relative mx-auto flex max-w-[26rem] justify-center lg:max-w-none lg:justify-end lg:-mr-4 xl:-mr-8">
+              {/* The arch is biased left of her, so her right shoulder crosses its
+                  edge instead of the arch framing her like a cut-out box. */}
               <div
                 aria-hidden
-                className="absolute inset-x-4 bottom-0 top-12 rounded-t-[999px] lg:inset-x-10 lg:top-20"
+                className="absolute inset-x-4 bottom-0 top-12 rounded-t-[999px] lg:left-4 lg:right-20 lg:top-20"
                 style={{
                   background:
                     "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 42%, transparent), color-mix(in oklch, var(--blush) 8%, transparent))",
@@ -1382,7 +1501,11 @@ function WhyDifferentSection() {
                   alt="Amna Imran"
                   draggable={false}
                   loading="lazy"
-                  className="relative z-10 h-[320px] w-auto select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_88%,transparent_100%)] sm:h-[420px] md:h-[480px] lg:h-[560px] xl:h-[620px]"
+                  className="relative z-10 h-[320px] w-auto select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_88%,transparent_100%)] sm:h-[420px] md:h-[480px] lg:h-[580px] xl:h-[650px]"
+                  style={{
+                    filter:
+                      "drop-shadow(0 16px 34px color-mix(in oklch, var(--charcoal) 15%, transparent))",
+                  }}
                 />
               </Reveal>
             </div>
@@ -1524,17 +1647,15 @@ function PathwayCard({
   return (
     <div
       className={cn(
-        "group relative flex h-full flex-col p-8 transition-[transform,box-shadow] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] hover:-translate-y-1.5 md:p-10",
+        "pathway-card group relative flex h-full flex-col p-8 transition-[transform,box-shadow,border-color] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] hover:-translate-y-1.5 md:p-10",
         dark
-          ? "bg-foreground text-background"
-          : "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)]",
+          ? "pathway-card-dark bg-foreground text-background"
+          : "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)] hover:border-[color-mix(in_oklch,var(--gold)_45%,transparent)]",
       )}
-      style={{
-        boxShadow: dark
-          ? "0 28px 70px color-mix(in oklch, var(--charcoal) 18%, transparent)"
-          : undefined,
-      }}
     >
+      {/* Whole-card click target, per review. The visible CTA below sits above
+          this and stays the single focusable, announced link for the card. */}
+      <Link to={to} aria-hidden tabIndex={-1} className="absolute inset-0 z-20" />
       <span
         aria-hidden
         className={cn(
@@ -1597,7 +1718,7 @@ function PathwayCard({
       >
         What that looks like
       </p>
-      <ul className="relative z-10 mt-3 flex-1 space-y-0">
+      <ul className="relative z-10 mt-3 space-y-0">
         {programmes.map((item) => (
           <li
             key={item}
@@ -1613,15 +1734,14 @@ function PathwayCard({
         ))}
       </ul>
 
-      <Link
-        to={to}
-        className={cn(
-          "relative z-10 mt-9 self-start",
-          dark ? "cta-secondary-invert" : "cta-primary",
-        )}
-      >
-        {cta} <span aria-hidden className="cta-arrow">→</span>
-      </Link>
+      {/* mt-auto rather than flex-1 on the list above: the cards keep a shared
+          CTA baseline, but the slack in the shorter card lands as breathing room
+          before the button instead of a void inside the list. */}
+      <div className="relative z-30 mt-auto pt-9">
+        <Link to={to} className={dark ? "cta-primary-invert" : "cta-primary"}>
+          {cta} <span aria-hidden className="cta-arrow">→</span>
+        </Link>
+      </div>
     </div>
   );
 }
@@ -1769,7 +1889,9 @@ function FounderSection() {
             </Reveal>
 
             <Reveal delay={140} variant="fade-up" duration="fast">
-              <Link to="/about" className="link-underline mt-7">
+              {/* Promoted from a text link to a button, per review — it was not
+                  reading as an interactive control. */}
+              <Link to="/about" className="cta-secondary mt-8">
                 Read the Founder Story <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </Reveal>
@@ -1777,7 +1899,7 @@ function FounderSection() {
 
           {/* Portrait — seated on an arc with a contact shadow and a masked base,
               so she is part of the section rather than a PNG cropped by its edge. */}
-          <div className="relative z-10 h-[340px] sm:h-[440px] md:col-span-7 md:col-start-6 md:h-[520px] lg:h-[580px]">
+          <div className="relative z-10 h-[360px] sm:h-[470px] md:col-span-7 md:col-start-6 md:h-[560px] lg:h-[640px]">
             <div
               aria-hidden
               className="absolute inset-x-8 bottom-0 top-16 rounded-t-[999px] md:inset-x-16 md:top-24"
@@ -1785,6 +1907,13 @@ function FounderSection() {
                 background:
                   "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 38%, transparent), color-mix(in oklch, var(--blush) 6%, transparent))",
               }}
+            />
+            {/* Open gold arc behind her, so the portrait sits within the
+                surrounding shapes rather than on top of a single flat panel.
+                Behind the image, not across it. */}
+            <div
+              aria-hidden
+              className="absolute inset-x-2 bottom-0 top-8 -z-10 rounded-t-[999px] border border-b-0 border-[color-mix(in_oklch,var(--gold)_30%,transparent)] md:inset-x-6 md:top-12"
             />
             <div
               aria-hidden
@@ -1795,7 +1924,7 @@ function FounderSection() {
                 <img
                   src={founderPortrait}
                   alt="Amna Imran — Founder"
-                  className="absolute bottom-0 left-1/2 h-[122%] w-auto max-w-none -translate-x-1/2 select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_86%,transparent_100%)] md:left-0 md:translate-x-0"
+                  className="absolute bottom-0 left-1/2 h-[128%] w-auto max-w-none -translate-x-1/2 select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_86%,transparent_100%)] md:left-0 md:translate-x-0"
                   draggable={false}
                 />
               </div>

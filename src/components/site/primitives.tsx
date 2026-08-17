@@ -124,23 +124,23 @@ export function SectionQuote({
   return (
     <blockquote
       className={cn(
-        "relative mx-auto max-w-[48rem] px-4 py-5 text-center md:px-8 md:py-7",
+        "relative mx-auto max-w-[50rem] px-4 py-10 text-center md:px-8 md:py-14",
         className,
       )}
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[4.5rem] leading-none text-gold/40 md:text-[5.5rem]"
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[5rem] leading-none text-gold/40 md:text-[6.25rem]"
       >
         “
       </span>
-      <div className="relative pt-6 font-serif text-[clamp(1.85rem,3.9vw,3.45rem)] leading-[1.25] tracking-[-0.02em] text-foreground md:pt-7">
+      <div className="relative pt-7 font-serif text-[clamp(2rem,4.2vw,3.8rem)] leading-[1.24] tracking-[-0.02em] text-foreground md:pt-9">
         <Reveal variant="fade-in" duration="slow">
           {children}
         </Reveal>
         {sub && (
           <Reveal variant="fade-in" duration="slow" delay={340}>
-            <span className="mt-3 block font-light text-[0.66em] leading-[1.45] text-copy">
+            <span className="mt-4 block font-light text-[0.62em] leading-[1.45] text-copy">
               {sub}
             </span>
           </Reveal>
@@ -168,16 +168,22 @@ const SEAM_FILL: Record<SeamTone, string> = {
 export function SectionSeam({
   from,
   into,
+  fromFill: fromOverride,
+  intoFill: intoOverride,
   className,
   intensity = "default",
 }: {
   from: SeamTone;
   into: SeamTone;
+  /** Exact colour of the section above, when it differs from the tone preset. */
+  fromFill?: string;
+  /** Exact colour of the section below, when it differs from the tone preset. */
+  intoFill?: string;
   className?: string;
   intensity?: "soft" | "default" | "bold";
 }) {
-  const fromFill = SEAM_FILL[from];
-  const intoFill = SEAM_FILL[into];
+  const fromFill = fromOverride ?? SEAM_FILL[from];
+  const intoFill = intoOverride ?? SEAM_FILL[into];
   const height =
     intensity === "soft"
       ? "h-12 md:h-16"
@@ -522,7 +528,7 @@ export function SelectablePanel({
               key={i}
               {...getItemProps(i)}
               className={cn(
-                "selectable-item flex items-start gap-4 py-4",
+                "selectable-item selectable-row flex items-start gap-4 py-4",
                 i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
               )}
             >
@@ -542,6 +548,14 @@ export function SelectablePanel({
               <span className="font-serif text-[length:var(--text-heading-3)] leading-snug">
                 {item.label}
               </span>
+              {/* Chevron only appears on hover or when selected, so the row reads
+                  as choosable without adding permanent furniture to the list. */}
+              <span
+                aria-hidden
+                className="selectable-chevron ml-auto mt-[0.6em] font-serif text-[0.9rem] leading-none"
+              >
+                →
+              </span>
             </button>
           ))}
         </div>
@@ -554,7 +568,7 @@ export function SelectablePanel({
         className={cn("selectable-panel lg:col-span-7", panelClassName)}
       >
         {current?.meta && <p className="eyebrow text-gold mb-4">{current.meta}</p>}
-        <div className="type-body">{current?.detail}</div>
+        <div className="type-body-emphasis">{current?.detail}</div>
         {footer && <div className="mt-8">{footer}</div>}
       </div>
     </div>

@@ -57,11 +57,11 @@ export function SiteFooter() {
           </Link>
 
           <nav aria-label="Footer">
-            <ul className="flex flex-wrap gap-x-1 gap-y-2">
+            <ul className="flex flex-wrap gap-x-1 gap-y-3">
               {NAV.map(([to, label], i) => (
                 <li key={to} className="flex items-center">
                   {i > 0 && (
-                    <span aria-hidden className="mx-2.5 text-gold/50 select-none">
+                    <span aria-hidden className="mx-4 text-gold/50 select-none md:mx-5">
                       ·
                     </span>
                   )}
@@ -79,10 +79,12 @@ export function SiteFooter() {
 
         {/* Band 2 — mission, contact and credentials.
             CONTENT GAP: there are no contact details (email / phone) and no social
-            profile links anywhere in this footer. Both need to be supplied before
-            launch; the contact column below is deliberately a route link only
-            rather than invented placeholder data. */}
-        <div className="mt-12 grid gap-10 border-b border-background/15 pb-12 md:grid-cols-12 md:gap-8 md:items-start">
+            profile links anywhere in this footer. Round 2 of the design review
+            asked to "increase social icon visibility", but there are no social
+            icons to increase — the marks below are credentials. Both the contact
+            details and the profile URLs still need to be supplied; this column is
+            deliberately a route link only rather than invented placeholder data. */}
+        <div className="mt-14 grid gap-12 border-b border-background/15 pb-14 md:grid-cols-12 md:items-start md:gap-x-12">
           <Reveal variant="fade-up" delay={80} className="md:col-span-4 max-w-sm md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
             <p className="type-body text-background/80">
               Executive coaching and organizational consulting for high-potential women navigating
@@ -136,7 +138,7 @@ export function SiteFooter() {
         </div>
 
         {/* Band 3 — legal */}
-        <Reveal variant="fade-in" delay={200} className="mt-8 flex flex-col gap-3 text-[length:var(--text-small)] text-background/70 sm:flex-row sm:items-center sm:justify-between">
+        <Reveal variant="fade-in" delay={200} className="mt-10 flex flex-col gap-3 text-[length:var(--text-small)] text-background/70 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} Amna Imran. All rights reserved.</div>
           <div className="eyebrow text-gold/70">Strategy · Coaching · Advancement</div>
         </Reveal>

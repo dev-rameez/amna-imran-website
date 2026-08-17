@@ -116,20 +116,23 @@
   --text-faint:     oklch(0.52 0.012 60);
 
   /* Typography scale — sized for reading at 100% desktop zoom, not for
-     screenshots. Body bottoms out at 17px and tops out at 20px. */
+     screenshots. Body bottoms out at 18px and tops out at 21px. Prose leading is
+     deliberately generous; raise these tokens rather than adding per-section em
+     multipliers, or the scale drifts apart again. */
   --text-display-1: clamp(3.25rem, 4.8vw + 1rem, 6.5rem);
   --text-display-2: clamp(2.75rem, 3.4vw + 0.85rem, 5.25rem);
   --text-heading-1: clamp(2.25rem, 2.4vw + 0.95rem, 4rem);
   --text-heading-2: clamp(1.9rem, 1.6vw + 0.85rem, 3rem);
   --text-heading-3: clamp(1.5rem, 0.9vw + 0.75rem, 2.15rem);
   --text-lead:      clamp(1.25rem, 0.55vw + 1.05rem, 1.7rem);
-  --text-body:      clamp(1.0625rem, 0.25vw + 1rem, 1.25rem);
+  --text-body:      clamp(1.125rem, 0.28vw + 1.05rem, 1.3125rem);
+  --text-body-emphasis: clamp(1.1875rem, 0.34vw + 1.1rem, 1.4375rem);
   --text-small:     clamp(0.9375rem, 0.12vw + 0.9rem, 1.0625rem);
   --text-caption:   clamp(0.75rem, 0.1vw + 0.72rem, 0.8125rem);
 
   --leading-display: 1.05;
   --leading-heading: 1.12;
-  --leading-body: 1.68;
+  --leading-body: 1.76;
   --leading-snug: 1.35;
 
   --tracking-tight: -0.02em;
@@ -270,6 +273,15 @@
   }
   .type-body {
     font-size: var(--text-body);
+    line-height: var(--leading-body);
+    color: var(--text-secondary);
+    font-weight: 300;
+  }
+  /* One step above body, for prose that is the payoff of an interaction — the
+     detail panel beside a selectable list. Sits between body and lead so those
+     panels read as the emphasised element without becoming a pull-quote. */
+  .type-body-emphasis {
+    font-size: var(--text-body-emphasis);
     line-height: var(--leading-body);
     color: var(--text-secondary);
     font-weight: 300;
@@ -599,6 +611,7 @@
   .cta-secondary:hover {
     border-color: var(--foreground);
     background-color: color-mix(in oklch, var(--gold-subtle) 60%, transparent);
+    box-shadow: 0 14px 28px -18px color-mix(in oklch, var(--charcoal) 55%, transparent);
   }
 
   .cta-primary-invert {
@@ -617,6 +630,7 @@
   .cta-secondary-invert:hover {
     background-color: var(--background);
     color: var(--foreground);
+    box-shadow: 0 18px 40px -26px oklch(0 0 0 / 0.6);
   }
 
   /* Underlined text link — the inline equivalent of a secondary CTA. */
@@ -701,13 +715,49 @@
     background-color: transparent;
     transition:
       color var(--motion-interaction) var(--ease-out-soft),
-      background-color var(--motion-interaction) var(--ease-out-soft),
+      box-shadow var(--motion-interaction) var(--ease-out-soft),
       border-color var(--motion-interaction) var(--ease-out-soft),
       opacity var(--motion-interaction) var(--ease-out-soft);
   }
   .selectable-item[aria-selected="false"] { color: var(--text-muted); }
   .selectable-item[aria-selected="false"]:hover { color: var(--text-primary); }
   .selectable-item[aria-selected="true"] { color: var(--text-primary); }
+
+  /* Full-width rows in a vertical list. Pills and other bespoke selectables keep
+     their own treatment, so this is opt-in rather than on .selectable-item.
+     The wash is an inset shadow rather than a background so it paints behind the
+     content without a wrapper and needs no horizontal padding — the rows stay
+     flush with the section's grid. Hover is half strength, which gives the row
+     something to answer with before it is selected. */
+  .selectable-row:hover {
+    box-shadow: inset 0 0 0 100px color-mix(in oklch, var(--gold) 5%, transparent);
+  }
+  .selectable-row[aria-selected="true"],
+  .selectable-row[aria-selected="true"]:hover {
+    box-shadow: inset 0 0 0 100px color-mix(in oklch, var(--gold) 11%, transparent);
+  }
+
+  /* Active edge marker, drawn in the gutter so it costs no layout. */
+  .selectable-row::before {
+    content: "";
+    position: absolute;
+    left: -0.875rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    border-radius: 1px;
+    background-color: var(--gold-deep);
+    opacity: 0;
+    transform: scaleY(0.4);
+    transform-origin: center;
+    transition:
+      opacity var(--motion-interaction) var(--ease-out-soft),
+      transform var(--motion-interaction) var(--ease-out-soft);
+  }
+  .selectable-row[aria-selected="true"]::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 
   /* Numeral / bullet marker in front of a selectable item. */
   .selectable-marker {
@@ -736,6 +786,41 @@
   .selectable-item:hover .selectable-marker {
     border-color: var(--gold-deep);
   }
+
+  /* Pathway cards. The lift on hover is shared; the shadow differs because the
+     dark card already carries one at rest. */
+  .pathway-card:hover {
+    box-shadow: 0 22px 48px color-mix(in oklch, var(--charcoal) 12%, transparent);
+  }
+  .pathway-card-dark {
+    box-shadow: 0 28px 70px color-mix(in oklch, var(--charcoal) 18%, transparent);
+  }
+  .pathway-card-dark:hover {
+    box-shadow: 0 34px 84px color-mix(in oklch, var(--charcoal) 26%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pathway-card:hover { transform: none; }
+  }
+
+  .selectable-chevron {
+    flex-shrink: 0;
+    color: var(--gold-deep);
+    opacity: 0;
+    transform: translateX(-0.35rem);
+    transition:
+      opacity var(--motion-interaction) var(--ease-out-soft),
+      transform var(--motion-interaction) var(--ease-out-soft);
+  }
+  .selectable-item:hover .selectable-chevron,
+  .selectable-item:focus-visible .selectable-chevron {
+    opacity: 0.75;
+    transform: none;
+  }
+  .selectable-item[aria-selected="true"] .selectable-chevron {
+    opacity: 1;
+    transform: none;
+  }
+  .selectable-tone-dark .selectable-chevron { color: var(--gold-warm); }
 
   /* Leading bar for marker-less selectable items — grows when active, which
      reads more clearly than a colour change alone. */
@@ -808,6 +893,16 @@
   .selectable-tone-dark .selectable-item[aria-selected="true"] .selectable-bar {
     background-color: var(--gold-warm);
   }
+  .selectable-tone-dark .selectable-row:hover {
+    box-shadow: inset 0 0 0 100px oklch(1 0 0 / 0.05);
+  }
+  .selectable-tone-dark .selectable-row[aria-selected="true"],
+  .selectable-tone-dark .selectable-row[aria-selected="true"]:hover {
+    box-shadow: inset 0 0 0 100px oklch(1 0 0 / 0.1);
+  }
+  .selectable-tone-dark .selectable-row::before {
+    background-color: var(--gold-warm);
+  }
   .selectable-tone-dark .selectable-rule {
     border-top-color: oklch(1 0 0 / 0.16);
   }
@@ -840,7 +935,12 @@
     .cta-secondary-invert:hover { transform: none; }
     .cta-arrow,
     .selectable-bar,
+    .selectable-chevron,
+    .selectable-row::before,
     .selectable-panel { transition: none; }
+    .selectable-row[aria-selected="true"]::before { transform: none; }
+    .selectable-item:hover .selectable-chevron,
+    .selectable-item[aria-selected="true"] .selectable-chevron { transform: none; }
     .cta-primary:hover .cta-arrow,
     .cta-secondary:hover .cta-arrow,
     .cta-primary-invert:hover .cta-arrow,
