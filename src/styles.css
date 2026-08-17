@@ -723,6 +723,24 @@
     border-color: var(--gold-deep);
   }
 
+  /* Leading bar for marker-less selectable items — grows when active, which
+     reads more clearly than a colour change alone. */
+  .selectable-bar {
+    display: block;
+    flex-shrink: 0;
+    height: 1px;
+    width: 1.25rem;
+    background-color: color-mix(in oklch, var(--hairline) 85%, transparent);
+    transition:
+      width var(--motion-interaction) var(--ease-out-soft),
+      background-color var(--motion-interaction) var(--ease-out-soft);
+  }
+  .selectable-item:hover .selectable-bar { background-color: var(--gold-deep); }
+  .selectable-item[aria-selected="true"] .selectable-bar {
+    width: 3rem;
+    background-color: var(--gold-deep);
+  }
+
   /* Rule above an item that thickens when active. */
   .selectable-rule {
     border-top: 1px solid color-mix(in oklch, var(--hairline) 60%, transparent);
@@ -750,6 +768,13 @@
     background-color: var(--gold-warm);
     border-color: var(--gold-warm);
     color: var(--charcoal);
+  }
+  .selectable-tone-dark .selectable-bar {
+    background-color: oklch(1 0 0 / 0.28);
+  }
+  .selectable-tone-dark .selectable-item:hover .selectable-bar,
+  .selectable-tone-dark .selectable-item[aria-selected="true"] .selectable-bar {
+    background-color: var(--gold-warm);
   }
   .selectable-tone-dark .selectable-rule {
     border-top-color: oklch(1 0 0 / 0.16);
@@ -782,6 +807,7 @@
     .cta-primary-invert:hover,
     .cta-secondary-invert:hover { transform: none; }
     .cta-arrow,
+    .selectable-bar,
     .selectable-panel { transition: none; }
     .cta-primary:hover .cta-arrow,
     .cta-secondary:hover .cta-arrow,

@@ -457,12 +457,12 @@ export function SelectablePanel({
   return (
     <div
       className={cn(
-        "grid gap-10 md:grid-cols-12 md:gap-12",
+        "grid gap-10 lg:grid-cols-12 lg:gap-12",
         tone === "dark" && "selectable-tone-dark",
         className,
       )}
     >
-      <div className={cn("md:col-span-5", listClassName)}>
+      <div className={cn("lg:col-span-5", listClassName)}>
         {variant === "step" && (
           <div
             aria-hidden
@@ -479,12 +479,17 @@ export function SelectablePanel({
             <button
               key={i}
               {...getItemProps(i)}
-              className="selectable-item flex items-start gap-4 py-4"
+              className={cn(
+                "selectable-item flex items-start gap-4 py-4",
+                i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
+              )}
             >
-              {showMarker && (
+              {showMarker ? (
                 <span aria-hidden className="selectable-marker mt-0.5 h-9 w-9 text-[0.95rem]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
+              ) : (
+                <span aria-hidden className="selectable-bar mt-[0.85em]" />
               )}
               <span className="font-serif text-[length:var(--text-heading-3)] leading-snug">
                 {item.label}
@@ -497,7 +502,7 @@ export function SelectablePanel({
       <div
         {...panelProps}
         data-state={panelState}
-        className={cn("selectable-panel md:col-span-7", panelClassName)}
+        className={cn("selectable-panel lg:col-span-7", panelClassName)}
       >
         {current?.meta && <p className="eyebrow text-gold mb-4">{current.meta}</p>}
         <div className="type-body">{current?.detail}</div>

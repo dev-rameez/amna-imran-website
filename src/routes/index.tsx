@@ -1,6 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Container, Reveal, Section, SectionQuote, SectionSeam, ParallaxLayer } from "@/components/site/primitives";
+import { cn } from "@/lib/utils";
+import {
+  Container,
+  Reveal,
+  Section,
+  SectionQuote,
+  SectionSeam,
+  ParallaxLayer,
+  SelectablePanel,
+} from "@/components/site/primitives";
 import { Frown, HelpCircle, Scale, Unplug, History } from "lucide-react";
 import {
   Accordion,
@@ -10,6 +19,7 @@ import {
 } from "@/components/ui/accordion";
 import heroCutout from "@/assets/amna-support.png";
 import approachPortrait from "@/assets/amna-approach.png";
+import programmePortrait from "@/assets/amna-full-portrait.png";
 import founderPortrait from "@/assets/amna-about-realization.png";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
@@ -81,6 +91,16 @@ const PILLARS = [
     t: "CliftonStrengths Assessment",
     d: "Gallup CliftonStrengths assessment to compound what already makes you exceptional.",
   },
+];
+
+const SUPPORT_FOCUS = [
+  "Gain clarity on leadership direction",
+  "Build executive presence grounded in competence",
+  "Increase influence and visibility",
+  "Develop strong sponsor and stakeholder relationships",
+  "Prepare strategically for promotion or expanded roles",
+  "Navigate major career transitions, including parenthood",
+  "Create sustainable success on their own terms",
 ];
 
 const COMPARISON = [
@@ -824,7 +844,101 @@ function MotherhoodSection() {
 
 /* ---------------- HOW I SUPPORT ---------------- */
 
-/* ---------------- HOW I SUPPORT — magazine spread ---------------- */
+/**
+ * Restores the client-approved structure: heading, intro lead, the numbered
+ * SUPPORT_FOCUS list, then the two programmes flanking a centre portrait.
+ * Only a summary paragraph is permanent — the rest sits behind an accordion so
+ * the columns stay scannable.
+ */
+function ProgrammeColumn({
+  title,
+  kicker,
+  tone,
+  summary,
+  detailLabel,
+  detail,
+  ctaLabel,
+  delay,
+  className,
+}: {
+  title: React.ReactNode;
+  kicker: string;
+  tone: "dark" | "gold";
+  summary: React.ReactNode;
+  detailLabel: string;
+  detail: React.ReactNode;
+  ctaLabel: string;
+  delay?: number;
+  className?: string;
+}) {
+  const dark = tone === "dark";
+
+  return (
+    <Reveal
+      as="article"
+      variant="fade-up"
+      delay={delay}
+      className={cn("relative z-10 flex flex-col", className)}
+    >
+      <h3
+        className={cn(
+          "font-serif leading-[1.05] text-gold-deep",
+          dark
+            ? "text-[clamp(2.1rem,3.2vw,3rem)]"
+            : "text-[clamp(1.7rem,2.4vw,2.35rem)]",
+        )}
+      >
+        {title}
+      </h3>
+      <p className="mt-3 eyebrow text-foreground">{kicker}</p>
+      <div aria-hidden className="mt-3 h-px w-16 bg-[var(--gold)]" />
+
+      <div
+        className={cn(
+          "mt-6 flex-1 p-7 text-[length:var(--text-body)] leading-[1.6] md:p-8",
+          dark ? "text-background" : "text-background",
+        )}
+        style={{
+          background: dark
+            ? "var(--foreground)"
+            : "color-mix(in oklch, var(--gold) 88%, var(--foreground))",
+        }}
+      >
+        <p className={dark ? "text-background/90" : "text-background"}>{summary}</p>
+
+        <Accordion type="single" collapsible className="mt-5">
+          <AccordionItem
+            value="detail"
+            className={cn("border-b-0 border-t", dark ? "border-background/20" : "border-foreground/25")}
+          >
+            <AccordionTrigger
+              className={cn(
+                "gap-4 py-4 text-[length:var(--text-small)] font-medium uppercase tracking-[0.14em] no-underline hover:no-underline",
+                dark
+                  ? "text-gold-warm [&>svg]:text-gold-warm"
+                  : "text-foreground [&>svg]:text-foreground",
+              )}
+            >
+              {detailLabel}
+            </AccordionTrigger>
+            <AccordionContent
+              className={cn(
+                "space-y-4 pb-5 text-[length:var(--text-body)] leading-[1.6]",
+                dark ? "text-background/90" : "text-background",
+              )}
+            >
+              {detail}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
+      <Link to="/work-with-me" className="cta-primary mt-6 self-start">
+        {ctaLabel} <span aria-hidden className="cta-arrow">→</span>
+      </Link>
+    </Reveal>
+  );
+}
 
 function HowISupportSection() {
   return (
@@ -848,107 +962,153 @@ function HowISupportSection() {
           </h2>
         </Reveal>
 
-        <div className="mt-10 md:mt-14 grid grid-cols-1 gap-x-10 lg:gap-x-14 md:grid-cols-2 md:grid-rows-[auto_1fr_auto]">
-          {/* ELEVATE — title */}
-          <Reveal variant="fade-up" className="md:col-start-1 md:row-start-1">
-            <p className="font-serif text-[clamp(2.2rem,3.5vw,3.25rem)] leading-none text-gold-warm text-center md:text-left">
-              ELEVATE<sup className="text-lg align-super">™</sup>
-            </p>
-            <p className="mt-3 eyebrow text-foreground text-center md:text-left">
-              Strategic Advancement Program
-            </p>
-            <div className="mt-2 mb-6 mx-auto md:mx-0 h-px w-16 bg-[var(--gold)]" />
-          </Reveal>
+        <Reveal delay={80} variant="fade-up" className="mt-10 md:mt-12">
+          <p className="max-w-3xl type-body text-copy">
+            I work with ambitious professionals who want their impact, influence, and career
+            trajectory to reflect their true capability — without stepping away from roles they have
+            invested years building.
+          </p>
+          <p className="mt-6 max-w-4xl type-lead text-foreground">
+            My approach integrates coaching with{" "}
+            <em className="not-italic font-normal text-gold-deep">
+              evidence-based gender insight, strengths science,
+            </em>{" "}
+            and a deep understanding of organizational dynamics to help clients:
+          </p>
+        </Reveal>
 
-          {/* ELEVATE — body */}
-          <Reveal variant="fade-up" className="h-full md:col-start-1 md:row-start-2">
-            <div
-              className="h-full space-y-4 p-7 md:p-8 text-[length:var(--text-body)] leading-[1.6] text-background"
-              style={{ background: "var(--foreground)" }}
+        <ul className="mt-8 grid gap-x-12 sm:grid-cols-2">
+          {SUPPORT_FOCUS.map((item, i) => (
+            <Reveal
+              as="li"
+              key={item}
+              delay={60 + i * 40}
+              variant="fade-up"
+              duration="fast"
+              className="flex items-baseline gap-4 border-t border-[color-mix(in_oklch,var(--gold)_28%,transparent)] py-4"
             >
-              <p className="text-background/90">
-                A structured 6 month engagement designed to help{" "}
-                <em className="italic text-gold-warm">high-potential women</em> translate
-                capability into progression within complex organizational environments.
-              </p>
-              <p className="text-background/90">
-                Through the{" "}
-                <em className="italic text-gold-warm">ELEVATE Framework</em>, we work
-                systematically across{" "}
-                <em className="italic text-gold-warm">
-                  leadership presence, visibility, influence, advancement strategy, and long-term
-                  sustainability
-                </em>{" "}
-                — equipping you to move forward with clarity, confidence, and strategic intent.
-              </p>
-              <p className="text-background/90">
-                Whether self-funded or sponsored by your organization, the program provides a clear
-                roadmap for advancing without burnout or compromise.
-              </p>
+              <span
+                aria-hidden
+                className="font-serif italic leading-none text-gold-deep text-[length:var(--text-lead)]"
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="type-body text-copy">{item}</span>
+            </Reveal>
+          ))}
+        </ul>
+
+        {/* Two programmes flanking the centre portrait */}
+        <div className="mt-16 grid items-end gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+          <ProgrammeColumn
+            className="lg:col-span-4"
+            tone="dark"
+            title={
+              <>
+                ELEVATE<sup className="align-super text-[0.45em]">™</sup>
+              </>
+            }
+            kicker="Strategic Advancement Program"
+            ctaLabel="Explore ELEVATE"
+            detailLabel="What we work on"
+            summary={
+              <>
+                A structured six-month engagement designed to help{" "}
+                <em className="italic text-gold-warm">high-potential women</em> translate capability
+                into progression within complex organizational environments.
+              </>
+            }
+            detail={
+              <>
+                <p>
+                  Through the <em className="italic text-gold-warm">ELEVATE Framework</em>, we work
+                  systematically across{" "}
+                  <em className="italic text-gold-warm">
+                    leadership presence, visibility, influence, advancement strategy, and long-term
+                    sustainability
+                  </em>{" "}
+                  — equipping you to move forward with clarity, confidence, and strategic intent.
+                </p>
+                <p>
+                  Whether self-funded or sponsored by your organization, the program provides a
+                  clear roadmap for advancing without burnout or compromise.
+                </p>
+              </>
+            }
+          />
+
+          {/* Centre portrait — grounded on an arc with a contact shadow */}
+          <div className="order-first lg:order-none lg:col-span-4 lg:self-end">
+            <div className="relative mx-auto flex max-w-[22rem] justify-center lg:max-w-none">
+              <div
+                aria-hidden
+                className="absolute inset-x-2 bottom-0 top-10 rounded-t-[999px] lg:top-16"
+                style={{
+                  background:
+                    "linear-gradient(to bottom, color-mix(in oklch, var(--gold-subtle) 70%, transparent), color-mix(in oklch, var(--gold-subtle) 20%, transparent))",
+                }}
+              />
+              <div
+                aria-hidden
+                className="absolute bottom-1 left-1/2 h-8 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-2xl lg:h-10"
+              />
+              <Reveal variant="scale" duration="slow" className="relative">
+                <img
+                  src={programmePortrait}
+                  alt="Amna Imran"
+                  draggable={false}
+                  loading="lazy"
+                  className="relative z-10 h-[340px] w-auto select-none object-contain object-bottom sm:h-[430px] lg:h-[500px] xl:h-[560px]"
+                />
+              </Reveal>
             </div>
-          </Reveal>
+          </div>
 
-          {/* ELEVATE — CTA */}
-          <Reveal variant="fade-up" className="md:col-start-1 md:row-start-3">
-            <Link
-              to="/work-with-me"
-              className="link-underline mt-5 mb-12 md:mb-0"
-            >
-              Find out more <span aria-hidden className="cta-arrow">→</span>
-            </Link>
-          </Reveal>
-
-          {/* Motherhood — title */}
-          <Reveal delay={100} variant="fade-up" className="md:col-start-2 md:row-start-1">
-            <p className="font-serif text-[clamp(1.75rem,2.8vw,2.55rem)] leading-[1.05] text-gold-warm text-center md:text-left">
-              Lead &amp; Thrive Through Motherhood<sup className="text-lg align-super">™</sup>
-            </p>
-            <p className="mt-3 eyebrow text-foreground text-center md:text-left">
-              Evidence-Informed Coaching Program
-            </p>
-            <div className="mt-2 mb-6 mx-auto md:mx-0 h-px w-16 bg-[var(--gold)]" />
-          </Reveal>
-
-          {/* Motherhood — body */}
-          <Reveal delay={100} variant="fade-up" className="h-full md:col-start-2 md:row-start-2">
-            <div
-              className="h-full space-y-4 p-7 md:p-8 text-[length:var(--text-body)] leading-[1.6]"
-              style={{ background: "color-mix(in oklch, var(--gold) 88%, var(--foreground))" }}
-            >
-              <p className="text-background">
-                Support high-potential women through the{" "}
-                <em className="italic text-foreground">profound transition into working parenthood.</em>
-              </p>
-              <p className="text-background">
-                Grounded in research on the motherhood penalty and organizational dynamics, this
-                program helps protect{" "}
-                <em className="italic text-foreground">leadership trajectory</em> while navigating
-                the{" "}
+          <ProgrammeColumn
+            className="lg:col-span-4 lg:mt-16"
+            tone="gold"
+            delay={140}
+            title={
+              <>
+                Lead &amp; Thrive Through Motherhood
+                <sup className="align-super text-[0.45em]">™</sup>
+              </>
+            }
+            kicker="Evidence-Informed Coaching Program"
+            ctaLabel={"Explore Lead & Thrive"}
+            detailLabel="How it protects your trajectory"
+            summary={
+              <>
+                Support for high-potential women through the{" "}
                 <em className="italic text-foreground">
-                  identity, visibility, and confidence shifts
-                </em>{" "}
-                that often accompany maternity leave and return-to-work.
-              </p>
-              <p className="text-background">
-                Rather than asking women to scale back ambition or overcompensate, we focus on{" "}
-                <em className="italic text-foreground">
-                  strategic positioning, stakeholder alignment, and sustainable leadership
-                </em>{" "}
-                — so motherhood becomes an integrated{" "}
-                <em className="italic text-foreground">chapter of growth</em>.
-              </p>
-            </div>
-          </Reveal>
-
-          {/* Motherhood — CTA */}
-          <Reveal delay={100} variant="fade-up" className="md:col-start-2 md:row-start-3">
-            <Link
-              to="/work-with-me"
-              className="link-underline mt-5"
-            >
-              Find out more <span aria-hidden className="cta-arrow">→</span>
-            </Link>
-          </Reveal>
+                  profound transition into working parenthood
+                </em>
+                .
+              </>
+            }
+            detail={
+              <>
+                <p>
+                  Grounded in research on the motherhood penalty and organizational dynamics, this
+                  program helps protect{" "}
+                  <em className="italic text-foreground">leadership trajectory</em> while navigating
+                  the{" "}
+                  <em className="italic text-foreground">
+                    identity, visibility, and confidence shifts
+                  </em>{" "}
+                  that often accompany maternity leave and return-to-work.
+                </p>
+                <p>
+                  Rather than asking women to scale back ambition or overcompensate, we focus on{" "}
+                  <em className="italic text-foreground">
+                    strategic positioning, stakeholder alignment, and sustainable leadership
+                  </em>{" "}
+                  — so motherhood becomes an integrated{" "}
+                  <em className="italic text-foreground">chapter of growth</em>.
+                </p>
+              </>
+            }
+          />
         </div>
       </Container>
     </Section>
@@ -973,18 +1133,13 @@ function WhyDifferentSection() {
     },
   ];
 
-  const forList = [
-    "Evidence-Based",
-    "System-Aware",
-    "Strengths-Led",
-    "Advancement-Focused",
-  ];
-  const againstList = [
-    "Anecdotal",
-    "System-Blaming",
-    "Deficit-Focused",
-    "Just Insight-Focused",
-  ];
+  // The "Vs" pairs become the selectable principles: label is what I do,
+  // meta is the contrast it replaces, detail is the explanation.
+  const principles = COMPARISON.map((c) => ({
+    label: c.a,
+    meta: `Not ${c.b}`,
+    detail: c.d,
+  }));
 
   return (
     <Section
@@ -995,9 +1150,9 @@ function WhyDifferentSection() {
       style={{ background: "color-mix(in oklch, var(--blush-subtle) 58%, var(--warm-cream))" }}
     >
       <Container className="relative">
-        <div className="relative lg:min-h-[640px] xl:min-h-[720px]">
-          {/* Heading + lead */}
-          <div className="relative z-20 max-w-xl lg:max-w-[min(36rem,52%)]">
+        {/* Heading + lead, with the portrait grounded beside them */}
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10">
+          <div className="relative z-20 lg:col-span-6">
             <Reveal variant="fade-up">
               <h2 className="font-serif font-light text-[clamp(2.75rem,6vw,5.75rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
                 Why My Approach
@@ -1009,7 +1164,7 @@ function WhyDifferentSection() {
             </Reveal>
 
             <Reveal delay={80} variant="fade-up">
-              <p className="mt-8 type-body text-copy md:border-l md:border-[color-mix(in_oklch,var(--gold)_38%,transparent)] md:pl-8">
+              <p className="mt-8 max-w-xl type-body text-copy md:border-l md:border-[color-mix(in_oklch,var(--gold)_38%,transparent)] md:pl-8">
                 Most coaching focuses on personal development in isolation — confidence, mindset, or
                 communication skills. While these matter, they do not fully explain why highly capable
                 women often struggle to translate performance into progression.
@@ -1017,86 +1172,98 @@ function WhyDifferentSection() {
             </Reveal>
           </div>
 
-          {/* Portrait — after lead on mobile; absolute right on desktop */}
-          <div className="relative z-10 mt-10 flex justify-center lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:w-[48%] lg:justify-end xl:w-[50%] pointer-events-none">
-            <div className="relative self-end">
+          {/* Portrait — seated on an arc panel with a contact shadow so she is
+              grounded rather than floating, and masked at the base so the
+              cut-out does not end on a hard edge. */}
+          <div className="relative lg:col-span-6">
+            <div className="relative mx-auto flex max-w-[26rem] justify-center lg:max-w-none lg:justify-end">
               <div
                 aria-hidden
-                className="absolute bottom-3 left-1/2 z-0 h-10 w-[55%] -translate-x-1/2 rounded-full bg-black/12 blur-2xl"
+                className="absolute inset-x-4 bottom-0 top-12 rounded-t-[999px] lg:inset-x-10 lg:top-20"
+                style={{
+                  background:
+                    "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 42%, transparent), color-mix(in oklch, var(--blush) 8%, transparent))",
+                }}
               />
-              <Reveal variant="scale" duration="slow">
+              <div
+                aria-hidden
+                className="absolute bottom-1 left-1/2 h-8 w-[62%] -translate-x-1/2 rounded-[50%] bg-black/18 blur-2xl lg:h-11"
+              />
+              <Reveal variant="scale" duration="slow" className="relative">
                 <img
                   src={approachPortrait}
                   alt="Amna Imran"
                   draggable={false}
-                  className="relative z-10 mx-auto h-[300px] w-auto max-w-[90vw] select-none object-contain object-bottom sm:h-[440px] sm:max-w-none md:h-[500px] lg:h-[640px] xl:h-[720px]"
+                  loading="lazy"
+                  className="relative z-10 h-[320px] w-auto select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_88%,transparent_100%)] sm:h-[420px] md:h-[480px] lg:h-[560px] xl:h-[620px]"
                 />
               </Reveal>
             </div>
           </div>
+        </div>
 
-          {/* Offers + Vs — sit in left column under lead */}
-          <div className="relative z-20 mt-12 md:mt-14 max-w-xl lg:max-w-[min(36rem,52%)]">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-6">
-              {offers.map((offer, i) => (
-                <Reveal key={offer.title} delay={100 + i * 70} variant="fade-up">
-                  <div
-                    className={
-                      i > 0
-                        ? "sm:border-l sm:border-[color-mix(in_oklch,var(--gold)_28%,transparent)] sm:pl-5"
-                        : ""
-                    }
-                  >
-                    <h3 className="font-serif font-semibold text-[clamp(1.05rem,1.45vw,1.4rem)] leading-snug text-foreground sm:whitespace-normal lg:whitespace-nowrap">
-                      {offer.title}
-                    </h3>
-                    <p className="mt-3 type-micro text-copy-muted">{offer.body}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal delay={180} variant="fade-up">
-              <div className="mt-12 md:mt-14 grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5">
-                <ul className="space-y-2.5 text-right">
-                  {forList.map((item) => (
-                    <li
-                      key={item}
-                      className="font-serif text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-foreground"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <span
-                  aria-hidden
-                  className="type-display-accent not-italic text-[clamp(2.4rem,5vw,3.5rem)] leading-none text-gold-warm px-1"
+        {/* 01 — the three disciplines behind the work */}
+        <div className="mt-20 md:mt-24">
+          <Reveal variant="fade-up">
+            <p className="eyebrow text-gold">
+              <span className="text-gold-deep">01</span> — What I bring
+            </p>
+          </Reveal>
+          <div className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
+            {offers.map((offer, i) => (
+              <Reveal key={offer.title} delay={60 + i * 70} variant="fade-up">
+                <div
+                  className={
+                    i > 0
+                      ? "md:border-l md:border-[color-mix(in_oklch,var(--gold)_28%,transparent)] md:pl-8"
+                      : ""
+                  }
                 >
-                  Vs
-                </span>
-                <ul className="space-y-2.5 text-left">
-                  {againstList.map((item) => (
-                    <li
-                      key={item}
-                      className="font-serif text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-copy-muted"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Link
-                to="/work-with-me"
-                className="link-underline pointer-events-auto mt-8"
-              >
-                Designed for Real-World Complexity <span aria-hidden className="cta-arrow">→</span>
-              </Link>
-            </Reveal>
+                  <h3 className="font-serif text-[length:var(--text-heading-3)] leading-snug text-foreground">
+                    {offer.title}
+                  </h3>
+                  <p className="mt-4 type-body text-copy">{offer.body}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
 
-        <Reveal delay={120} variant="fade-up">
-          <p className="type-lead mt-14 md:mt-20 max-w-3xl text-center mx-auto text-foreground">
+        {/* 02 — the principles, one description at a time */}
+        <div className="mt-20 md:mt-24">
+          <Reveal variant="fade-up">
+            <p className="eyebrow text-gold">
+              <span className="text-gold-deep">02</span> — How I work
+            </p>
+            <p className="mt-5 max-w-2xl type-lead text-foreground">
+              Five principles separate this from generic career advice. Select one to see what it
+              means in practice.
+            </p>
+          </Reveal>
+
+          <Reveal delay={80} variant="fade-up" className="mt-10">
+            <SelectablePanel
+              label="Principles behind my approach"
+              variant="label"
+              items={principles}
+              listClassName="lg:pr-6"
+              panelClassName="lg:border-l lg:border-[color-mix(in_oklch,var(--gold)_30%,transparent)] lg:pl-10"
+            />
+          </Reveal>
+
+          <Reveal delay={120} variant="fade-up">
+            <Link to="/work-with-me" className="cta-secondary mt-10">
+              See how we would work together <span aria-hidden className="cta-arrow">→</span>
+            </Link>
+          </Reveal>
+        </div>
+
+        {/* 03 — where it lands */}
+        <Reveal variant="fade-up" className="mt-20 md:mt-24">
+          <p className="eyebrow text-gold text-center">
+            <span className="text-gold-deep">03</span> — Where it lands
+          </p>
+          <p className="type-lead mt-6 max-w-3xl text-center mx-auto text-foreground">
             My work sits at the intersection of{" "}
             <em className="type-display-accent not-italic text-[1.8rem] md:text-[2.2rem] leading-none align-[-0.12em] text-gold-warm">
               Individual capability
