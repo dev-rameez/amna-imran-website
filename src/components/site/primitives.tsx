@@ -1,8 +1,20 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
-export function Container({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("mx-auto w-full max-w-[1240px] px-6 md:px-10", className)}>{children}</div>;
+export function Container({
+  className,
+  style,
+  children,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={cn("mx-auto w-full max-w-[1240px] px-6 md:px-10", className)} style={style}>
+      {children}
+    </div>
+  );
 }
 
 export function Eyebrow({ children, number, className }: { children: React.ReactNode; number?: string; className?: string }) {
@@ -313,6 +325,185 @@ export function Reveal({
     >
       {children}
     </Comp>
+  );
+}
+
+/* ---------------- SELECTABLE PANELS ----------------
+ * Several sections are "a list of items, one detail panel" (the persistent
+ * gaps, the six-step path, the differentiators). They share behaviour but not
+ * layout, so behaviour lives in useSelectableList and the common layout lives
+ * in SelectablePanel. Sections needing a bespoke layout should use the hook
+ * directly rather than adding another variant here.
+ */
+
+type SelectableOrientation = "vertical" | "horizontal";
+
+/**
+ * ARIA tabs behaviour: single selection, roving tabindex, arrow/Home/End keys,
+ * and ids wired between each item and the shared panel.
+ */
+export function useSelectableList(
+  count: number,
+  {
+    orientation = "vertical",
+    initial = 0,
+  }: { orientation?: SelectableOrientation; initial?: number } = {},
+) {
+  const [active, setActive] = useState(initial);
+  const baseId = useId();
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const moveTo = (index: number) => {
+    if (count === 0) return;
+    const next = (index + count) % count;
+    setActive(next);
+    itemRefs.current[next]?.focus();
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    const nextKey = orientation === "vertical" ? "ArrowDown" : "ArrowRight";
+    const prevKey = orientation === "vertical" ? "ArrowUp" : "ArrowLeft";
+    if (event.key === nextKey) {
+      event.preventDefault();
+      moveTo(active + 1);
+    } else if (event.key === prevKey) {
+      event.preventDefault();
+      moveTo(active - 1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      moveTo(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      moveTo(count - 1);
+    }
+  };
+
+  const listProps = {
+    role: "tablist" as const,
+    "aria-orientation": orientation,
+    onKeyDown,
+  };
+
+  const getItemProps = (index: number) => ({
+    ref: (node: HTMLButtonElement | null) => {
+      itemRefs.current[index] = node;
+    },
+    id: `${baseId}-item-${index}`,
+    type: "button" as const,
+    role: "tab" as const,
+    "aria-selected": index === active,
+    "aria-controls": `${baseId}-panel`,
+    tabIndex: index === active ? 0 : -1,
+    onClick: () => setActive(index),
+  });
+
+  const panelProps = {
+    id: `${baseId}-panel`,
+    role: "tabpanel" as const,
+    "aria-labelledby": `${baseId}-item-${active}`,
+    tabIndex: 0,
+  };
+
+  return { active, setActive, listProps, getItemProps, panelProps };
+}
+
+/**
+ * Replays the panel's enter transition whenever `key` changes. Returns the
+ * value for `data-state`, which .selectable-panel styles against.
+ */
+export function usePanelTransition(key: unknown) {
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    setEntered(false);
+    const raf = window.requestAnimationFrame(() => setEntered(true));
+    return () => window.cancelAnimationFrame(raf);
+  }, [key]);
+  return entered ? "entered" : "entering";
+}
+
+export type SelectableEntry = {
+  label: React.ReactNode;
+  detail: React.ReactNode;
+  /** Small label above the detail copy, e.g. "Why this matters". */
+  meta?: React.ReactNode;
+};
+
+export function SelectablePanel({
+  items,
+  variant = "label",
+  tone = "light",
+  label,
+  className,
+  listClassName,
+  panelClassName,
+  footer,
+}: {
+  items: SelectableEntry[];
+  /** numbered = 01/02 numerals, step = numerals plus a progress rail, label = type only. */
+  variant?: "numbered" | "step" | "label";
+  tone?: "light" | "dark";
+  /** Accessible name for the list of choices. */
+  label: string;
+  className?: string;
+  listClassName?: string;
+  panelClassName?: string;
+  footer?: React.ReactNode;
+}) {
+  const { active, listProps, getItemProps, panelProps } = useSelectableList(items.length);
+  const panelState = usePanelTransition(active);
+  const showMarker = variant !== "label";
+  const current = items[active];
+
+  return (
+    <div
+      className={cn(
+        "grid gap-10 md:grid-cols-12 md:gap-12",
+        tone === "dark" && "selectable-tone-dark",
+        className,
+      )}
+    >
+      <div className={cn("md:col-span-5", listClassName)}>
+        {variant === "step" && (
+          <div
+            aria-hidden
+            className="mb-6 h-px w-full bg-[color-mix(in_oklch,var(--hairline)_60%,transparent)]"
+          >
+            <div
+              className="h-px bg-[var(--gold-deep)] transition-[width] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)]"
+              style={{ width: `${((active + 1) / items.length) * 100}%` }}
+            />
+          </div>
+        )}
+        <div {...listProps} aria-label={label} className="flex flex-col">
+          {items.map((item, i) => (
+            <button
+              key={i}
+              {...getItemProps(i)}
+              className="selectable-item flex items-start gap-4 py-4"
+            >
+              {showMarker && (
+                <span aria-hidden className="selectable-marker mt-0.5 h-9 w-9 text-[0.95rem]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              )}
+              <span className="font-serif text-[length:var(--text-heading-3)] leading-snug">
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        {...panelProps}
+        data-state={panelState}
+        className={cn("selectable-panel md:col-span-7", panelClassName)}
+      >
+        {current?.meta && <p className="eyebrow text-gold mb-4">{current.meta}</p>}
+        <div className="type-body">{current?.detail}</div>
+        {footer && <div className="mt-8">{footer}</div>}
+      </div>
+    </div>
   );
 }
 

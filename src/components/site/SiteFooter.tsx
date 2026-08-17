@@ -36,7 +36,11 @@ export function SiteFooter() {
       <Container className="relative py-14 md:py-16">
         {/* Masthead row */}
         <Reveal variant="fade-up" duration="slow" className="flex flex-col gap-8 border-b border-background/15 pb-10 md:flex-row md:items-end md:justify-between md:gap-10">
-          <Link to="/" aria-label="Amna Imran home" className="inline-flex items-center gap-3.5 group">
+          <Link
+            to="/"
+            aria-label="Amna Imran home"
+            className="group inline-flex items-center gap-3.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-warm)]"
+          >
             <img
               src={logoSrc}
               alt=""
@@ -63,7 +67,7 @@ export function SiteFooter() {
                   )}
                   <Link
                     to={to}
-                    className="text-[13px] uppercase tracking-[0.16em] text-background/70 transition-colors hover:text-background"
+                    className="text-[length:var(--text-caption)] uppercase tracking-[0.16em] text-background/80 transition-colors hover:text-background focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-warm)]"
                   >
                     {label}
                   </Link>
@@ -108,7 +112,7 @@ export function SiteFooter() {
                       />
                     )}
                   </span>
-                  <span className="text-[12px] uppercase tracking-[0.14em] text-background/55">
+                  <span className="text-[length:var(--text-caption)] uppercase tracking-[0.14em] text-background/75">
                     {c.label}
                   </span>
                 </li>
@@ -117,7 +121,7 @@ export function SiteFooter() {
           </Reveal>
         </div>
 
-        <Reveal variant="fade-in" delay={200} className="mt-12 flex flex-col gap-3 border-t border-background/12 pt-6 text-[12px] text-background/45 sm:flex-row sm:items-center sm:justify-between">
+        <Reveal variant="fade-in" delay={200} className="mt-12 flex flex-col gap-3 border-t border-background/15 pt-6 text-[length:var(--text-caption)] text-background/70 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} Amna Imran. All rights reserved.</div>
           <div className="eyebrow text-gold/70">Strategy · Coaching · Advancement</div>
         </Reveal>

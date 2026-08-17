@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Container, Reveal, Section, SectionQuote, SectionSeam, ParallaxLayer } from "@/components/site/primitives";
-import { Frown, HelpCircle, Scale, Unplug, History, ChevronRight } from "lucide-react";
+import { Frown, HelpCircle, Scale, Unplug, History } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -280,10 +280,7 @@ function HeroIntro() {
           </Reveal>
 
           <Reveal variant="fade-in" delay={140}>
-            <p
-              className="mx-auto mt-7 max-w-2xl font-light leading-relaxed text-foreground/75"
-              style={{ fontSize: "clamp(0.95rem, 1.05vw, 1.05rem)" }}
-            >
+            <p className="mx-auto mt-7 max-w-2xl type-lead font-light text-copy">
               I help ambitious women navigate bias, strengthen executive presence, and
               accelerate their careers using evidence-based gender strategy, strengths
               science, and systemic insights — not just anecdotal advice.
@@ -291,18 +288,12 @@ function HeroIntro() {
           </Reveal>
 
           <Reveal variant="fade-up" delay={220} duration="fast">
-            <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-x-8">
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-foreground text-background text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] font-medium transition-all duration-300 hover:bg-foreground/90 hover:-translate-y-0.5 px-5 py-4 text-center sm:px-7"
-              >
-                Book a Strategic Clarity Call <span aria-hidden>→</span>
+            <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-x-6">
+              <Link to="/contact" className="cta-primary">
+                Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
               </Link>
-              <Link
-                to="/organizations"
-                className="inline-flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-foreground transition-colors hover:text-[var(--gold)] border-b border-[var(--gold)] pb-0.5 text-center"
-              >
-                For Corporate &amp; HR Enquiries <span aria-hidden>→</span>
+              <Link to="/organizations" className="cta-secondary">
+                For Corporate &amp; HR Enquiries <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </div>
           </Reveal>
@@ -417,7 +408,7 @@ function HighPerformanceSection() {
               <ol className="relative space-y-0">
                 {TRADITIONAL.map((t, i) => (
                   <li key={t} className="relative flex gap-5 pb-8 last:pb-0">
-                    <span className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] bg-[var(--warm-cream)] font-serif italic text-[15px] text-gold-deep">
+                    <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] bg-[var(--warm-cream)] font-serif italic text-[length:var(--text-small)] text-gold-deep">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <p className="pt-1.5 font-serif text-[clamp(1.15rem,1.6vw,1.45rem)] leading-snug text-foreground">
@@ -463,12 +454,7 @@ function HighPerformanceSection() {
 /* ---------------- COMMON INTERNAL NARRATIVES ---------------- */
 
 function InternalNarrativesSection() {
-  const quotes = [
-    "I need one more qualification.",
-    "Maybe I'm not confident enough.",
-    "Others seem to be doing something I'm not.",
-    "Perhaps I'm not leadership material after all.",
-  ];
+  const quotes = INTERNAL_NARRATIVES;
 
   return (
     <Section
@@ -540,187 +526,6 @@ function InternalNarrativesSection() {
         </Reveal>
       </Container>
     </Section>
-  );
-}
-
-function LegacyHighPerformanceSection() {
-  return (
-    <section className="relative overflow-hidden py-16 md:py-24 bg-[var(--cream)]/40">
-      <Container className="relative">
-        {/* Headline */}
-        <Reveal>
-          <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] tracking-tight max-w-5xl">
-            <span className="text-gold">High Performance</span>
-            <span className="text-foreground">&nbsp;Alone,</span>
-            <br />
-            <span className="text-gold">Does Not</span>{" "}
-            <em className="italic font-normal text-foreground">Guarantee</em>{" "}
-            <span className="text-foreground">Progression</span>
-          </h2>
-        </Reveal>
-
-        <div className="relative mt-10 md:mt-14 grid gap-10 md:gap-8 md:grid-cols-12">
-          {/* LEFT — traditional formula: label left, boxes right */}
-          <div className="md:col-span-5 relative">
-            <div className="grid grid-cols-12 gap-4 md:gap-5 items-center">
-              <Reveal as="div" className="col-span-12 sm:col-span-5 relative">
-                <p
-                  className="relative font-serif italic font-light text-[2.2rem] sm:text-[2.6rem] md:text-[2.9rem] leading-[0.95] text-foreground"
-                  style={{ fontFamily: '"Cormorant Garamond", serif' }}
-                >
-                  The
-                  <br />
-                  traditional
-                  <br />
-                  <span className="pl-4 text-gold">formula</span>
-                </p>
-              </Reveal>
-              <ul className="col-span-12 sm:col-span-7 space-y-3">
-                {TRADITIONAL.map((t, i) => (
-                  <Reveal key={t} delay={i * 60}>
-                    <li
-                      className={`rounded-xl px-4 py-3 text-[13px] md:text-[14px] text-background font-medium tracking-wide bg-[var(--gold)] ${
-                        i === 0 ? "md:-translate-x-10" : i === 1 ? "md:-translate-x-5" : i === 3 ? "md:-translate-x-5" : ""
-                      }`}
-                    >
-                      {t}
-                    </li>
-                  </Reveal>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* RIGHT — Yet progression stalls */}
-          <div className="md:col-span-7 relative md:pl-6">
-            <Reveal delay={80}>
-              <p
-                className="relative font-serif italic font-light leading-[0.95] text-[2.6rem] md:text-[3.4rem]"
-                style={{ fontFamily: '"Cormorant Garamond", serif' }}
-              >
-                <span className="text-foreground">Yet </span>
-                <span className="text-gold">progression</span>
-                <br />
-                <span className="pl-6 sm:pl-16 text-foreground">often </span>
-                <span className="text-gold">stalls</span>
-              </p>
-            </Reveal>
-            <Reveal delay={140}>
-              <p className="relative mt-7 text-[15px] md:text-[16px] text-foreground leading-relaxed font-light max-w-xl">
-                — sometimes subtly, sometimes abruptly. Research across organizations shows that
-                advancement depends on far more than performance alone. Factors such as{" "}
-                <strong className="font-semibold text-gold">
-                  visibility, sponsorship, perceived leadership presence, and alignment with
-                  informal power structures
-                </strong>{" "}
-                play decisive roles.
-              </p>
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="relative mt-4 text-[15px] text-foreground/85 leading-relaxed max-w-xl">
-                Without visibility into these patterns, stalled progress can feel personal rather
-                than systemic — leading many capable professionals to work harder while seeing
-                diminishing returns.
-              </p>
-            </Reveal>
-            <Reveal delay={240}>
-              <p className="relative mt-4 text-[15px] text-foreground/85 leading-relaxed max-w-xl">
-                When these dynamics are unclear, stalled progress can feel personal rather than
-                systemic - leading many capable professionals to work harder while seeing
-                diminishing returns.
-              </p>
-            </Reveal>
-          </div>
-        </div>
-
-        {/* Bottom row — narratives circle + closing line */}
-        <div className="relative mt-10 md:mt-14 grid gap-10 md:gap-8 md:grid-cols-12 items-end">
-          {/* LEFT — small circle with title, quotes wrap around it */}
-          <div className="md:col-span-7 relative">
-            <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-0">
-              {/* Compact circle sized to its text */}
-              <div
-                className="relative shrink-0 rounded-full w-[160px] h-[160px] sm:w-[200px] sm:h-[200px] md:w-[230px] md:h-[230px] flex items-center justify-center text-center sm:-mr-10 md:-mr-12 bg-[var(--gold)]"
-              >
-                <p
-                  className="font-serif font-normal text-[2rem] md:text-[2.3rem] leading-[1.15] text-black px-4"
-                >
-                  Common
-                  <br />
-                  internal
-                  <br />
-                  <span className="text-white" style={{ fontFamily: '"Rastanty Cortez", cursive', fontFeatureSettings: "normal", fontVariantLigatures: "none" }}>narratives</span>
-                </p>
-                {/* Speech bubble tail pointing right — desktop/tablet row only */}
-                <div
-                  className="absolute right-[-20px] top-1/2 hidden w-0 h-0 -translate-y-1/2 sm:block"
-                  style={{
-                    borderTop: "16px solid transparent",
-                    borderBottom: "16px solid transparent",
-                    borderLeft: "22px solid var(--gold)",
-                  }}
-                />
-              </div>
-              {/* Quotes wrapping around the circle */}
-              <ul className="relative z-10 w-full flex-1 space-y-3 pl-0 text-center sm:pl-6 sm:text-left md:pl-10">
-                {INTERNAL_NARRATIVES.map((q, i) => (
-                  <Reveal key={q} delay={i * 60}>
-                    <li
-                      className={`font-sans italic text-[15px] sm:text-[16px] md:text-[18px] text-foreground leading-snug ${
-                        i === 1 ? "md:pl-[26px] sm:-translate-x-1" : ""
-                      } ${i === 2 ? "sm:translate-x-7" : ""} ${i === 3 ? "md:pl-2" : ""}`}
-                    >
-                      {i === 2 ? (
-                        <>
-                          <span className="sm:hidden">"{q}"</span>
-                          <span className="hidden sm:inline">
-                            "Others seem to be doing
-                            <br />
-                            something I'm not."
-                          </span>
-                        </>
-                      ) : i === 3 ? (
-                        <>
-                          <span className="sm:hidden">"{q}"</span>
-                          <span className="hidden sm:inline">
-                            "Perhaps I'm not
-                            <br />
-                            leadership material after all."
-                          </span>
-                        </>
-                      ) : (
-                        `"${q}"`
-                      )}
-                    </li>
-                  </Reveal>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* RIGHT — closing line */}
-          <div className="md:col-span-5 relative">
-            <Reveal>
-              <div className="relative px-6 py-5 md:px-8 md:py-6">
-                {/* Oval border behind text */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -inset-7 rounded-[50%] border-[3px] border-[#7B3F00] z-10"
-                />
-                <p className="relative font-serif text-[1.4rem] md:text-[1.9rem] leading-[1.2] max-w-md text-right ml-auto">
-                  <span className="text-gold">
-                    The challenge is not a lack of ambition or ability
-                  </span>{" "}
-                  <span className="text-foreground">
-                    — but a lack of access to the unwritten rules of advancement.
-                  </span>
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </Container>
-    </section>
   );
 }
 
@@ -889,7 +694,7 @@ function MotherhoodSection() {
 
           <div className="mt-10 grid gap-8 md:mt-12 md:grid-cols-[1fr_1.15fr] md:items-start md:gap-12 max-w-5xl mx-auto">
             <Reveal variant="fade-in">
-              <p className="max-w-sm text-[14px] md:text-[15px] leading-relaxed text-copy font-light">
+              <p className="max-w-sm type-body">
                 When the path forward is{" "}
                 <em className="not-italic font-serif italic text-[1.15em] md:text-[1.2em] text-gold-deep">
                   opaque and high-risk
@@ -906,9 +711,9 @@ function MotherhoodSection() {
                 {PSYCH_IMPACT.map(({ t, Icon }) => (
                   <li
                     key={t}
-                    className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-[color-mix(in_oklch,var(--gold)_22%,transparent)] bg-[color-mix(in_oklch,var(--background)_70%,transparent)] px-3.5 py-2 text-[12px] leading-snug text-copy md:text-[13px]"
+                    className="inline-flex w-fit max-w-full items-center gap-2.5 rounded-full border border-[color-mix(in_oklch,var(--gold)_22%,transparent)] bg-[color-mix(in_oklch,var(--background)_70%,transparent)] px-4 py-2.5 text-[length:var(--text-small)] leading-snug text-copy"
                   >
-                    <Icon size={13} strokeWidth={1.75} className="shrink-0 text-gold-deep" />
+                    <Icon size={16} strokeWidth={1.75} className="shrink-0 text-gold-deep" />
                     {t}
                   </li>
                 ))}
@@ -988,7 +793,7 @@ function MotherhoodSection() {
                           }`}
                         >
                           <span
-                            className={`relative z-10 shrink-0 inline-flex items-center justify-center w-11 h-11 md:w-13 md:h-13 rounded-full border border-[var(--gold)] text-[15px] font-serif italic transition-colors ${
+                            className={`relative z-10 shrink-0 inline-flex items-center justify-center w-11 h-11 md:w-13 md:h-13 rounded-full border border-[var(--gold)] text-[length:var(--text-small)] font-serif italic transition-colors ${
                               isActive
                                 ? "text-background bg-[var(--gold)]"
                                 : "bg-transparent text-copy-muted"
@@ -997,7 +802,7 @@ function MotherhoodSection() {
                             {String(i + 1).padStart(2, "0")}
                           </span>
                           <span
-                            className={`font-serif text-[17px] md:text-[20px] leading-snug transition-colors ${
+                            className={`font-serif text-[clamp(1.15rem,1.4vw,1.5rem)] leading-snug transition-colors ${
                               isActive ? "text-foreground" : "text-copy-muted"
                             }`}
                           >
@@ -1058,7 +863,7 @@ function HowISupportSection() {
           {/* ELEVATE — body */}
           <Reveal variant="fade-up" className="h-full md:col-start-1 md:row-start-2">
             <div
-              className="h-full space-y-4 p-7 md:p-8 text-[15px] md:text-[16px] leading-[1.55] text-background"
+              className="h-full space-y-4 p-7 md:p-8 text-[length:var(--text-body)] leading-[1.6] text-background"
               style={{ background: "var(--foreground)" }}
             >
               <p className="text-background/90">
@@ -1076,7 +881,7 @@ function HowISupportSection() {
                 </em>{" "}
                 — equipping you to move forward with clarity, confidence, and strategic intent.
               </p>
-              <p className="text-background/80">
+              <p className="text-background/90">
                 Whether self-funded or sponsored by your organization, the program provides a clear
                 roadmap for advancing without burnout or compromise.
               </p>
@@ -1087,9 +892,9 @@ function HowISupportSection() {
           <Reveal variant="fade-up" className="md:col-start-1 md:row-start-3">
             <Link
               to="/work-with-me"
-              className="mt-5 mb-12 inline-flex items-center gap-2 font-serif text-[17px] text-foreground border-b border-[color-mix(in_oklch,var(--gold)_55%,transparent)] pb-0.5 hover:border-foreground transition-colors md:mb-0"
+              className="link-underline mt-5 mb-12 md:mb-0"
             >
-              Find out more <span aria-hidden>→</span>
+              Find out more <span aria-hidden className="cta-arrow">→</span>
             </Link>
           </Reveal>
 
@@ -1107,7 +912,7 @@ function HowISupportSection() {
           {/* Motherhood — body */}
           <Reveal delay={100} variant="fade-up" className="h-full md:col-start-2 md:row-start-2">
             <div
-              className="h-full space-y-4 p-7 md:p-8 text-[15px] md:text-[16px] leading-[1.55]"
+              className="h-full space-y-4 p-7 md:p-8 text-[length:var(--text-body)] leading-[1.6]"
               style={{ background: "color-mix(in oklch, var(--gold) 88%, var(--foreground))" }}
             >
               <p className="text-background">
@@ -1139,9 +944,9 @@ function HowISupportSection() {
           <Reveal delay={100} variant="fade-up" className="md:col-start-2 md:row-start-3">
             <Link
               to="/work-with-me"
-              className="mt-5 inline-flex items-center gap-2 font-serif text-[17px] text-foreground border-b border-[color-mix(in_oklch,var(--gold)_55%,transparent)] pb-0.5 hover:border-foreground transition-colors"
+              className="link-underline mt-5"
             >
-              Find out more <span aria-hidden>→</span>
+              Find out more <span aria-hidden className="cta-arrow">→</span>
             </Link>
           </Reveal>
         </div>
@@ -1242,7 +1047,7 @@ function WhyDifferentSection() {
                         : ""
                     }
                   >
-                    <h3 className="font-serif font-semibold text-[clamp(0.95rem,1.2vw,1.15rem)] leading-snug text-foreground sm:whitespace-normal lg:whitespace-nowrap">
+                    <h3 className="font-serif font-semibold text-[clamp(1.05rem,1.45vw,1.4rem)] leading-snug text-foreground sm:whitespace-normal lg:whitespace-nowrap">
                       {offer.title}
                     </h3>
                     <p className="mt-3 type-micro text-copy-muted">{offer.body}</p>
@@ -1257,7 +1062,7 @@ function WhyDifferentSection() {
                   {forList.map((item) => (
                     <li
                       key={item}
-                      className="font-serif text-[15px] md:text-[17px] leading-snug text-foreground"
+                      className="font-serif text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-foreground"
                     >
                       {item}
                     </li>
@@ -1273,7 +1078,7 @@ function WhyDifferentSection() {
                   {againstList.map((item) => (
                     <li
                       key={item}
-                      className="font-serif text-[15px] md:text-[17px] leading-snug text-copy-muted/70"
+                      className="font-serif text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-copy-muted"
                     >
                       {item}
                     </li>
@@ -1282,9 +1087,9 @@ function WhyDifferentSection() {
               </div>
               <Link
                 to="/work-with-me"
-                className="mt-8 inline-flex items-center gap-2 font-serif text-[16px] md:text-[17px] text-foreground border-b border-[color-mix(in_oklch,var(--gold)_55%,transparent)] pb-0.5 hover:border-foreground transition-colors pointer-events-auto"
+                className="link-underline pointer-events-auto mt-8"
               >
-                Designed for Real-World Complexity <span aria-hidden>→</span>
+                Designed for Real-World Complexity <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </Reveal>
           </div>
@@ -1399,7 +1204,7 @@ function TwoPathwaysSection() {
                 {individualPrograms.map((item) => (
                   <li
                     key={item}
-                    className="border-t border-[color-mix(in_oklch,var(--gold)_18%,transparent)] py-3.5 font-serif text-[15px] md:text-[16px] leading-snug text-copy"
+                    className="border-t border-[color-mix(in_oklch,var(--gold)_18%,transparent)] py-4 font-serif text-[clamp(1.05rem,1.25vw,1.3rem)] leading-snug text-copy"
                   >
                     {item}
                   </li>
@@ -1407,9 +1212,9 @@ function TwoPathwaysSection() {
               </ul>
               <Link
                 to="/contact"
-                className="relative z-10 mt-8 self-start inline-flex items-center gap-2 bg-foreground text-background px-6 py-3.5 text-[11px] uppercase tracking-[0.22em] transition-all duration-300 hover:bg-foreground/90 hover:-translate-y-0.5"
+                className="cta-primary relative z-10 mt-8 self-start"
               >
-                Book a Strategic Clarity Call <span aria-hidden>→</span>
+                Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </div>
           </Reveal>
@@ -1445,7 +1250,7 @@ function TwoPathwaysSection() {
                 {orgPrograms.map((item) => (
                   <li
                     key={item}
-                    className="border-t border-background/15 py-3.5 font-serif text-[15px] md:text-[16px] leading-snug text-background/85"
+                    className="border-t border-background/20 py-4 font-serif text-[clamp(1.05rem,1.25vw,1.3rem)] leading-snug text-background/90"
                   >
                     {item}
                   </li>
@@ -1453,59 +1258,15 @@ function TwoPathwaysSection() {
               </ul>
               <Link
                 to="/organizations"
-                className="relative z-10 mt-8 self-start inline-flex items-center gap-2 border border-background/55 px-6 py-3.5 text-[11px] uppercase tracking-[0.22em] text-background transition-colors hover:bg-background hover:text-foreground"
+                className="cta-secondary-invert relative z-10 mt-8 self-start"
               >
-                Schedule an Organizational Consultation <span aria-hidden>→</span>
+                Schedule an Organizational Consultation <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </div>
           </Reveal>
         </div>
       </Container>
     </Section>
-  );
-}
-
-/* ---------------- CREDIBILITY ---------------- */
-
-function CredibilitySection() {
-  const credentials = [
-    { logo: icfLogo, label: "ICF ACC Certified", scale: 1.76 },
-    { logo: gallupLogo, label: "Gallup Certified CliftonStrengths Coach", scale: 1.5 },
-    { logo: cdpLogo, label: "Certified Diversity Professional (CDP®)", scale: 1.62 },
-    { logo: inseadLogo, label: "INSEAD-Trained Gender Specialist", scale: 1.53 },
-  ];
-
-  return (
-    <section className="bg-background border-b border-[var(--hairline)]/70 pt-14 md:pt-20 pb-6 md:pb-8">
-      <Container>
-        <Reveal>
-          <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-4xl">
-            Grounded in coaching, research, and systems insight.
-          </h2>
-        </Reveal>
-
-        <div className="mt-12 md:mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {credentials.map((credential, i) => (
-            <Reveal key={credential.label} delay={i * 70} as="article">
-              <div className="border-t border-[var(--hairline)] pt-6">
-                <div className="flex h-24 md:h-32 items-center justify-center">
-                  <img
-                    src={credential.logo}
-                    alt={credential.label}
-                    loading="lazy"
-                    className="h-14 md:h-16 w-auto max-w-[260px] object-contain"
-                    style={{ transform: `scale(${credential.scale})`, transformOrigin: "center" }}
-                  />
-                </div>
-                <h3 className="mt-4 mx-auto max-w-[15rem] text-center font-serif text-[18px] md:text-[20px] leading-snug text-foreground/85">
-                  {credential.label}
-                </h3>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </Container>
-    </section>
   );
 }
 
@@ -1545,9 +1306,9 @@ function FounderSection() {
             <Reveal delay={140} variant="fade-up" duration="fast">
               <Link
                 to="/about"
-                className="mt-5 inline-flex items-center gap-2 border-b border-[var(--gold)] pb-1 text-[11px] uppercase tracking-[0.22em] text-foreground transition-colors hover:border-foreground"
+                className="link-underline mt-5"
               >
-                Read the Founder Story <span aria-hidden>→</span>
+                Read the Founder Story <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </Reveal>
           </div>
@@ -1617,15 +1378,15 @@ function FinalCTA() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:justify-center sm:gap-4">
               <Link
                 to="/contact"
-                className="inline-flex flex-1 items-center justify-center gap-2 bg-background px-6 py-4 text-[11px] uppercase tracking-[0.22em] text-foreground transition-all duration-300 hover:bg-[var(--cream)] hover:-translate-y-0.5"
+                className="cta-primary-invert flex-1"
               >
-                Book a Clarity Call <span aria-hidden>→</span>
+                Book a Clarity Call <span aria-hidden className="cta-arrow">→</span>
               </Link>
               <Link
                 to="/organizations"
-                className="inline-flex flex-1 items-center justify-center gap-2 border border-background/50 px-6 py-4 text-[11px] uppercase tracking-[0.22em] text-background transition-colors hover:bg-background hover:text-foreground"
+                className="cta-secondary-invert flex-1"
               >
-                Corporate &amp; HR <span aria-hidden>→</span>
+                Corporate &amp; HR <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </div>
           </Reveal>

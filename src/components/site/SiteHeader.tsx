@@ -29,20 +29,22 @@ export function SiteHeader() {
               draggable={false}
             />
             <span className="hidden sm:flex flex-col leading-none">
-              <span className="text-[9px] uppercase tracking-[0.32em] text-foreground/60">
+              <span className="text-[length:var(--text-caption)] uppercase tracking-[0.28em] text-copy-muted">
                 Coaching · Consulting
               </span>
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-10">
+          <nav className="hidden lg:flex items-center gap-9">
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  "text-[15px] font-medium tracking-wide text-foreground/85 hover:text-foreground transition-colors",
-                  pathname === item.to && "text-foreground",
+                  "relative py-2 text-[length:var(--text-small)] font-medium tracking-wide text-foreground/90 transition-colors hover:text-foreground",
+                  "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-[var(--gold-deep)] after:transition-transform after:duration-[var(--motion-interaction)] after:ease-[var(--ease-out-soft)] hover:after:scale-x-100",
+                  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]",
+                  pathname === item.to && "text-foreground after:scale-x-100",
                 )}
               >
                 {item.label}
@@ -51,20 +53,18 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden lg:block">
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 border border-foreground px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] hover:bg-foreground hover:text-background transition-colors"
-            >
-              Book a Call <span aria-hidden>→</span>
+            <Link to="/contact" className="cta-secondary px-5 py-3">
+              Book a Call <span aria-hidden className="cta-arrow">→</span>
             </Link>
           </div>
 
           <button
-            className="lg:hidden p-2 -mr-2"
+            className="lg:hidden -mr-2 p-3 transition-colors hover:text-[var(--gold-deep)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gold-deep)]"
             onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
           >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            {open ? <X className="size-6" /> : <Menu className="size-6" />}
           </button>
         </div>
       </Container>
@@ -77,17 +77,13 @@ export function SiteHeader() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="text-base text-foreground/80 hover:text-foreground"
+                className="py-1 text-[length:var(--text-body)] text-foreground/90 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]"
               >
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/contact"
-              onClick={() => setOpen(false)}
-              className="mt-2 inline-flex items-center justify-center gap-2 border border-foreground px-4 py-3 text-[11px] uppercase tracking-[0.2em]"
-            >
-              Book a Call <span aria-hidden>→</span>
+            <Link to="/contact" onClick={() => setOpen(false)} className="cta-secondary mt-2 w-full">
+              Book a Call <span aria-hidden className="cta-arrow">→</span>
             </Link>
           </Container>
         </div>
