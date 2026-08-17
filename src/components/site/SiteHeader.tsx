@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,17 +15,43 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
   const { pathname } = useLocation();
 
+  /* Compact the header once the hero starts leaving, so it takes less of the
+     viewport while scrolling. Skipped entirely under reduced-motion. */
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const onScroll = () => setCompact(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b border-[var(--hairline)]/60">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b bg-background/85 backdrop-blur transition-[background-color,border-color,box-shadow] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] supports-[backdrop-filter]:bg-background/70",
+        compact
+          ? "border-[var(--hairline)] shadow-[0_10px_30px_-24px_color-mix(in_oklch,var(--charcoal)_45%,transparent)]"
+          : "border-[var(--hairline)]/60",
+      )}
+    >
       <Container>
-        <div className="flex h-20 items-center justify-between">
+        <div
+          className={cn(
+            "flex items-center justify-between transition-[height] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)]",
+            compact ? "h-16" : "h-20",
+          )}
+        >
           <Link to="/" aria-label="Amna Imran home" className="flex items-center gap-3">
             <img
               src={logoSrc}
               alt="Amna Imran"
-              className="h-12 md:h-14 w-auto select-none"
+              className={cn(
+                "w-auto select-none transition-[height] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)]",
+                compact ? "h-11 md:h-12" : "h-14 md:h-16",
+              )}
               draggable={false}
             />
             <span className="hidden sm:flex flex-col leading-none">

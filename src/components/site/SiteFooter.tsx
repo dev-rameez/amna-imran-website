@@ -67,7 +67,7 @@ export function SiteFooter() {
                   )}
                   <Link
                     to={to}
-                    className="text-[length:var(--text-caption)] uppercase tracking-[0.16em] text-background/80 transition-colors hover:text-background focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-warm)]"
+                    className="text-[length:var(--text-small)] uppercase tracking-[0.16em] text-background/80 transition-colors hover:text-background focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-warm)]"
                   >
                     {label}
                   </Link>
@@ -77,29 +77,43 @@ export function SiteFooter() {
           </nav>
         </Reveal>
 
-        {/* Mission + credentials */}
-        <div className="mt-10 grid gap-10 md:grid-cols-12 md:gap-8 md:items-start">
-          <Reveal variant="fade-up" delay={80} className="md:col-span-5 max-w-sm md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
-            <p className="type-body text-background/70">
+        {/* Band 2 — mission, contact and credentials.
+            CONTENT GAP: there are no contact details (email / phone) and no social
+            profile links anywhere in this footer. Both need to be supplied before
+            launch; the contact column below is deliberately a route link only
+            rather than invented placeholder data. */}
+        <div className="mt-12 grid gap-10 border-b border-background/15 pb-12 md:grid-cols-12 md:gap-8 md:items-start">
+          <Reveal variant="fade-up" delay={80} className="md:col-span-4 max-w-sm md:border-l md:border-[color-mix(in_oklch,var(--gold)_40%,transparent)] md:pl-6">
+            <p className="type-body text-background/80">
               Executive coaching and organizational consulting for high-potential women navigating
               advancement in complex environments.
             </p>
           </Reveal>
 
-          <Reveal variant="fade-up" delay={140} className="md:col-span-7 md:pl-4">
+          <Reveal variant="fade-up" delay={120} className="md:col-span-3">
+            <p className="eyebrow text-gold mb-5">Get in touch</p>
+            <Link
+              to="/contact"
+              className="text-[length:var(--text-small)] text-background/80 underline decoration-[color-mix(in_oklch,var(--gold)_55%,transparent)] underline-offset-[6px] transition-colors hover:text-background focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-warm)]"
+            >
+              Book a Strategic Clarity Call
+            </Link>
+          </Reveal>
+
+          <Reveal variant="fade-up" delay={160} className="md:col-span-5">
             <p className="eyebrow text-gold mb-5">Credentials</p>
             <ul className="flex flex-wrap items-center gap-x-8 gap-y-5">
               {CREDENTIALS.map((c) => (
-                <li key={c.label} className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-10 shrink-0 items-center justify-center">
+                <li key={c.label} className="flex items-center gap-3">
+                  <span className="flex h-10 w-12 shrink-0 items-center justify-center">
                     {c.markOnly ? (
-                      <span className="block h-7 w-7 overflow-hidden rounded-full bg-background/10">
+                      <span className="block h-9 w-9 overflow-hidden rounded-full bg-background/10">
                         <img
                           src={c.logo}
                           alt=""
                           aria-hidden
                           loading="lazy"
-                          className="h-7 w-auto max-w-none object-left"
+                          className="h-9 w-auto max-w-none object-left"
                         />
                       </span>
                     ) : (
@@ -108,11 +122,11 @@ export function SiteFooter() {
                         alt=""
                         aria-hidden
                         loading="lazy"
-                        className="h-7 w-7 object-contain"
+                        className="h-9 w-9 object-contain"
                       />
                     )}
                   </span>
-                  <span className="text-[length:var(--text-caption)] uppercase tracking-[0.14em] text-background/75">
+                  <span className="text-[length:var(--text-small)] uppercase tracking-[0.14em] text-background/80">
                     {c.label}
                   </span>
                 </li>
@@ -121,7 +135,8 @@ export function SiteFooter() {
           </Reveal>
         </div>
 
-        <Reveal variant="fade-in" delay={200} className="mt-12 flex flex-col gap-3 border-t border-background/15 pt-6 text-[length:var(--text-caption)] text-background/70 sm:flex-row sm:items-center sm:justify-between">
+        {/* Band 3 — legal */}
+        <Reveal variant="fade-in" delay={200} className="mt-8 flex flex-col gap-3 text-[length:var(--text-small)] text-background/70 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} Amna Imran. All rights reserved.</div>
           <div className="eyebrow text-gold/70">Strategy · Coaching · Advancement</div>
         </Reveal>

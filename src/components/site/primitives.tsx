@@ -113,26 +113,38 @@ export function EditorialCard({
  */
 export function SectionQuote({
   children,
+  sub,
   className,
 }: {
   children: React.ReactNode;
+  /** Secondary line, revealed just after the main one. */
+  sub?: React.ReactNode;
   className?: string;
 }) {
   return (
     <blockquote
       className={cn(
-        "relative mx-auto max-w-[48rem] px-4 py-8 text-center md:px-8 md:py-10",
+        "relative mx-auto max-w-[48rem] px-4 py-5 text-center md:px-8 md:py-7",
         className,
       )}
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[5.5rem] leading-none text-gold/40 md:text-[7rem]"
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[4.5rem] leading-none text-gold/40 md:text-[5.5rem]"
       >
         “
       </span>
-      <div className="relative pt-8 font-serif text-[clamp(1.55rem,3.2vw,2.85rem)] leading-[1.3] tracking-[-0.02em] text-foreground md:pt-10">
-        {children}
+      <div className="relative pt-6 font-serif text-[clamp(1.85rem,3.9vw,3.45rem)] leading-[1.25] tracking-[-0.02em] text-foreground md:pt-7">
+        <Reveal variant="fade-in" duration="slow">
+          {children}
+        </Reveal>
+        {sub && (
+          <Reveal variant="fade-in" duration="slow" delay={340}>
+            <span className="mt-3 block font-light text-[0.66em] leading-[1.45] text-copy">
+              {sub}
+            </span>
+          </Reveal>
+        )}
       </div>
     </blockquote>
   );
@@ -411,6 +423,33 @@ export function useSelectableList(
  * Replays the panel's enter transition whenever `key` changes. Returns the
  * value for `data-state`, which .selectable-panel styles against.
  */
+/**
+ * Below the panel's side-by-side breakpoint the detail sits underneath the list,
+ * so selecting a low item would otherwise update something off-screen. Brings
+ * the panel into view on selection — never on first render, and only when the
+ * layout is stacked.
+ */
+function usePanelIntoView(active: number, panelRef: React.RefObject<HTMLDivElement | null>) {
+  const previous = useRef(active);
+  useEffect(() => {
+    if (previous.current === active) return;
+    previous.current = active;
+
+    const stacked = window.matchMedia("(max-width: 1023px)").matches;
+    if (!stacked) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    panelRef.current?.scrollIntoView({
+      block: "nearest",
+      behavior: reduced ? "auto" : "smooth",
+    });
+  }, [active, panelRef]);
+}
+
+/**
+ * Replays the panel's enter transition whenever `key` changes. Returns the
+ * value for `data-state`, which .selectable-panel styles against.
+ */
 export function usePanelTransition(key: unknown) {
   const [entered, setEntered] = useState(false);
   useEffect(() => {
@@ -451,6 +490,8 @@ export function SelectablePanel({
 }) {
   const { active, listProps, getItemProps, panelProps } = useSelectableList(items.length);
   const panelState = usePanelTransition(active);
+  const panelRef = useRef<HTMLDivElement>(null);
+  usePanelIntoView(active, panelRef);
   const showMarker = variant !== "label";
   const current = items[active];
 
@@ -474,7 +515,8 @@ export function SelectablePanel({
             />
           </div>
         )}
-        <div {...listProps} aria-label={label} className="flex flex-col">
+        <div {...listProps} aria-label={label} className="relative flex flex-col">
+          {variant === "step" && <span aria-hidden className="selectable-path" />}
           {items.map((item, i) => (
             <button
               key={i}
@@ -485,7 +527,13 @@ export function SelectablePanel({
               )}
             >
               {showMarker ? (
-                <span aria-hidden className="selectable-marker mt-0.5 h-9 w-9 text-[0.95rem]">
+                <span
+                  aria-hidden
+                  className={cn(
+                    "selectable-marker mt-0.5",
+                    variant === "step" ? "h-11 w-11 text-[1.05rem]" : "h-9 w-9 text-[0.95rem]",
+                  )}
+                >
                   {String(i + 1).padStart(2, "0")}
                 </span>
               ) : (
@@ -500,6 +548,7 @@ export function SelectablePanel({
       </div>
 
       <div
+        ref={panelRef}
         {...panelProps}
         data-state={panelState}
         className={cn("selectable-panel lg:col-span-7", panelClassName)}
