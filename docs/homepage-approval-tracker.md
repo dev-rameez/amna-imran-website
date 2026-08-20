@@ -159,4 +159,18 @@ behind the programme portrait, and card balance in the two pathways.
 
 | Date | § | Requested by | Change | Status |
 | ---- | - | ------------ | ------ | ------ |
-| | | | | |
+| 2026-08-20 | 2 | Client | Remove the hero portrait's ambient glow, contact shadow and drop shadows. The glow made the blush field look spotlit and the shadows left a haze around her legs | Done |
+| 2026-08-20 | 2, 3 | Client | Remove the curved cream sweep at the base of the banner, plus the blush wash and gold hairline that carried it into the section below. The banner now ends on a straight edge as a plain full-width cover | Done |
+
+**Both reverse earlier instructions.** Round 1 asked for the glow and shadows so she would not read
+as "placed on top", and Round 2 asked to keep them. Round 2 also called the hard
+rectangle-to-rectangle boundary "still too abrupt" and asked for a soft curve there specifically.
+Raise both with the reviewer before the next round rather than re-adding them.
+
+Note that the curved `SectionSeam` transitions between the *other* sections are untouched, so the
+banner is now the only plain boundary on the page. If the intent is a flat page throughout, that is
+a separate change.
+
+The hero portrait keeps a base mask fading from 82% of its height. That is not decoration — the
+cut-out ends mid-leg, so removing or tightening the fade leaves a hard grey cut across her
+trousers. It was tightened to 95% on 2026-08-20 and reverted the same day for that reason.

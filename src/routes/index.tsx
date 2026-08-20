@@ -378,27 +378,10 @@ function Hero() {
         </span>
       </h1>
 
-      {/* Ambient glow behind Amna — lifts her off the flat blush field so the
-          cut-out reads as lit rather than pasted on. */}
-      <div
-        aria-hidden
-        className="hero-enter-soft pointer-events-none absolute inset-x-0 bottom-0 top-[12%] z-[1]"
-        style={{
-          animationDelay: "260ms",
-          background:
-            "radial-gradient(ellipse 26% 60% at 50% 72%, color-mix(in oklch, white 62%, transparent) 0%, color-mix(in oklch, white 22%, transparent) 45%, transparent 72%)",
-        }}
-      />
-
-      {/* Contact shadow — sits under the portrait (same layer, earlier in the
-          DOM) so she is planted on the ground rather than hovering. */}
-      <div
-        aria-hidden
-        className="hero-enter-soft pointer-events-none absolute bottom-[6%] left-1/2 z-[2] h-10 w-[min(34rem,60vw)] -translate-x-1/2 rounded-[50%] bg-black/20 blur-2xl md:h-14"
-        style={{ animationDelay: "300ms" }}
-      />
-
-      {/* Standing portrait — full banner height */}
+      {/* Standing portrait — full banner height. Deliberately unlit: the ambient
+          glow and contact shadow that used to sit behind her were removed per
+          client direction, because they made the blush field read as unevenly
+          lit and left a haze around her legs. */}
       <div
         className="hero-enter absolute inset-0 z-[2] flex items-end justify-center pointer-events-none overflow-hidden"
         style={{ animationDelay: "220ms" }}
@@ -407,6 +390,9 @@ function Hero() {
           src={heroCutout}
           alt="Amna Imran — Executive Coach"
           draggable={false}
+          /* The fade has to start well above the base. Confining it to the last
+             few percent leaves a hard grey cut across her trouser legs, because
+             the image ends mid-leg rather than at her feet. */
           className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none [mask-image:linear-gradient(to_bottom,black_82%,transparent_99%)]"
           style={{
             height: "100%",
@@ -416,26 +402,12 @@ function Hero() {
                transparent headroom above her head in the source cut-out. */
             transform: "scale(1.12)",
             transformOrigin: "bottom center",
-            /* Two shadows: a tight one to blend the hair and shoulder edges into
-               the blush, and a wider one for depth. */
-            filter:
-              "drop-shadow(0 2px 6px color-mix(in oklch, var(--blush-deep) 30%, transparent)) drop-shadow(0 18px 44px color-mix(in oklch, var(--charcoal) 14%, transparent))",
           }}
         />
       </div>
 
-      {/* Curve into HeroIntro — the next section's cream sweeps up into the
-          hero, which both softens the hard rectangular edge and finishes the
-          masking of her lower body. Two offset layers echo the SectionSeam
-          language used between the later sections, so the page has one
-          vocabulary for section transitions. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-20 overflow-hidden md:h-32"
-      >
-        <div className="absolute -bottom-8 left-1/2 h-[calc(100%+2rem)] w-[250%] -translate-x-1/2 rounded-t-[50%] bg-[var(--warm-cream)] opacity-45" />
-        <div className="absolute -bottom-8 left-1/2 h-[calc(100%+1.25rem)] w-[190%] -translate-x-1/2 rounded-t-[50%] bg-[var(--warm-cream)]" />
-      </div>
+      {/* No curve or seam at the base of the banner: the client wants it to read
+          as a plain full-width cover, ending on a straight edge. */}
 
       <div
         aria-hidden
@@ -455,18 +427,9 @@ function Hero() {
 function HeroIntro() {
   return (
     <section className="relative overflow-hidden bg-[var(--warm-cream)]">
-      {/* The hero's blush bleeds down into the cream rather than stopping at the
-          curve, so the two surfaces read as one field. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[color-mix(in_oklch,var(--blush)_34%,transparent)] to-transparent md:h-44"
-      />
-      {/* Hairline dropping out of the hero's curve, so this block reads as a
-          continuation of the hero rather than a detached slab. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 z-[2] h-10 w-px -translate-x-1/2 bg-gradient-to-b from-[color-mix(in_oklch,var(--gold)_55%,transparent)] to-transparent md:h-14"
-      />
+      {/* Nothing bleeds down from the hero. The blush wash and the gold hairline
+          that used to carry the curve into this block were removed with it, so
+          the boundary between the banner and this section stays clean. */}
       <Container className="relative z-[3] pb-10 pt-12 md:pb-12 md:pt-16">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal variant="fade-up" duration="slow" delay={60}>
