@@ -159,18 +159,40 @@ behind the programme portrait, and card balance in the two pathways.
 
 | Date | § | Requested by | Change | Status |
 | ---- | - | ------------ | ------ | ------ |
-| 2026-08-20 | 2 | Client | Remove the hero portrait's ambient glow, contact shadow and drop shadows. The glow made the blush field look spotlit and the shadows left a haze around her legs | Done |
-| 2026-08-20 | 2, 3 | Client | Remove the curved cream sweep at the base of the banner, plus the blush wash and gold hairline that carried it into the section below. The banner now ends on a straight edge as a plain full-width cover | Done |
+| 2026-08-20 | 2 | Client | Remove the hero portrait's ambient glow, contact shadow and drop shadows. The glow made the blush field look spotlit and the shadows left a haze around her legs | Superseded 2026-08-25 |
+| 2026-08-20 | 2, 3 | Client | Remove the curved cream sweep at the base of the banner, plus the blush wash and gold hairline that carried it into the section below. The banner now ends on a straight edge as a plain full-width cover | Superseded 2026-08-25 |
+| 2026-08-25 | 2 | Implementation brief | Restore restrained depth behind the portrait. Implemented as a single silhouette drop-shadow at 13% charcoal — deliberately not the radial ambient glow, which the brief also rules out as "a visible glow effect" | Done |
+| 2026-08-25 | 2, 3 | Implementation brief | Restore continuity at the hero boundary. Implemented as a straight vertical resolve into the next section's warm cream, plus a short blush trace below it. Deliberately not a curve | Done |
+| 2026-08-25 | 13 | Implementation brief | Remove the whole-card click target on the pathway cards. The brief rules it out where a card contains its own controls: "choose one accessible interaction model" | Done |
 
-**Both reverse earlier instructions.** Round 1 asked for the glow and shadows so she would not read
-as "placed on top", and Round 2 asked to keep them. Round 2 also called the hard
-rectangle-to-rectangle boundary "still too abrupt" and asked for a soft curve there specifically.
-Raise both with the reviewer before the next round rather than re-adding them.
+**The 2026-08-20 pair has now been reversed a third time, by the implementation brief.** Round 1
+asked for depth so she would not read as placed on top; the client removed it; this brief asks for
+it back. The same is true of the hero boundary. Both are now implemented in the mildest form that
+satisfies the brief, specifically so they do not reproduce what the client objected to:
 
-Note that the curved `SectionSeam` transitions between the *other* sections are untouched, so the
-banner is now the only plain boundary on the page. If the intent is a flat page throughout, that is
-a separate change.
+- The glow is *not* back. Only a shadow that follows her outline, which cannot light the blush field
+  unevenly and cannot pool as a haze, because it has no shape of its own.
+- The curve is *not* back. The transition is a straight gradient, so nothing reads as a shape parked
+  in the banner.
 
-The hero portrait keeps a base mask fading from 82% of its height. That is not decoration — the
-cut-out ends mid-leg, so removing or tightening the fade leaves a hard grey cut across her
-trousers. It was tightened to 95% on 2026-08-20 and reverted the same day for that reason.
+Each is a single self-contained block and can be dropped independently if the client objects again.
+If they do, that is a genuine three-way disagreement between Round 1, the client and this brief, and
+it needs resolving with the reviewer rather than another reversal.
+
+The hero portrait's base mask now fades from 78% of its height, lengthened from 82%. The mask is not
+decoration — the cut-out ends mid-leg, so a short fade leaves a hard grey cut across her trousers.
+It was tightened to 95% on 2026-08-20 and reverted the same day for that reason; lengthening is the
+safe direction.
+
+### Flagged for client decision — not changed
+
+Display accents set in `--gold-warm` measure 2.1–2.3:1 against the page's light surfaces. WCAG
+requires 3:1 even for large text, so the section headline accents ("High-Potential", "Women",
+"strategically?", the pull quotes) fall short. This was **not** changed, because it is the signature
+of the approved art direction and every guardrail in the brief forbids altering it — "no palette
+changes", "maintain the current serif/script hierarchy", "do not change the hero typography".
+
+Small copy was a different matter and was fixed: see the contrast section of
+[implementation-brief-verification.md](implementation-brief-verification.md#batch-3--performance-paradox--internal-narratives).
+Making the display accents compliant needs either a slightly deeper display gold or a decision to
+accept the shortfall on decorative headline words. That is a client call.
