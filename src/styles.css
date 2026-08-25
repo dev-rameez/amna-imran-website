@@ -1011,19 +1011,9 @@
       opacity: 1;
       transform: none;
     }
-    .hero-scroll-dot,
     .hero-enter,
     .hero-enter-soft { animation: none !important; opacity: 1 !important; transform: none !important; }
   }
-}
-
-@keyframes hero-scroll-dot {
-  0%, 100% { opacity: 0.35; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(8px); }
-}
-
-.hero-scroll-dot {
-  animation: hero-scroll-dot 2.8s ease-in-out infinite;
 }
 
 @keyframes hero-enter-up {

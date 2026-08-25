@@ -425,16 +425,6 @@ function Hero() {
             "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--warm-cream) 38%, transparent) 58%, color-mix(in oklch, var(--warm-cream) 92%, transparent))",
         }}
       />
-
-      <div
-        aria-hidden
-        className="hero-enter-soft pointer-events-none absolute inset-x-0 z-[4] flex justify-center bottom-[max(5rem,calc(1.5rem+env(safe-area-inset-bottom,0px)))] md:bottom-[max(7rem,calc(1.5rem+env(safe-area-inset-bottom,0px)))]"
-        style={{ animationDelay: "900ms" }}
-      >
-        <div className="flex h-11 w-6 items-start justify-center rounded-full border border-white/55 pt-2">
-          <span className="hero-scroll-dot block h-1.5 w-1.5 rounded-full bg-white/90" />
-        </div>
-      </div>
     </section>
   );
 }
