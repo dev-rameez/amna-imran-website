@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 
 export function Container({
   className,
@@ -357,24 +357,71 @@ export function Reveal({
 type SelectableOrientation = "vertical" | "horizontal";
 
 /**
- * ARIA tabs behaviour: single selection, roving tabindex, arrow/Home/End keys,
- * and ids wired between each item and the shared panel.
+ * "tabs" is the side-by-side model: one shared panel, roving tabindex, arrow
+ * keys. "disclosure" is the stacked model: every item is its own expander with
+ * its content directly beneath it, so all items stay in the tab order and
+ * arrow keys are not used. Selection state is identical either way — only the
+ * ARIA contract and the keyboard model differ.
+ */
+type SelectableMode = "tabs" | "disclosure";
+
+/** Below this width SelectablePanel cannot show a list and a panel side by side. */
+const STACKED_QUERY = "(max-width: 1023px)";
+
+function subscribeStacked(onChange: () => void) {
+  const query = window.matchMedia(STACKED_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/**
+ * True when a two-column selectable panel has to collapse into one column.
+ * The server snapshot is `false`, so SSR emits the side-by-side markup and
+ * narrow clients switch to the stacked model on hydration.
+ */
+export function useIsStacked() {
+  return useSyncExternalStore(
+    subscribeStacked,
+    () => window.matchMedia(STACKED_QUERY).matches,
+    () => false,
+  );
+}
+
+/**
+ * Single selection plus the ARIA wiring for whichever interaction model is in
+ * play. Visual state is published separately as `data-active`, so the
+ * stylesheet does not have to care whether an item is a tab or an expander.
  */
 export function useSelectableList(
   count: number,
   {
     orientation = "vertical",
     initial = 0,
-  }: { orientation?: SelectableOrientation; initial?: number } = {},
+    mode = "tabs",
+    onSelect,
+  }: {
+    orientation?: SelectableOrientation;
+    initial?: number;
+    mode?: SelectableMode;
+    /** Fires on a deliberate user selection, by pointer or by key. */
+    onSelect?: (index: number) => void;
+  } = {},
 ) {
   const [active, setActive] = useState(initial);
   const baseId = useId();
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
+  /* Every deliberate selection goes through here, so a caller watching for
+     selections sees keyboard traversal as well as clicks. */
+  const select = (index: number) => {
+    setActive(index);
+    onSelect?.(index);
+  };
+
   const moveTo = (index: number) => {
     if (count === 0) return;
     const next = (index + count) % count;
-    setActive(next);
+    select(next);
     itemRefs.current[next]?.focus();
   };
 
@@ -396,24 +443,35 @@ export function useSelectableList(
     }
   };
 
-  const listProps = {
-    role: "tablist" as const,
-    "aria-orientation": orientation,
-    onKeyDown,
-  };
+  const tabs = mode === "tabs";
 
-  const getItemProps = (index: number) => ({
-    ref: (node: HTMLButtonElement | null) => {
-      itemRefs.current[index] = node;
-    },
-    id: `${baseId}-item-${index}`,
-    type: "button" as const,
-    role: "tab" as const,
-    "aria-selected": index === active,
-    "aria-controls": `${baseId}-panel`,
-    tabIndex: index === active ? 0 : -1,
-    onClick: () => setActive(index),
-  });
+  /* A disclosure list is a labelled group of buttons rather than a tablist: no
+     arrow-key handler, because each button is individually tabbable. */
+  const listProps = tabs
+    ? { role: "tablist" as const, "aria-orientation": orientation, onKeyDown }
+    : { role: "group" as const };
+
+  const getItemProps = (index: number) => {
+    const isActive = index === active;
+    return {
+      ref: (node: HTMLButtonElement | null) => {
+        itemRefs.current[index] = node;
+      },
+      id: `${baseId}-item-${index}`,
+      type: "button" as const,
+      /* The styling hook. Kept separate from the ARIA state so the same CSS
+         serves both models. */
+      "data-active": isActive ? "true" : "false",
+      role: tabs ? ("tab" as const) : undefined,
+      "aria-selected": tabs ? isActive : undefined,
+      "aria-expanded": tabs ? undefined : isActive,
+      /* In disclosure mode only the open item's region is in the DOM, so
+         collapsed items must not point at a missing id. */
+      "aria-controls": tabs ? `${baseId}-panel` : isActive ? `${baseId}-panel-${index}` : undefined,
+      tabIndex: tabs ? (isActive ? 0 : -1) : undefined,
+      onClick: () => select(index),
+    };
+  };
 
   const panelProps = {
     id: `${baseId}-panel`,
@@ -422,7 +480,13 @@ export function useSelectableList(
     tabIndex: 0,
   };
 
-  return { active, setActive, listProps, getItemProps, panelProps };
+  const getPanelProps = (index: number) => ({
+    id: `${baseId}-panel-${index}`,
+    role: "region" as const,
+    "aria-labelledby": `${baseId}-item-${index}`,
+  });
+
+  return { active, setActive, listProps, getItemProps, panelProps, getPanelProps };
 }
 
 /**
@@ -430,26 +494,29 @@ export function useSelectableList(
  * value for `data-state`, which .selectable-panel styles against.
  */
 /**
- * Below the panel's side-by-side breakpoint the detail sits underneath the list,
- * so selecting a low item would otherwise update something off-screen. Brings
- * the panel into view on selection — never on first render, and only when the
- * layout is stacked.
+ * Safety net for the side-by-side layout: if the viewport is short enough that
+ * the panel is below the fold, selecting an item would update something the
+ * reader cannot see. Never fires on first render. Redundant in the stacked
+ * model, where the detail is already adjacent to the item, so it is disabled
+ * there.
  */
-function usePanelIntoView(active: number, panelRef: React.RefObject<HTMLDivElement | null>) {
+function usePanelIntoView(
+  active: number,
+  panelRef: React.RefObject<HTMLDivElement | null>,
+  enabled: boolean,
+) {
   const previous = useRef(active);
   useEffect(() => {
     if (previous.current === active) return;
     previous.current = active;
-
-    const stacked = window.matchMedia("(max-width: 1023px)").matches;
-    if (!stacked) return;
+    if (!enabled) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     panelRef.current?.scrollIntoView({
       block: "nearest",
       behavior: reduced ? "auto" : "smooth",
     });
-  }, [active, panelRef]);
+  }, [active, panelRef, enabled]);
 }
 
 /**
@@ -482,6 +549,7 @@ export function SelectablePanel({
   listClassName,
   panelClassName,
   footer,
+  onSelect,
 }: {
   items: SelectableEntry[];
   /** numbered = 01/02 numerals, step = numerals plus a progress rail, label = type only. */
@@ -493,13 +561,111 @@ export function SelectablePanel({
   listClassName?: string;
   panelClassName?: string;
   footer?: React.ReactNode;
+  /** Called when the reader picks an item, for engagement tracking. */
+  onSelect?: (index: number, item: SelectableEntry) => void;
 }) {
-  const { active, listProps, getItemProps, panelProps } = useSelectableList(items.length);
+  const stacked = useIsStacked();
+  const { active, listProps, getItemProps, panelProps, getPanelProps } = useSelectableList(
+    items.length,
+    {
+      mode: stacked ? "disclosure" : "tabs",
+      onSelect: onSelect ? (index) => onSelect(index, items[index]) : undefined,
+    },
+  );
   const panelState = usePanelTransition(active);
   const panelRef = useRef<HTMLDivElement>(null);
-  usePanelIntoView(active, panelRef);
+  usePanelIntoView(active, panelRef, !stacked);
   const showMarker = variant !== "label";
   const current = items[active];
+
+  /* Progress rail for the step variant. Shown in both models, because "how far
+     through the framework am I" is useful on a phone too. */
+  const rail =
+    variant === "step" ? (
+      <div
+        aria-hidden
+        className="mb-6 h-px w-full bg-[color-mix(in_oklch,var(--hairline)_60%,transparent)]"
+      >
+        <div
+          className="h-px bg-[var(--gold-deep)] transition-[width] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)]"
+          style={{ width: `${((active + 1) / items.length) * 100}%` }}
+        />
+      </div>
+    ) : null;
+
+  const rowContent = (item: SelectableEntry, i: number) => (
+    <>
+      {showMarker ? (
+        <span
+          aria-hidden
+          className={cn(
+            "selectable-marker mt-0.5",
+            variant === "step" ? "h-11 w-11 text-[1.05rem]" : "h-9 w-9 text-[0.95rem]",
+          )}
+        >
+          {String(i + 1).padStart(2, "0")}
+        </span>
+      ) : (
+        <span aria-hidden className="selectable-bar mt-[0.85em]" />
+      )}
+      <span className="font-serif text-[length:var(--text-heading-3)] leading-snug">
+        {item.label}
+      </span>
+      {/* Only appears on hover or when active, so the row reads as choosable
+          without adding permanent furniture to the list. Points the way the
+          content will actually arrive: alongside, or below. */}
+      <span
+        aria-hidden
+        className="selectable-chevron ml-auto mt-[0.6em] font-serif text-[0.9rem] leading-none"
+      >
+        {stacked ? "↓" : "→"}
+      </span>
+    </>
+  );
+
+  const detail = (item: SelectableEntry) => (
+    <>
+      {item.meta && <p className="eyebrow text-gold-ink mb-4">{item.meta}</p>}
+      <div className="type-body-emphasis">{item.detail}</div>
+      {footer && <div className="mt-8">{footer}</div>}
+    </>
+  );
+
+  /* Stacked: each item owns its explanation, so the answer appears directly
+     under the row that was tapped instead of below the whole list. */
+  if (stacked) {
+    return (
+      <div className={cn(tone === "dark" && "selectable-tone-dark", className)}>
+        {rail}
+        <div {...listProps} aria-label={label} className="flex flex-col">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className={cn(
+                i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
+              )}
+            >
+              <button
+                {...getItemProps(i)}
+                className="selectable-item selectable-row flex items-start gap-4 py-4"
+              >
+                {rowContent(item, i)}
+              </button>
+              {i === active && (
+                <div
+                  {...getPanelProps(i)}
+                  data-state={panelState}
+                  className="selectable-panel pb-6 pl-1 pr-1"
+                >
+                  {detail(item)}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -510,17 +676,7 @@ export function SelectablePanel({
       )}
     >
       <div className={cn("lg:col-span-5", listClassName)}>
-        {variant === "step" && (
-          <div
-            aria-hidden
-            className="mb-6 h-px w-full bg-[color-mix(in_oklch,var(--hairline)_60%,transparent)]"
-          >
-            <div
-              className="h-px bg-[var(--gold-deep)] transition-[width] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)]"
-              style={{ width: `${((active + 1) / items.length) * 100}%` }}
-            />
-          </div>
-        )}
+        {rail}
         <div {...listProps} aria-label={label} className="relative flex flex-col">
           {variant === "step" && <span aria-hidden className="selectable-path" />}
           {items.map((item, i) => (
@@ -532,30 +688,7 @@ export function SelectablePanel({
                 i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
               )}
             >
-              {showMarker ? (
-                <span
-                  aria-hidden
-                  className={cn(
-                    "selectable-marker mt-0.5",
-                    variant === "step" ? "h-11 w-11 text-[1.05rem]" : "h-9 w-9 text-[0.95rem]",
-                  )}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              ) : (
-                <span aria-hidden className="selectable-bar mt-[0.85em]" />
-              )}
-              <span className="font-serif text-[length:var(--text-heading-3)] leading-snug">
-                {item.label}
-              </span>
-              {/* Chevron only appears on hover or when selected, so the row reads
-                  as choosable without adding permanent furniture to the list. */}
-              <span
-                aria-hidden
-                className="selectable-chevron ml-auto mt-[0.6em] font-serif text-[0.9rem] leading-none"
-              >
-                →
-              </span>
+              {rowContent(item, i)}
             </button>
           ))}
         </div>
@@ -567,9 +700,7 @@ export function SelectablePanel({
         data-state={panelState}
         className={cn("selectable-panel lg:col-span-7", panelClassName)}
       >
-        {current?.meta && <p className="eyebrow text-gold mb-4">{current.meta}</p>}
-        <div className="type-body-emphasis">{current?.detail}</div>
-        {footer && <div className="mt-8">{footer}</div>}
+        {current && detail(current)}
       </div>
     </div>
   );
@@ -672,81 +803,7 @@ export function SectionHeading({
   );
 }
 
-export function CTALink({
-  href,
-  variant = "primary",
-  children,
-  className,
-}: { href: string; variant?: "primary" | "outline" | "underline"; children: React.ReactNode; className?: string }) {
-  const base = "inline-flex items-center gap-2 text-sm tracking-wide transition-all duration-300";
-  const styles = {
-    primary:
-      "px-7 py-4 bg-foreground text-background hover:bg-foreground/90 uppercase text-xs tracking-[0.18em]",
-    outline:
-      "px-7 py-4 border border-foreground text-foreground hover:bg-foreground hover:text-background uppercase text-xs tracking-[0.18em]",
-    underline:
-      "border-b border-foreground/40 pb-1 hover:border-foreground text-foreground uppercase text-xs tracking-[0.18em]",
-  } as const;
-  return (
-    <a href={href} className={cn(base, styles[variant], className)}>
-      {children}
-      <span aria-hidden>→</span>
-    </a>
-  );
-}
-
-export function DualCTA({
-  eyebrow = "Begin",
-  title,
-  primaryLabel = "Book a Strategic Clarity Call",
-  primaryHref = "/contact",
-  secondaryLabel = "For Organizations",
-  secondaryHref = "/organizations",
-  variant = "dark",
-}: {
-  eyebrow?: string;
-  title: React.ReactNode;
-  primaryLabel?: string;
-  primaryHref?: string;
-  secondaryLabel?: string;
-  secondaryHref?: string;
-  variant?: "dark" | "light";
-}) {
-  const dark = variant === "dark";
-  return (
-    <section className={cn(dark ? "bg-foreground text-background" : "bg-[var(--cream)] text-foreground")}>
-      <Container className="py-24 md:py-32">
-        <div className="max-w-3xl">
-          <div className={cn("eyebrow", dark ? "text-background/60" : "text-foreground/60")}>{eyebrow}</div>
-          <h2 className={cn("mt-6 text-4xl md:text-6xl leading-[1.05]", dark ? "text-background" : "text-foreground")}>
-            {title}
-          </h2>
-          <div className="mt-12 flex flex-wrap gap-4">
-            <a
-              href={primaryHref}
-              className={cn(
-                "inline-flex items-center gap-2 px-7 py-4 uppercase text-xs tracking-[0.18em] transition-colors",
-                dark
-                  ? "bg-background text-foreground hover:bg-[var(--cream)]"
-                  : "bg-foreground text-background hover:bg-foreground/90",
-              )}
-            >
-              {primaryLabel} <span aria-hidden>→</span>
-            </a>
-            <a
-              href={secondaryHref}
-              className={cn(
-                "inline-flex items-center gap-2 px-7 py-4 uppercase text-xs tracking-[0.18em] border transition-colors",
-                dark
-                  ? "border-background/40 text-background hover:bg-background hover:text-foreground"
-                  : "border-foreground/40 text-foreground hover:bg-foreground hover:text-background",
-              )}
-            >
-              {secondaryLabel} <span aria-hidden>→</span>
-            </a>
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
+/* CTALink and DualCTA were removed here. Both were unreferenced, and both
+   carried their own button styling and their own transition timing
+   (transition-all at 300ms) outside the shared motion tokens and the
+   .cta-* system. Anything that needs a CTA should use those instead. */

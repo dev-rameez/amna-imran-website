@@ -140,7 +140,9 @@ export function SiteFooter() {
         {/* Band 3 — legal */}
         <Reveal variant="fade-in" delay={200} className="mt-10 flex flex-col gap-3 text-[length:var(--text-small)] text-background/70 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} Amna Imran. All rights reserved.</div>
-          <div className="eyebrow text-gold/70">Strategy · Coaching · Advancement</div>
+          {/* Full-strength gold: at 70% this dropped to 3.5:1, and it is set at
+              caption size. */}
+          <div className="eyebrow text-gold">Strategy · Coaching · Advancement</div>
         </Reveal>
       </Container>
     </footer>

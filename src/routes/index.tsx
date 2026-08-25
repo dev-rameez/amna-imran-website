@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 import {
   Container,
   Reveal,
@@ -378,10 +379,11 @@ function Hero() {
         </span>
       </h1>
 
-      {/* Standing portrait — full banner height. Deliberately unlit: the ambient
-          glow and contact shadow that used to sit behind her were removed per
-          client direction, because they made the blush field read as unevenly
-          lit and left a haze around her legs. */}
+      {/* Standing portrait — full banner height. Separation comes from a single
+          drop-shadow that follows her silhouette, not from an ambient glow: the
+          earlier radial glow lit the blush field unevenly and the elliptical
+          contact shadow pooled as a haze around her legs. A silhouette shadow
+          cannot do either, because it has no shape of its own. */}
       <div
         className="hero-enter absolute inset-0 z-[2] flex items-end justify-center pointer-events-none overflow-hidden"
         style={{ animationDelay: "220ms" }}
@@ -390,10 +392,11 @@ function Hero() {
           src={heroCutout}
           alt="Amna Imran — Executive Coach"
           draggable={false}
-          /* The fade has to start well above the base. Confining it to the last
-             few percent leaves a hard grey cut across her trouser legs, because
-             the image ends mid-leg rather than at her feet. */
-          className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none [mask-image:linear-gradient(to_bottom,black_82%,transparent_99%)]"
+          /* The fade has to start well above the base and finish at it. The
+             source image ends mid-leg rather than at her feet, so a short fade
+             leaves a hard cut across the trousers; a long one reads as an
+             intentional crop. */
+          className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none [mask-image:linear-gradient(to_bottom,black_78%,transparent_100%)]"
           style={{
             height: "100%",
             width: "auto",
@@ -402,12 +405,26 @@ function Hero() {
                transparent headroom above her head in the source cut-out. */
             transform: "scale(1.12)",
             transformOrigin: "bottom center",
+            /* Filters paint before the mask, so the shadow fades out with her
+               rather than surviving below the crop. */
+            filter: "drop-shadow(0 24px 44px color-mix(in oklch, var(--charcoal) 13%, transparent))",
           }}
         />
       </div>
 
-      {/* No curve or seam at the base of the banner: the client wants it to read
-          as a plain full-width cover, ending on a straight edge. */}
+      {/* Continuity into the introduction. A straight vertical resolve toward the
+          next section's warm cream, deliberately not a curve: the earlier curved
+          sweep read as a shape parked in the banner rather than as a transition,
+          and the client rejected it on those grounds. Ends near-opaque so the
+          boundary itself carries no visible line. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-24 md:h-32"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--warm-cream) 38%, transparent) 58%, color-mix(in oklch, var(--warm-cream) 92%, transparent))",
+        }}
+      />
 
       <div
         aria-hidden
@@ -427,9 +444,18 @@ function Hero() {
 function HeroIntro() {
   return (
     <section className="relative overflow-hidden bg-[var(--warm-cream)]">
-      {/* Nothing bleeds down from the hero. The blush wash and the gold hairline
-          that used to carry the curve into this block were removed with it, so
-          the boundary between the banner and this section stays clean. */}
+      {/* Receives the hero's resolve from above. A trace of blush carried a short
+          way down keeps the banner and the introduction reading as one opening
+          rather than two stacked panels. No hairline and no curve — the client
+          rejected both, and continuity here is tonal only. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-16 md:h-20"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 16%, transparent), transparent)",
+        }}
+      />
       <Container className="relative z-[3] pb-10 pt-12 md:pb-12 md:pt-16">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal variant="fade-up" duration="slow" delay={60}>
@@ -465,10 +491,18 @@ function HeroIntro() {
 
           <Reveal variant="fade-up" delay={220} duration="fast">
             <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-x-6">
-              <Link to="/contact" className="cta-primary">
+              <Link
+                to="/contact"
+                className="cta-primary"
+                onClick={() => track("strategic_clarity_call", { section: "hero_intro" })}
+              >
                 Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
               </Link>
-              <Link to="/organizations" className="cta-secondary">
+              <Link
+                to="/organizations"
+                className="cta-secondary"
+                onClick={() => track("organisational_engagement", { section: "hero_intro" })}
+              >
                 For Corporate &amp; HR Enquiries <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </div>
@@ -569,7 +603,7 @@ function HighPerformanceSection() {
 
       <Container className="relative">
         <Reveal variant="fade-in" duration="slow">
-          <p className="eyebrow text-gold mb-6">The performance paradox</p>
+          <p className="eyebrow text-gold-ink mb-6">The performance paradox</p>
           <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
             High Performance Alone,
             <br />
@@ -593,7 +627,7 @@ function HighPerformanceSection() {
           <div className="lg:col-span-5">
             <div className="relative">
               <Reveal variant="fade-in">
-                <p className="eyebrow text-gold mb-8">The traditional formula</p>
+                <p className="eyebrow text-gold-ink mb-8">The traditional formula</p>
               </Reveal>
               <div
                 aria-hidden
@@ -685,7 +719,7 @@ function InternalNarrativesSection() {
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10 lg:items-end">
           <Reveal variant="fade-in" duration="slow" className="lg:col-span-5">
-            <p className="eyebrow text-gold mb-6">The quieter story</p>
+            <p className="eyebrow text-gold-ink mb-6">The quieter story</p>
             <h2 className="font-serif font-light text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.92] tracking-[-0.035em] text-foreground">
               Common internal{" "}
               <em className="type-display-accent not-italic font-light italic text-[clamp(2.75rem,5.5vw,4.75rem)] leading-[0.85] text-gold-warm">
@@ -713,7 +747,7 @@ function InternalNarrativesSection() {
                   >
                     <span
                       aria-hidden
-                      className="mb-4 block font-serif italic leading-none text-[1.5rem] text-gold-warm transition-colors duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:text-gold-deep md:text-[1.85rem]"
+                      className="mb-4 block font-serif italic leading-none text-[1.5rem] text-gold-deep transition-colors duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:text-gold-ink md:text-[1.85rem]"
                     >
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -777,7 +811,7 @@ function ProgressNarrativeSection() {
 
       <Container className="relative">
         <Reveal variant="fade-in" duration="slow">
-          <p className="eyebrow text-gold mb-6">Beneath the surface</p>
+          <p className="eyebrow text-gold-ink mb-6">Beneath the surface</p>
           <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
             The Progress Narrative
             <br />
@@ -818,7 +852,7 @@ function ProgressNarrativeSection() {
         <div className="relative mt-14 md:mt-20">
           <Reveal variant="fade-in">
             <div className="mb-10 md:mb-14 max-w-2xl">
-              <p className="eyebrow text-gold mb-3">What research keeps finding</p>
+              <p className="eyebrow text-gold-ink mb-3">What research keeps finding</p>
               <h3 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.05] text-foreground">
                 Eight persistent{" "}
                 <em className="type-display-accent not-italic text-gold-warm">gaps</em>
@@ -840,6 +874,12 @@ function ProgressNarrativeSection() {
                 meta: "How it operates",
                 detail: <p>{g.d}</p>,
               }))}
+              onSelect={(index) =>
+                track("gap_selected", {
+                  section: "eight_persistent_gaps",
+                  position: index + 1,
+                })
+              }
             />
           </Reveal>
 
@@ -880,7 +920,7 @@ function ImpactPills() {
             <button
               key={t}
               {...getItemProps(i)}
-              className="selectable-item inline-flex w-fit max-w-full items-center gap-3 rounded-full border border-[color-mix(in_oklch,var(--gold)_22%,transparent)] bg-[color-mix(in_oklch,var(--background)_70%,transparent)] px-5 py-3 text-[length:var(--text-body)] leading-snug aria-selected:border-[var(--gold-deep)] aria-selected:bg-[color-mix(in_oklch,var(--gold-subtle)_75%,var(--background))]"
+              className="selectable-item inline-flex w-fit max-w-full items-center gap-3 rounded-full border border-[color-mix(in_oklch,var(--gold)_22%,transparent)] bg-[color-mix(in_oklch,var(--background)_70%,transparent)] px-5 py-3 text-[length:var(--text-body)] leading-snug data-[active=true]:border-[var(--gold-deep)] data-[active=true]:bg-[color-mix(in_oklch,var(--gold-subtle)_75%,var(--background))]"
             >
               <Icon size={20} strokeWidth={1.75} className="shrink-0 text-gold-deep" />
               {t}
@@ -911,7 +951,7 @@ function MotherhoodSection() {
     >
       <Container className="relative z-10">
         <Reveal variant="fade-in" duration="slow">
-          <p className="eyebrow text-gold mb-6">Life transitions</p>
+          <p className="eyebrow text-gold-ink mb-6">Life transitions</p>
           <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
             The{" "}
             <em className="type-display-accent not-italic font-light italic text-[clamp(3.4rem,8vw,7.5rem)] leading-[0.85] text-gold-warm">
@@ -962,7 +1002,7 @@ function MotherhoodSection() {
         <div className="relative mt-14 md:mt-20">
           <Reveal variant="fade-in">
             <div className="mb-10 md:mb-14 max-w-2xl md:mx-auto md:text-center">
-              <p className="eyebrow text-gold mb-3">What it feels like</p>
+              <p className="eyebrow text-gold-ink mb-3">What it feels like</p>
               <h3 className="font-serif text-[clamp(2rem,4vw,3.5rem)] leading-[1.05] text-foreground">
                 The{" "}
                 <em className="type-display-accent not-italic text-gold-warm">Psychological</em>{" "}
@@ -975,11 +1015,11 @@ function MotherhoodSection() {
             <Reveal variant="fade-in">
               <p className="max-w-sm type-body">
                 When the path forward is{" "}
-                <em className="not-italic font-serif italic text-[1.15em] md:text-[1.2em] text-gold-deep">
+                <em className="not-italic font-serif italic text-[1.15em] md:text-[1.2em] text-gold-ink">
                   opaque and high-risk
                 </em>
                 , even the most capable women start to doubt{" "}
-                <em className="not-italic font-serif italic text-[1.15em] md:text-[1.2em] text-gold-deep">
+                <em className="not-italic font-serif italic text-[1.15em] md:text-[1.2em] text-gold-ink">
                   not their talent — but their belonging.
                 </em>
               </p>
@@ -1081,6 +1121,12 @@ function StrategicWayForwardSection() {
                 </>
               ),
             }))}
+            onSelect={(index) =>
+              track("strategic_step_selected", {
+                section: "strategic_way_forward",
+                position: index + 1,
+              })
+            }
           />
         </Reveal>
       </Container>
@@ -1104,6 +1150,7 @@ function ProgrammeColumn({
   detailLabel,
   detail,
   ctaLabel,
+  ctaHash,
   delay,
   className,
 }: {
@@ -1114,6 +1161,8 @@ function ProgrammeColumn({
   detailLabel: string;
   detail: React.ReactNode;
   ctaLabel: string;
+  /** Section id on /work-with-me this programme's CTA should land on. */
+  ctaHash: string;
   delay?: number;
   className?: string;
 }) {
@@ -1152,9 +1201,19 @@ function ProgrammeColumn({
             : "color-mix(in oklch, var(--gold) 88%, var(--foreground))",
         }}
       >
-        <p className={dark ? "text-background/90" : "text-foreground/90"}>{summary}</p>
+        {/* Full-strength charcoal on the gold panel: at 90% it drops to 4.0:1,
+            just under the threshold, and the panel is too light to absorb it. */}
+        <p className={dark ? "text-background/90" : "text-foreground"}>{summary}</p>
 
-        <Accordion type="single" collapsible className="mt-5">
+        <Accordion
+          type="single"
+          collapsible
+          className="mt-5"
+          /* Radix reports "" on close, so this counts openings only. */
+          onValueChange={(value) => {
+            if (value) track("programme_explored", { section: "programmes", programme: ctaHash });
+          }}
+        >
           <AccordionItem
             value="detail"
             className={cn("border-b-0 border-t", dark ? "border-background/20" : "border-foreground/25")}
@@ -1172,7 +1231,7 @@ function ProgrammeColumn({
             <AccordionContent
               className={cn(
                 "space-y-4 pb-5 text-[length:var(--text-body)] leading-[1.6]",
-                dark ? "text-background/90" : "text-foreground/90",
+                dark ? "text-background/90" : "text-foreground",
               )}
             >
               {detail}
@@ -1181,7 +1240,15 @@ function ProgrammeColumn({
         </Accordion>
       </div>
 
-      <Link to="/work-with-me" className="cta-primary mt-6 self-start">
+      {/* Deep-links to this programme's own section. Both CTAs previously landed
+          on the top of /work-with-me, so two differently named buttons went to
+          the same place. */}
+      <Link
+        to="/work-with-me"
+        hash={ctaHash}
+        className="cta-primary mt-6 self-start"
+        onClick={() => track("programme_explored", { section: "programmes", programme: ctaHash })}
+      >
         {ctaLabel} <span aria-hidden className="cta-arrow">→</span>
       </Link>
     </Reveal>
@@ -1199,7 +1266,7 @@ function HowISupportSection() {
     >
       <Container className="relative z-10">
         <Reveal variant="fade-in" duration="slow">
-          <p className="eyebrow text-gold mb-6">Programs</p>
+          <p className="eyebrow text-gold-ink mb-6">Programs</p>
           <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
             How I Support{" "}
             <span className="text-foreground/90">High-Potential</span>
@@ -1218,7 +1285,7 @@ function HowISupportSection() {
           </p>
           <p className="mt-6 max-w-4xl type-lead text-foreground">
             My approach integrates coaching with{" "}
-            <em className="not-italic font-normal text-gold-deep">
+            <em className="not-italic font-normal text-gold-ink">
               evidence-based gender insight, strengths science,
             </em>{" "}
             and a deep understanding of organizational dynamics to help clients:
@@ -1268,6 +1335,7 @@ function HowISupportSection() {
             }
             kicker="Strategic Advancement Program"
             ctaLabel="Explore ELEVATE"
+            ctaHash="elevate"
             detailLabel="What we work on"
             summary={
               <>
@@ -1343,6 +1411,7 @@ function HowISupportSection() {
             }
             kicker="Evidence-Informed Coaching Program"
             ctaLabel={"Explore Lead & Thrive"}
+            ctaHash="lead-thrive"
             detailLabel="How it protects your trajectory"
             summary={
               <>
@@ -1478,8 +1547,8 @@ function WhyDifferentSection() {
         {/* 01 — the three disciplines behind the work */}
         <div className="mt-20 md:mt-24">
           <Reveal variant="fade-up">
-            <p className="eyebrow text-gold">
-              <span className="text-gold-deep">01</span> — What I bring
+            <p className="eyebrow text-gold-ink">
+              <span className="text-gold-ink">01</span> — What I bring
             </p>
           </Reveal>
           <div className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
@@ -1505,8 +1574,8 @@ function WhyDifferentSection() {
         {/* 02 — the principles, one description at a time */}
         <div className="mt-20 md:mt-24">
           <Reveal variant="fade-up">
-            <p className="eyebrow text-gold">
-              <span className="text-gold-deep">02</span> — How I work
+            <p className="eyebrow text-gold-ink">
+              <span className="text-gold-ink">02</span> — How I work
             </p>
             <p className="mt-5 max-w-2xl type-lead text-foreground">
               Five principles separate this from generic career advice. Select one to see what it
@@ -1521,6 +1590,13 @@ function WhyDifferentSection() {
               items={principles}
               listClassName="lg:pr-6"
               panelClassName="lg:border-l lg:border-[color-mix(in_oklch,var(--gold)_30%,transparent)] lg:pl-10"
+              onSelect={(index) =>
+                track("methodology_principle_selected", {
+                  section: "why_my_approach_is_different",
+                  principle: COMPARISON[index]?.a,
+                  position: index + 1,
+                })
+              }
             />
           </Reveal>
 
@@ -1533,8 +1609,8 @@ function WhyDifferentSection() {
 
         {/* 03 — where it lands */}
         <Reveal variant="fade-up" className="mt-20 md:mt-24">
-          <p className="eyebrow text-gold text-center">
-            <span className="text-gold-deep">03</span> — Where it lands
+          <p className="eyebrow text-gold-ink text-center">
+            <span className="text-gold-ink">03</span> — Where it lands
           </p>
           <p className="type-lead mt-6 max-w-3xl text-center mx-auto text-foreground">
             My work sits at the intersection of{" "}
@@ -1616,9 +1692,10 @@ function PathwayCard({
           : "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)] hover:border-[color-mix(in_oklch,var(--gold)_45%,transparent)]",
       )}
     >
-      {/* Whole-card click target, per review. The visible CTA below sits above
-          this and stays the single focusable, announced link for the card. */}
-      <Link to={to} aria-hidden tabIndex={-1} className="absolute inset-0 z-20" />
+      {/* No whole-card overlay link: the card contains its own CTA, and stacking
+          a second link over it gives one visual target two competing controls.
+          The hover lift and the growing gold rail carry the affordance instead,
+          and the CTA below is the only interaction. */}
       <span
         aria-hidden
         className={cn(
@@ -1700,8 +1777,16 @@ function PathwayCard({
       {/* mt-auto rather than flex-1 on the list above: the cards keep a shared
           CTA baseline, but the slack in the shorter card lands as breathing room
           before the button instead of a void inside the list. */}
-      <div className="relative z-30 mt-auto pt-9">
-        <Link to={to} className={dark ? "cta-primary-invert" : "cta-primary"}>
+      <div className="relative z-10 mt-auto pt-9">
+        <Link
+          to={to}
+          className={dark ? "cta-primary-invert" : "cta-primary"}
+          onClick={() =>
+            track(dark ? "organisational_engagement" : "strategic_clarity_call", {
+              section: "choose_the_pathway",
+            })
+          }
+        >
           {cta} <span aria-hidden className="cta-arrow">→</span>
         </Link>
       </div>
@@ -1737,7 +1822,7 @@ function TwoPathwaysSection() {
 
       <Container className="relative">
         <Reveal variant="fade-up">
-          <p className="eyebrow text-gold mb-6">Two pathways</p>
+          <p className="eyebrow text-gold-ink mb-6">Two pathways</p>
           <h2 className="max-w-4xl font-serif font-light text-[clamp(2.75rem,6vw,5.5rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
             Choose the pathway that
             <br />
@@ -1827,7 +1912,7 @@ function FounderSection() {
               founder statement so it can never be mistaken for a testimonial. */}
           <div className="relative z-20 py-10 md:col-span-5 md:py-16 lg:col-span-5 md:pr-0 text-center md:text-left">
             <Reveal variant="fade-up">
-              <p className="eyebrow text-gold mb-4">A statement from the founder</p>
+              <p className="eyebrow text-gold-ink mb-4">A statement from the founder</p>
               <h2 className="font-serif font-semibold text-[clamp(2.75rem,5.8vw,5.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
                 Amna
                 <br />
@@ -1854,7 +1939,11 @@ function FounderSection() {
             <Reveal delay={140} variant="fade-up" duration="fast">
               {/* Promoted from a text link to a button, per review — it was not
                   reading as an interactive control. */}
-              <Link to="/about" className="cta-secondary mt-8">
+              <Link
+                to="/about"
+                className="cta-secondary mt-8"
+                onClick={() => track("founder_story_opened", { section: "founder_statement" })}
+              >
                 Read the Founder Story <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </Reveal>
@@ -1968,11 +2057,19 @@ function FinalCTA() {
 
           <Reveal delay={100} variant="fade-up" className="mt-10 w-full max-w-2xl">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:justify-center sm:gap-4">
-              <Link to="/contact" className="cta-primary-invert flex-1">
+              <Link
+                to="/contact"
+                className="cta-primary-invert flex-1"
+                onClick={() => track("strategic_clarity_call", { section: "final_cta" })}
+              >
                 Book a Strategic Clarity Call{" "}
                 <span aria-hidden className="cta-arrow">→</span>
               </Link>
-              <Link to="/organizations" className="cta-secondary-invert flex-1">
+              <Link
+                to="/organizations"
+                className="cta-secondary-invert flex-1"
+                onClick={() => track("organisational_engagement", { section: "final_cta" })}
+              >
                 Discuss an Organisational Engagement{" "}
                 <span aria-hidden className="cta-arrow">→</span>
               </Link>

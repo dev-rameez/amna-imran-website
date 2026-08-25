@@ -23,6 +23,10 @@ const AccordionTrigger = React.forwardRef<
       ref={ref}
       className={cn(
         "flex flex-1 items-center justify-between py-4 text-sm font-medium cursor-pointer transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180",
+        /* Radix ships no focus style. outline-current rather than a fixed colour
+           so the ring stays visible on the dark and the gold programme panels
+           alike, without either caller configuring it. */
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current",
         className,
       )}
       {...props}

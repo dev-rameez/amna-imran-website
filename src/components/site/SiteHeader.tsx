@@ -103,7 +103,10 @@ export function SiteHeader() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="py-1 text-[length:var(--text-body)] text-foreground/90 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]"
+                /* py-2.5 rather than py-1: at body size that lifts the tap
+                   target from roughly 30px to 41px, which is a comfortable
+                   thumb target without changing the menu's spacing rhythm. */
+                className="py-2.5 text-[length:var(--text-body)] text-foreground/90 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]"
               >
                 {item.label}
               </Link>

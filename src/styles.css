@@ -47,6 +47,7 @@
   --color-gold-muted: var(--gold-muted);
   --color-gold-subtle: var(--gold-subtle);
   --color-gold-warm: var(--gold-warm);
+  --color-gold-ink: var(--gold-ink);
   --color-cream: var(--cream);
   --color-warm-cream: var(--warm-cream);
   --color-warm-panel: var(--warm-panel);
@@ -76,6 +77,14 @@
   --gold-subtle: oklch(0.91 0.028 78);  /* tinted surfaces */
   --gold-warm:   oklch(0.72 0.11 85);   /* display highlights */
   --gold-glow:   oklch(0.685 0.065 75 / 0.22);
+  /* Gold as ink, for small copy on the light surfaces: eyebrow labels, captions
+     and emphasis inside body text. --gold reads at 2.4–2.6:1 against the cream
+     and blush surfaces and --gold-deep at 3.7–3.9:1, both short of 4.5:1 at
+     caption sizes. This clears it on the worst surface with margin (4.7:1).
+     Light surfaces only — on charcoal it drops to 2.8:1, so dark sections keep
+     --gold and --gold-warm, which already pass there. Accent, border, marker
+     and display-type golds are deliberately untouched. */
+  --gold-ink:    oklch(0.52 0.075 72);
 
   /* Section surfaces */
   --warm-cream: oklch(0.965 0.014 80);  /* #f7f4ee */
@@ -705,8 +714,11 @@
 
   /* —— Selectable panels ——
      Visual states for the SelectablePanel primitive. The primitive owns roles
-     and keyboard handling; these classes key off aria-selected so markup and
-     appearance can never drift apart. */
+     and keyboard handling; these classes key off data-active, which it sets
+     alongside the ARIA state. Deliberately not keyed off aria-selected: the
+     same item is a tab when the panel sits beside the list and an expander
+     when it sits beneath it, and the appearance must not change with the
+     role. */
   .selectable-item {
     position: relative;
     width: 100%;
@@ -719,9 +731,9 @@
       border-color var(--motion-interaction) var(--ease-out-soft),
       opacity var(--motion-interaction) var(--ease-out-soft);
   }
-  .selectable-item[aria-selected="false"] { color: var(--text-muted); }
-  .selectable-item[aria-selected="false"]:hover { color: var(--text-primary); }
-  .selectable-item[aria-selected="true"] { color: var(--text-primary); }
+  .selectable-item[data-active="false"] { color: var(--text-muted); }
+  .selectable-item[data-active="false"]:hover { color: var(--text-primary); }
+  .selectable-item[data-active="true"] { color: var(--text-primary); }
 
   /* Full-width rows in a vertical list. Pills and other bespoke selectables keep
      their own treatment, so this is opt-in rather than on .selectable-item.
@@ -732,8 +744,8 @@
   .selectable-row:hover {
     box-shadow: inset 0 0 0 100px color-mix(in oklch, var(--gold) 5%, transparent);
   }
-  .selectable-row[aria-selected="true"],
-  .selectable-row[aria-selected="true"]:hover {
+  .selectable-row[data-active="true"],
+  .selectable-row[data-active="true"]:hover {
     box-shadow: inset 0 0 0 100px color-mix(in oklch, var(--gold) 11%, transparent);
   }
 
@@ -754,7 +766,7 @@
       opacity var(--motion-interaction) var(--ease-out-soft),
       transform var(--motion-interaction) var(--ease-out-soft);
   }
-  .selectable-row[aria-selected="true"]::before {
+  .selectable-row[data-active="true"]::before {
     opacity: 1;
     transform: scaleY(1);
   }
@@ -778,7 +790,7 @@
       border-color var(--motion-interaction) var(--ease-out-soft),
       color var(--motion-interaction) var(--ease-out-soft);
   }
-  .selectable-item[aria-selected="true"] .selectable-marker {
+  .selectable-item[data-active="true"] .selectable-marker {
     background-color: var(--gold-deep);
     border-color: var(--gold-deep);
     color: var(--offwhite);
@@ -816,7 +828,7 @@
     opacity: 0.75;
     transform: none;
   }
-  .selectable-item[aria-selected="true"] .selectable-chevron {
+  .selectable-item[data-active="true"] .selectable-chevron {
     opacity: 1;
     transform: none;
   }
@@ -835,7 +847,7 @@
       background-color var(--motion-interaction) var(--ease-out-soft);
   }
   .selectable-item:hover .selectable-bar { background-color: var(--gold-deep); }
-  .selectable-item[aria-selected="true"] .selectable-bar {
+  .selectable-item[data-active="true"] .selectable-bar {
     width: 3rem;
     background-color: var(--gold-deep);
   }
@@ -863,17 +875,17 @@
     border-top: 1px solid color-mix(in oklch, var(--hairline) 60%, transparent);
     transition: border-color var(--motion-interaction) var(--ease-out-soft);
   }
-  .selectable-item[aria-selected="true"] .selectable-rule,
+  .selectable-item[data-active="true"] .selectable-rule,
   .selectable-item:hover .selectable-rule {
     border-top-color: var(--gold-deep);
   }
 
   /* The same states on a dark surface. */
-  .selectable-tone-dark .selectable-item[aria-selected="false"] {
+  .selectable-tone-dark .selectable-item[data-active="false"] {
     color: color-mix(in oklch, var(--offwhite) 60%, transparent);
   }
-  .selectable-tone-dark .selectable-item[aria-selected="false"]:hover,
-  .selectable-tone-dark .selectable-item[aria-selected="true"] {
+  .selectable-tone-dark .selectable-item[data-active="false"]:hover,
+  .selectable-tone-dark .selectable-item[data-active="true"] {
     color: var(--offwhite);
   }
   .selectable-tone-dark .selectable-marker {
@@ -881,7 +893,7 @@
     background-color: oklch(1 0 0 / 0.06);
     color: var(--gold-warm);
   }
-  .selectable-tone-dark .selectable-item[aria-selected="true"] .selectable-marker {
+  .selectable-tone-dark .selectable-item[data-active="true"] .selectable-marker {
     background-color: var(--gold-warm);
     border-color: var(--gold-warm);
     color: var(--charcoal);
@@ -890,14 +902,14 @@
     background-color: oklch(1 0 0 / 0.28);
   }
   .selectable-tone-dark .selectable-item:hover .selectable-bar,
-  .selectable-tone-dark .selectable-item[aria-selected="true"] .selectable-bar {
+  .selectable-tone-dark .selectable-item[data-active="true"] .selectable-bar {
     background-color: var(--gold-warm);
   }
   .selectable-tone-dark .selectable-row:hover {
     box-shadow: inset 0 0 0 100px oklch(1 0 0 / 0.05);
   }
-  .selectable-tone-dark .selectable-row[aria-selected="true"],
-  .selectable-tone-dark .selectable-row[aria-selected="true"]:hover {
+  .selectable-tone-dark .selectable-row[data-active="true"],
+  .selectable-tone-dark .selectable-row[data-active="true"]:hover {
     box-shadow: inset 0 0 0 100px oklch(1 0 0 / 0.1);
   }
   .selectable-tone-dark .selectable-row::before {
@@ -906,7 +918,7 @@
   .selectable-tone-dark .selectable-rule {
     border-top-color: oklch(1 0 0 / 0.16);
   }
-  .selectable-tone-dark .selectable-item[aria-selected="true"] .selectable-rule,
+  .selectable-tone-dark .selectable-item[data-active="true"] .selectable-rule,
   .selectable-tone-dark .selectable-item:hover .selectable-rule {
     border-top-color: var(--gold-warm);
   }
@@ -938,9 +950,9 @@
     .selectable-chevron,
     .selectable-row::before,
     .selectable-panel { transition: none; }
-    .selectable-row[aria-selected="true"]::before { transform: none; }
+    .selectable-row[data-active="true"]::before { transform: none; }
     .selectable-item:hover .selectable-chevron,
-    .selectable-item[aria-selected="true"] .selectable-chevron { transform: none; }
+    .selectable-item[data-active="true"] .selectable-chevron { transform: none; }
     .cta-primary:hover .cta-arrow,
     .cta-secondary:hover .cta-arrow,
     .cta-primary-invert:hover .cta-arrow,
