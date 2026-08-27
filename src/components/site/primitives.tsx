@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 export function Container({
   className,
@@ -365,27 +365,13 @@ type SelectableOrientation = "vertical" | "horizontal";
  */
 type SelectableMode = "tabs" | "disclosure";
 
-/** Below this width SelectablePanel cannot show a list and a panel side by side. */
-const STACKED_QUERY = "(max-width: 1023px)";
-
-function subscribeStacked(onChange: () => void) {
-  const query = window.matchMedia(STACKED_QUERY);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
-
 /**
- * True when a two-column selectable panel has to collapse into one column.
- * The server snapshot is `false`, so SSR emits the side-by-side markup and
- * narrow clients switch to the stacked model on hydration.
+ * The width at which SelectablePanel can show a list and a panel side by side.
+ * Behaviour-only code may test this; layout must not, because a media query
+ * cannot be read while rendering on the server. Keep it in step with the `lg:`
+ * breakpoint that swaps the two structures.
  */
-export function useIsStacked() {
-  return useSyncExternalStore(
-    subscribeStacked,
-    () => window.matchMedia(STACKED_QUERY).matches,
-    () => false,
-  );
-}
+const SIDE_BY_SIDE_QUERY = "(min-width: 1024px)";
 
 /**
  * Single selection plus the ARIA wiring for whichever interaction model is in
@@ -399,22 +385,33 @@ export function useSelectableList(
     initial = 0,
     mode = "tabs",
     onSelect,
+    value,
+    onValueChange,
   }: {
     orientation?: SelectableOrientation;
     initial?: number;
     mode?: SelectableMode;
     /** Fires on a deliberate user selection, by pointer or by key. */
     onSelect?: (index: number) => void;
+    /**
+     * Pass to drive selection from the caller instead of internally, so two
+     * lists rendering the same items can share one selection.
+     */
+    value?: number;
+    onValueChange?: (index: number) => void;
   } = {},
 ) {
-  const [active, setActive] = useState(initial);
+  const [uncontrolled, setUncontrolled] = useState(initial);
+  const controlled = value !== undefined;
+  const active = controlled ? value : uncontrolled;
   const baseId = useId();
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   /* Every deliberate selection goes through here, so a caller watching for
      selections sees keyboard traversal as well as clicks. */
   const select = (index: number) => {
-    setActive(index);
+    if (!controlled) setUncontrolled(index);
+    onValueChange?.(index);
     onSelect?.(index);
   };
 
@@ -486,37 +483,29 @@ export function useSelectableList(
     "aria-labelledby": `${baseId}-item-${index}`,
   });
 
-  return { active, setActive, listProps, getItemProps, panelProps, getPanelProps };
+  return { active, listProps, getItemProps, panelProps, getPanelProps };
 }
 
-/**
- * Replays the panel's enter transition whenever `key` changes. Returns the
- * value for `data-state`, which .selectable-panel styles against.
- */
 /**
  * Safety net for the side-by-side layout: if the viewport is short enough that
  * the panel is below the fold, selecting an item would update something the
  * reader cannot see. Never fires on first render. Redundant in the stacked
- * model, where the detail is already adjacent to the item, so it is disabled
- * there.
+ * model, where the detail is already adjacent to the item, so it is skipped
+ * below the breakpoint.
  */
-function usePanelIntoView(
-  active: number,
-  panelRef: React.RefObject<HTMLDivElement | null>,
-  enabled: boolean,
-) {
+function usePanelIntoView(active: number, panelRef: React.RefObject<HTMLDivElement | null>) {
   const previous = useRef(active);
   useEffect(() => {
     if (previous.current === active) return;
     previous.current = active;
-    if (!enabled) return;
+    if (!window.matchMedia(SIDE_BY_SIDE_QUERY).matches) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     panelRef.current?.scrollIntoView({
       block: "nearest",
       behavior: reduced ? "auto" : "smooth",
     });
-  }, [active, panelRef, enabled]);
+  }, [active, panelRef]);
 }
 
 /**
@@ -524,8 +513,17 @@ function usePanelIntoView(
  * value for `data-state`, which .selectable-panel styles against.
  */
 export function usePanelTransition(key: unknown) {
-  const [entered, setEntered] = useState(false);
+  /* Starts "entered" so the panel is visible in the server markup: "entering"
+     is opacity 0, which would otherwise hide the copy until hydration. The
+     transition is for changing selection, so it only replays after the first
+     render. */
+  const [entered, setEntered] = useState(true);
+  const firstRender = useRef(true);
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
     setEntered(false);
     const raf = window.requestAnimationFrame(() => setEntered(true));
     return () => window.cancelAnimationFrame(raf);
@@ -564,17 +562,30 @@ export function SelectablePanel({
   /** Called when the reader picks an item, for engagement tracking. */
   onSelect?: (index: number, item: SelectableEntry) => void;
 }) {
-  const stacked = useIsStacked();
-  const { active, listProps, getItemProps, panelProps, getPanelProps } = useSelectableList(
-    items.length,
-    {
-      mode: stacked ? "disclosure" : "tabs",
-      onSelect: onSelect ? (index) => onSelect(index, items[index]) : undefined,
-    },
-  );
+  /* Both interaction models are always mounted and CSS picks one, so the server
+     markup is already correct at every width. Deciding in JS instead would make
+     narrow screens receive the side-by-side layout and jump on hydration.
+     Selection is held here so the two stay in step, and the hidden one is
+     `display: none`, which keeps it out of the tab order and the a11y tree. */
+  const [active, setActive] = useState(0);
+  const handleSelect = (index: number) => {
+    setActive(index);
+    onSelect?.(index, items[index]);
+  };
+  const tabs = useSelectableList(items.length, {
+    mode: "tabs",
+    value: active,
+    onValueChange: handleSelect,
+  });
+  const disclosure = useSelectableList(items.length, {
+    mode: "disclosure",
+    value: active,
+    onValueChange: handleSelect,
+  });
+
   const panelState = usePanelTransition(active);
   const panelRef = useRef<HTMLDivElement>(null);
-  usePanelIntoView(active, panelRef, !stacked);
+  usePanelIntoView(active, panelRef);
   const showMarker = variant !== "label";
   const current = items[active];
 
@@ -593,7 +604,7 @@ export function SelectablePanel({
       </div>
     ) : null;
 
-  const rowContent = (item: SelectableEntry, i: number) => (
+  const rowContent = (item: SelectableEntry, i: number, chevron: string) => (
     <>
       {showMarker ? (
         <span
@@ -618,7 +629,7 @@ export function SelectablePanel({
         aria-hidden
         className="selectable-chevron ml-auto mt-[0.6em] font-serif text-[0.9rem] leading-none"
       >
-        {stacked ? "↓" : "→"}
+        {chevron}
       </span>
     </>
   );
@@ -631,13 +642,18 @@ export function SelectablePanel({
     </>
   );
 
-  /* Stacked: each item owns its explanation, so the answer appears directly
-     under the row that was tapped instead of below the whole list. */
-  if (stacked) {
-    return (
-      <div className={cn(tone === "dark" && "selectable-tone-dark", className)}>
+  return (
+    <div className={cn(tone === "dark" && "selectable-tone-dark", className)}>
+      {/* Stacked, below lg: each item owns its explanation, so the answer
+          appears directly under the row that was tapped rather than below the
+          whole list. */}
+      <div className="lg:hidden">
         {rail}
-        <div {...listProps} aria-label={label} className="flex flex-col">
+        <div
+          {...disclosure.listProps}
+          aria-label={label}
+          className={cn("flex flex-col", listClassName)}
+        >
           {items.map((item, i) => (
             <div
               key={i}
@@ -646,16 +662,16 @@ export function SelectablePanel({
               )}
             >
               <button
-                {...getItemProps(i)}
-                className="selectable-item selectable-row flex items-start gap-4 py-4"
+                {...disclosure.getItemProps(i)}
+                className="selectable-item selectable-row flex w-full items-start gap-4 py-4"
               >
-                {rowContent(item, i)}
+                {rowContent(item, i, "↓")}
               </button>
               {i === active && (
                 <div
-                  {...getPanelProps(i)}
+                  {...disclosure.getPanelProps(i)}
                   data-state={panelState}
-                  className="selectable-panel pb-6 pl-1 pr-1"
+                  className={cn("selectable-panel pb-6 pl-1 pr-1", panelClassName)}
                 >
                   {detail(item)}
                 </div>
@@ -664,43 +680,36 @@ export function SelectablePanel({
           ))}
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div
-      className={cn(
-        "grid gap-10 lg:grid-cols-12 lg:gap-12",
-        tone === "dark" && "selectable-tone-dark",
-        className,
-      )}
-    >
-      <div className={cn("lg:col-span-5", listClassName)}>
-        {rail}
-        <div {...listProps} aria-label={label} className="relative flex flex-col">
-          {variant === "step" && <span aria-hidden className="selectable-path" />}
-          {items.map((item, i) => (
-            <button
-              key={i}
-              {...getItemProps(i)}
-              className={cn(
-                "selectable-item selectable-row flex items-start gap-4 py-4",
-                i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
-              )}
-            >
-              {rowContent(item, i)}
-            </button>
-          ))}
+      {/* Side by side, lg and up: one shared panel, roving tabindex, arrow keys. */}
+      <div className="hidden lg:grid lg:grid-cols-12 lg:gap-12">
+        <div className={cn("lg:col-span-5", listClassName)}>
+          {rail}
+          <div {...tabs.listProps} aria-label={label} className="relative flex flex-col">
+            {variant === "step" && <span aria-hidden className="selectable-path" />}
+            {items.map((item, i) => (
+              <button
+                key={i}
+                {...tabs.getItemProps(i)}
+                className={cn(
+                  "selectable-item selectable-row flex items-start gap-4 py-4",
+                  i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
+                )}
+              >
+                {rowContent(item, i, "→")}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div
-        ref={panelRef}
-        {...panelProps}
-        data-state={panelState}
-        className={cn("selectable-panel lg:col-span-7", panelClassName)}
-      >
-        {current && detail(current)}
+        <div
+          ref={panelRef}
+          {...tabs.panelProps}
+          data-state={panelState}
+          className={cn("selectable-panel lg:col-span-7", panelClassName)}
+        >
+          {current && detail(current)}
+        </div>
       </div>
     </div>
   );
