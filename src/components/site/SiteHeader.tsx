@@ -55,7 +55,7 @@ export function SiteHeader() {
               draggable={false}
             />
             <span className="hidden sm:flex flex-col leading-none">
-              <span className="text-[length:var(--text-caption)] uppercase tracking-[0.28em] text-copy-muted">
+              <span className="text-[0.625rem] uppercase tracking-[0.22em] text-copy-muted">
                 Coaching · Consulting
               </span>
             </span>
