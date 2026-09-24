@@ -542,6 +542,7 @@ export function SelectablePanel({
   items,
   variant = "label",
   tone = "light",
+  density = "default",
   label,
   className,
   listClassName,
@@ -553,6 +554,8 @@ export function SelectablePanel({
   /** numbered = 01/02 numerals, step = numerals plus a progress rail, label = type only. */
   variant?: "numbered" | "step" | "label";
   tone?: "light" | "dark";
+  /** compact = smaller row labels and detail copy, for long lists. */
+  density?: "default" | "compact";
   /** Accessible name for the list of choices. */
   label: string;
   className?: string;
@@ -587,6 +590,8 @@ export function SelectablePanel({
   const panelRef = useRef<HTMLDivElement>(null);
   usePanelIntoView(active, panelRef);
   const showMarker = variant !== "label";
+  const compact = density === "compact";
+  const rowPad = compact ? "py-3" : "py-4";
   const current = items[active];
 
   /* Progress rail for the step variant. Shown in both models, because "how far
@@ -611,7 +616,11 @@ export function SelectablePanel({
           aria-hidden
           className={cn(
             "selectable-marker mt-0.5",
-            variant === "step" ? "h-11 w-11 text-[1.05rem]" : "h-9 w-9 text-[0.95rem]",
+            variant === "step"
+              ? "h-11 w-11 text-[1.05rem]"
+              : compact
+                ? "h-8 w-8 text-[0.85rem]"
+                : "h-9 w-9 text-[0.95rem]",
           )}
         >
           {String(i + 1).padStart(2, "0")}
@@ -619,7 +628,14 @@ export function SelectablePanel({
       ) : (
         <span aria-hidden className="selectable-bar mt-[0.85em]" />
       )}
-      <span className="font-serif text-[length:var(--text-heading-3)] leading-snug">
+      <span
+        className={cn(
+          "font-serif leading-snug",
+          compact
+            ? "pt-1 text-[length:var(--text-lead)]"
+            : "text-[length:var(--text-heading-3)]",
+        )}
+      >
         {item.label}
       </span>
       {/* Only appears on hover or when active, so the row reads as choosable
@@ -637,7 +653,7 @@ export function SelectablePanel({
   const detail = (item: SelectableEntry) => (
     <>
       {item.meta && <p className="eyebrow text-gold-ink mb-4">{item.meta}</p>}
-      <div className="type-body-emphasis">{item.detail}</div>
+      <div className={compact ? "type-body" : "type-body-emphasis"}>{item.detail}</div>
       {footer && <div className="mt-8">{footer}</div>}
     </>
   );
@@ -663,7 +679,7 @@ export function SelectablePanel({
             >
               <button
                 {...disclosure.getItemProps(i)}
-                className="selectable-item selectable-row flex w-full items-start gap-4 py-4"
+                className={cn("selectable-item selectable-row flex w-full items-start gap-4", rowPad)}
               >
                 {rowContent(item, i, "↓")}
               </button>
@@ -692,7 +708,8 @@ export function SelectablePanel({
                 key={i}
                 {...tabs.getItemProps(i)}
                 className={cn(
-                  "selectable-item selectable-row flex items-start gap-4 py-4",
+                  "selectable-item selectable-row flex items-start gap-4",
+                  rowPad,
                   i > 0 && "border-t border-[color-mix(in_oklch,var(--hairline)_45%,transparent)]",
                 )}
               >

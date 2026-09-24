@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import {
   Container,
+  Hairline,
   Reveal,
   Section,
   SectionQuote,
@@ -14,15 +15,9 @@ import {
   usePanelTransition,
 } from "@/components/site/primitives";
 import { Frown, HelpCircle, Scale, Unplug, History } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import heroCutout from "@/assets/amna-support.png";
+import heroPortrait from "@/assets/amna-hero-v2.png";
 import approachPortrait from "@/assets/amna-approach.png";
-import programmePortrait from "@/assets/amna-full-portrait.png";
+import programmePortrait from "@/assets/amna-support.png";
 import founderPortrait from "@/assets/amna-about-realization.png";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
@@ -231,25 +226,7 @@ function HomePage() {
   return (
     <>
       <Hero />
-      {/* Introduction and credentials are one continuous block, so the credentials
-          read as part of the introduction rather than a separate strip. */}
-      <HeroIntro />
       <HighPerformanceSection />
-      <SectionSeam
-        from="warm"
-        into="cream"
-        intensity="soft"
-        fromFill={SURFACE.warm}
-        intoFill={SURFACE.cream}
-      />
-      <InternalNarrativesSection />
-      <SectionSeam
-        from="cream"
-        into="warm"
-        intensity="soft"
-        fromFill={SURFACE.cream}
-        intoFill={SURFACE.warm}
-      />
       <ProgressNarrativeSection />
       <SectionSeam
         from="warm"
@@ -276,6 +253,16 @@ function HomePage() {
         intoFill={SURFACE.blushApproach}
       />
       <WhyDifferentSection />
+      <VariantLabel
+        name="Variant A — for client review"
+        note="Quote beside the portrait · intersection line under the heading · 03 removed · principles as tiles"
+      />
+      <WhyDifferentVariantA />
+      <VariantLabel
+        name="Variant B — for client review"
+        note="Quote card on the portrait · centred story line · principles as pill tabs"
+      />
+      <WhyDifferentVariantB />
       <SectionSeam
         from="blush"
         into="warm"
@@ -297,213 +284,177 @@ function HomePage() {
   );
 }
 
+const AMNA_TYPE = {
+  fontSize: "clamp(4.25rem, 11vw, 9.5rem)",
+  letterSpacing: "-0.06em",
+} as const;
+
+const IMRAN_TYPE = {
+  fontSize: "clamp(4rem, 10.4vw, 9rem)",
+  letterSpacing: "-0.05em",
+} as const;
+
 /* ---------------- HERO — Marie-style banner ---------------- */
 
 function Hero() {
   return (
-    <section
-      className="relative isolate overflow-hidden"
-      style={{
-        height: "100svh",
-        minHeight: "min(100svh, 560px)",
-        maxHeight: "920px",
-        background:
-          "radial-gradient(ellipse 90% 75% at 50% 40%, color-mix(in oklch, var(--blush) 35%, white) 0%, color-mix(in oklch, var(--blush) 88%, white) 55%, var(--blush) 100%)",
-      }}
-    >
-      {/* Soft center wash — same quiet field as the Marie reference */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 hero-enter-soft"
-        style={{
-          animationDelay: "0ms",
-          background:
-            "radial-gradient(ellipse 45% 55% at 50% 48%, color-mix(in oklch, white 45%, transparent) 0%, transparent 70%)",
-        }}
-      />
+    <section className="relative overflow-x-clip bg-[var(--warm-cream)]">
+      <Container className="relative pt-3 md:pt-4 lg:pt-5">
+        <div className="grid items-center gap-10 md:grid-cols-12 md:gap-6 lg:gap-8">
+          <div className="relative z-10 md:col-span-5">
+            <Reveal variant="fade-up" duration="slow" delay={60}>
+              <h1 className="font-serif font-light leading-[1.05] tracking-[-0.02em] text-foreground">
+                <span
+                  className="block"
+                  style={{ fontSize: "clamp(1.4rem, 2.1vw, 1.95rem)", marginBottom: "0.12em" }}
+                >
+                  Strategic Leadership
+                </span>
+                <span
+                  className="block"
+                  style={{ fontSize: "clamp(1.4rem, 2.1vw, 1.95rem)", marginBottom: "0.2em" }}
+                >
+                  Coaching for
+                </span>
+                <span style={{ fontSize: "clamp(1.85rem, 3.4vw, 2.75rem)", lineHeight: 0.95 }}>
+                  <em className="type-display-accent not-italic text-gold-warm">
+                    High-Potential
+                  </em>{" "}
+                  <span className="font-serif font-light">Women</span>
+                </span>
+              </h1>
+            </Reveal>
 
-      <h1 className="pointer-events-none absolute inset-0 select-none" aria-label="Amna Imran">
-        {/* AMNA — outer A's in front of portrait; M & N behind it */}
-        <span
-          className="hero-enter absolute inset-x-0 top-[max(2.5rem,5vh)] flex justify-center font-serif font-light uppercase leading-none text-white"
-          style={{
-            fontSize: "clamp(3.25rem, 18vw, 16rem)",
-            letterSpacing: "-0.045em",
-            animationDelay: "120ms",
-          }}
-          aria-hidden
-        >
-          <span className="relative z-[3]">A</span>
-          <span className="relative z-[1]">m</span>
-          <span className="relative z-[1]">n</span>
-          <span className="relative z-[3]">a</span>
-        </span>
+            <Reveal variant="fade-in" delay={140}>
+              <p className="mt-7 max-w-md type-lead font-light text-copy">
+                I help ambitious women navigate bias, strengthen executive presence, and
+                accelerate their careers using evidence-based gender strategy, strengths
+                science, and systemic insights — not just anecdotal advice.
+              </p>
+            </Reveal>
 
-        {/*
-          IMRAN — I/M/A/N behind the portrait; R alone in front.
-          R is a separate layer (not inside a transformed parent) so z-index wins.
-        */}
-        <span
-          className="hero-enter absolute inset-x-0 top-[52%] z-[1] flex justify-center font-serif font-light uppercase leading-none text-white w-full"
-          style={{
-            fontSize: "clamp(2.6rem, 15vw, 14rem)",
-            letterSpacing: "clamp(0.04em, 2vw, 0.12em)",
-            paddingInline: "2vw",
-            animationDelay: "380ms",
-          }}
-          aria-hidden
-        >
-          <span>I</span>
-          <span>m</span>
-          <span className="opacity-0" aria-hidden>
-            r
-          </span>
-          <span>a</span>
-          <span>n</span>
-        </span>
-        <span
-          className="hero-enter absolute inset-x-0 top-[52%] z-[3] flex justify-center font-serif font-light uppercase leading-none text-white w-full pointer-events-none"
-          style={{
-            fontSize: "clamp(2.6rem, 15vw, 14rem)",
-            letterSpacing: "clamp(0.04em, 2vw, 0.12em)",
-            paddingInline: "2vw",
-            animationDelay: "480ms",
-          }}
-          aria-hidden
-        >
-          <span className="opacity-0">I</span>
-          <span className="opacity-0">m</span>
-          <span>r</span>
-          <span className="opacity-0">a</span>
-          <span className="opacity-0">n</span>
-        </span>
-      </h1>
+            <Reveal variant="fade-up" delay={220} duration="fast">
+              <div className="mt-9 flex max-w-md flex-col gap-3">
+                <Link
+                  to="/contact"
+                  className="cta-primary w-full justify-between text-left sm:whitespace-nowrap"
+                  onClick={() => track("strategic_clarity_call", { section: "hero_intro" })}
+                >
+                  Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
+                </Link>
+                <Link
+                  to="/organizations"
+                  className="cta-secondary w-full justify-between text-left sm:whitespace-nowrap"
+                  onClick={() => track("organisational_engagement", { section: "hero_intro" })}
+                >
+                  For Corporate &amp; HR Enquiries <span aria-hidden className="cta-arrow">→</span>
+                </Link>
+              </div>
+            </Reveal>
+          </div>
 
-      {/* Standing portrait — full banner height. Separation comes from a single
-          drop-shadow that follows her silhouette, not from an ambient glow: the
-          earlier radial glow lit the blush field unevenly and the elliptical
-          contact shadow pooled as a haze around her legs. A silhouette shadow
-          cannot do either, because it has no shape of its own. */}
-      <div
-        className="hero-enter absolute inset-0 z-[2] flex items-end justify-center pointer-events-none overflow-hidden"
-        style={{ animationDelay: "220ms" }}
-      >
-        <img
-          src={heroCutout}
-          alt="Amna Imran — Executive Coach"
-          draggable={false}
-          /* The fade has to start well above the base and finish at it. The
-             source image ends mid-leg rather than at her feet, so a short fade
-             leaves a hard cut across the trousers; a long one reads as an
-             intentional crop. */
-          className="select-none object-contain object-bottom max-w-[min(100vw,42rem)] sm:max-w-none [mask-image:linear-gradient(to_bottom,black_78%,transparent_100%)]"
-          style={{
-            height: "100%",
-            width: "auto",
-            /* Up ~6% on the previous 1.06 per review, making her the focal point.
-               Growth is from the bottom edge, so the ceiling here is the
-               transparent headroom above her head in the source cut-out. */
-            transform: "scale(1.12)",
-            transformOrigin: "bottom center",
-            /* Filters paint before the mask, so the shadow fades out with her
-               rather than surviving below the crop. */
-            filter: "drop-shadow(0 24px 44px color-mix(in oklch, var(--charcoal) 13%, transparent))",
-          }}
-        />
-      </div>
+          <div className="md:col-span-7">
+            <HeroPortraitLockup />
+          </div>
+        </div>
 
-      {/* Continuity into the introduction. A straight vertical resolve toward the
-          next section's warm cream, deliberately not a curve: the earlier curved
-          sweep read as a shape parked in the banner rather than as a transition,
-          and the client rejected it on those grounds. Ends near-opaque so the
-          boundary itself carries no visible line. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-24 md:h-32"
-        style={{
-          background:
-            "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--warm-cream) 38%, transparent) 58%, color-mix(in oklch, var(--warm-cream) 92%, transparent))",
-        }}
-      />
+        <CredentialsBand />
+      </Container>
     </section>
   );
 }
 
-/* ---------------- HERO INTRO — headline + CTAs below banner ---------------- */
+/**
+ * Seated cutout with AMNA / IMRAN split across the figure: some letters sit
+ * behind her, some in front. Crop matches the last signed-off lockup; a soft
+ * oval wash keeps the field from reading empty.
+ */
+function HeroPortraitLockup() {
+  const nameRow =
+    "flex justify-center whitespace-nowrap font-serif font-light uppercase leading-[0.82] text-gold-warm";
+  const nameStack =
+    "pointer-events-none absolute inset-0 flex flex-col items-center justify-end pb-[20%]";
 
-function HeroIntro() {
+  const amnaBehind = (
+    <>
+      <span className="opacity-0">A</span>
+      <span>m</span>
+      <span className="opacity-0">n</span>
+      <span className="opacity-0">a</span>
+    </>
+  );
+  const imranBehind = (
+    <>
+      <span className="opacity-0">I</span>
+      <span>m</span>
+      <span className="opacity-0">r</span>
+      <span>a</span>
+      <span className="opacity-0">n</span>
+    </>
+  );
+  const amnaFront = (
+    <>
+      <span>A</span>
+      <span className="opacity-0">m</span>
+      <span>n</span>
+      <span>a</span>
+    </>
+  );
+  const imranFront = (
+    <>
+      <span>I</span>
+      <span className="opacity-0">m</span>
+      <span>r</span>
+      <span className="opacity-0">a</span>
+      <span>n</span>
+    </>
+  );
+
   return (
-    <section className="relative overflow-hidden bg-[var(--warm-cream)]">
-      {/* Receives the hero's resolve from above. A trace of blush carried a short
-          way down keeps the banner and the introduction reading as one opening
-          rather than two stacked panels. No hairline and no curve — the client
-          rejected both, and continuity here is tonal only. */}
+    <div className="relative isolate mx-auto w-full max-w-[42rem] lg:max-w-none">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-16 md:h-20"
+        className="pointer-events-none absolute left-1/2 top-[18%] z-0 h-[78%] w-[84%] -translate-x-1/2 rounded-full"
         style={{
           background:
-            "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 16%, transparent), transparent)",
+            "radial-gradient(ellipse at 50% 42%, color-mix(in oklch, white 70%, transparent) 0%, color-mix(in oklch, var(--gold) 16%, transparent) 38%, transparent 72%)",
         }}
       />
-      <Container className="relative z-[3] pb-10 pt-12 md:pb-12 md:pt-16">
-        <div className="mx-auto max-w-3xl text-center">
-          <Reveal variant="fade-up" duration="slow" delay={60}>
-            <h2 className="font-serif font-light leading-[1.05] tracking-[-0.02em] text-foreground">
-              <span
-                className="block"
-                style={{ fontSize: "clamp(1.35rem, 2vw, 1.85rem)", marginBottom: "0.25em" }}
-              >
-                Strategic Leadership Coaching for
-              </span>
-              <em
-                className="type-display-accent not-italic font-light italic text-gold-warm"
-                style={{ fontSize: "clamp(2.2rem, 5vw, 3.75rem)", lineHeight: 0.95 }}
-              >
-                High-Potential
-              </em>{" "}
-              <span
-                className="font-serif font-light"
-                style={{ fontSize: "clamp(2.2rem, 5vw, 3.75rem)", lineHeight: 0.95 }}
-              >
-                Women
-              </span>
-            </h2>
-          </Reveal>
 
-          <Reveal variant="fade-in" delay={140}>
-            <p className="mx-auto mt-7 max-w-2xl type-lead font-light text-copy">
-              I help ambitious women navigate bias, strengthen executive presence, and
-              accelerate their careers using evidence-based gender strategy, strengths
-              science, and systemic insights — not just anecdotal advice.
-            </p>
-          </Reveal>
+      {/* Behind her: only the middle letters the figure is meant to cover */}
+      <div aria-hidden className={cn(nameStack, "z-[1]")}>
+        <span className={nameRow} style={AMNA_TYPE}>
+          {amnaBehind}
+        </span>
+        <span className={cn(nameRow, "-mt-[0.06em]")} style={IMRAN_TYPE}>
+          {imranBehind}
+        </span>
+      </div>
 
-          <Reveal variant="fade-up" delay={220} duration="fast">
-            <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-x-6">
-              <Link
-                to="/contact"
-                className="cta-primary"
-                onClick={() => track("strategic_clarity_call", { section: "hero_intro" })}
-              >
-                Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
-              </Link>
-              <Link
-                to="/organizations"
-                className="cta-secondary"
-                onClick={() => track("organisational_engagement", { section: "hero_intro" })}
-              >
-                For Corporate &amp; HR Enquiries <span aria-hidden className="cta-arrow">→</span>
-              </Link>
-            </div>
-          </Reveal>
-        </div>
+      {/* Crop box has no z-index, so it cannot swallow the name. The image is
+          the only z-2 layer: transparent pixels show the behind letters. */}
+      <div className="hero-enter relative mx-auto aspect-[5/6] w-[min(100%,30rem)] overflow-hidden md:w-[min(100%,34rem)] lg:w-[min(94%,38rem)]">
+        <img
+          src={heroPortrait}
+          alt="Amna Imran — Executive Coach"
+          draggable={false}
+          className="absolute left-1/2 top-[-38%] z-[2] h-[240%] w-auto max-w-none -translate-x-1/2 select-none object-contain"
+          style={{
+            filter: "drop-shadow(0 18px 36px color-mix(in oklch, var(--charcoal) 12%, transparent))",
+          }}
+        />
+      </div>
 
-        {/* Credentials sit inside the introduction rather than in a strip of their
-            own, so they read as evidence for the claim above them. */}
-        <CredentialsBand />
-      </Container>
-    </section>
+      {/* In front of her — enough of the name to read across the figure */}
+      <div aria-hidden className={cn(nameStack, "z-[3]")}>
+        <span className={nameRow} style={AMNA_TYPE}>
+          {amnaFront}
+        </span>
+        <span className={cn(nameRow, "-mt-[0.06em]")} style={IMRAN_TYPE}>
+          {imranFront}
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -593,12 +544,12 @@ function HighPerformanceSection() {
 
       <Container className="relative">
         <Reveal variant="fade-in" duration="slow">
-          <p className="eyebrow text-gold-ink mb-6">The performance paradox</p>
-          <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+          <p className="eyebrow text-gold-ink mb-5">The performance paradox</p>
+          <h2 className="type-display max-w-4xl font-light">
             High Performance Alone,
             <br />
             <span className="text-foreground/90">Does Not </span>
-            <em className="type-display-accent not-italic text-gold-warm">Guarantee</em>
+            <em className="type-display-accent text-gold-warm">Guarantee</em>
             <br />
             Progression
           </h2>
@@ -606,7 +557,7 @@ function HighPerformanceSection() {
 
         {/* Split: numbered formula vs narrative — intentional asymmetry. The
             formula reveals step by step, then the conclusion lands after it. */}
-        <div className="relative mt-14 md:mt-20 grid gap-14 lg:grid-cols-12 lg:gap-10 lg:items-start">
+        <div className="relative mt-10 md:mt-12 grid gap-12 lg:grid-cols-12 lg:gap-10 lg:items-start">
           {/* Connector — carries the eye from the formula across to its outcome. */}
           <div
             aria-hidden
@@ -617,11 +568,11 @@ function HighPerformanceSection() {
           <div className="lg:col-span-5">
             <div className="relative">
               <Reveal variant="fade-in">
-                <p className="eyebrow text-gold-ink mb-8">The traditional formula</p>
+                <p className="eyebrow text-gold-ink mb-6">The traditional formula</p>
               </Reveal>
               <div
                 aria-hidden
-                className="absolute left-[1.75rem] top-14 bottom-2 w-px bg-gradient-to-b from-[var(--gold)] via-[color-mix(in_oklch,var(--gold)_40%,transparent)] to-transparent"
+                className="absolute left-[1.25rem] top-12 bottom-2 w-px bg-gradient-to-b from-[var(--gold)] via-[color-mix(in_oklch,var(--gold)_40%,transparent)] to-transparent"
               />
               <ol className="relative space-y-0">
                 {TRADITIONAL.map((t, i) => (
@@ -629,16 +580,14 @@ function HighPerformanceSection() {
                     key={t}
                     as="li"
                     variant="fade-up"
-                    duration="fast"
-                    delay={i * 80}
-                    className="relative flex gap-5 pb-8 last:pb-0"
+                    duration="slow"
+                    delay={i * 100}
+                    className="relative flex gap-4 pb-6 last:pb-0"
                   >
-                    {/* Heavier numerals per review, so the formula holds its own
-                        against the oversized "stalls" opposite it. */}
-                    <span className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] bg-[var(--warm-cream)] font-serif italic text-[1.3rem] text-gold-deep">
+                    <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] bg-[var(--warm-cream)] font-serif italic text-[1rem] text-gold-deep">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <p className="pt-3 font-serif text-[clamp(1.35rem,1.9vw,1.75rem)] leading-snug text-foreground">
+                    <p className="pt-1.5 font-serif text-[length:var(--text-lead)] leading-snug text-foreground">
                       {t}
                     </p>
                   </Reveal>
@@ -649,16 +598,14 @@ function HighPerformanceSection() {
 
           {/* Stalls — oversized word + body, revealed after the formula completes */}
           <div className="lg:col-span-7 lg:pl-8 xl:pl-14">
-            <Reveal variant="fade-up" delay={TRADITIONAL.length * 80}>
-              <h3 className="font-serif text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.05] tracking-[-0.025em] text-foreground">
+            <Reveal variant="fade-up" duration="slow" delay={TRADITIONAL.length * 100}>
+              <h3 className="font-serif font-light text-[clamp(1.6rem,1.5vw+0.95rem,2.45rem)] leading-[1.15] tracking-[-0.02em] text-foreground">
                 Yet progression often
-                <span className="mt-1 block type-display-accent text-[clamp(3.2rem,8vw,6.5rem)] leading-[0.85] text-gold-warm">
-                  stalls
-                </span>
+                <em className="type-display-accent mt-1 block text-gold-warm">stalls</em>
               </h3>
             </Reveal>
-            <Reveal variant="fade-in" delay={TRADITIONAL.length * 80 + 120}>
-              <div className="mt-8 max-w-xl space-y-5 type-body text-copy">
+            <Reveal variant="fade-in" duration="slow" delay={TRADITIONAL.length * 100 + 150}>
+              <div className="mt-6 max-w-xl space-y-4 type-body text-copy">
                 <p>
                   — sometimes subtly, sometimes abruptly. Research across organizations shows that
                   advancement depends on far more than performance alone. Factors such as{" "}
@@ -677,104 +624,127 @@ function HighPerformanceSection() {
             </Reveal>
           </div>
         </div>
+
+        {/* The inward story is the consequence of stalled progression, so it
+            closes this chapter rather than opening a new one. */}
+        <ChapterDivider className="my-14 md:my-16" />
+        <InternalNarratives />
       </Container>
     </Section>
   );
 }
 
+/* ---------------- CHAPTER FURNITURE ---------------- */
+
+function ChapterDivider({ className }: { className?: string }) {
+  return (
+    <div aria-hidden className={cn("flex items-center gap-4", className)}>
+      <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[color-mix(in_oklch,var(--gold)_42%,transparent)]" />
+      <span className="h-1.5 w-1.5 rotate-45 bg-[var(--gold-deep)]" />
+      <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[color-mix(in_oklch,var(--gold)_42%,transparent)]" />
+    </div>
+  );
+}
+
+/**
+ * Closing statement for a chapter. Both script phrases share one size, so the
+ * statement and its payoff read as a pair instead of two different voices.
+ */
+function ChapterQuote({
+  lead,
+  accent,
+  sub,
+  subAccent,
+}: {
+  lead: ReactNode;
+  accent: ReactNode;
+  sub: ReactNode;
+  subAccent?: ReactNode;
+}) {
+  const statement =
+    "font-serif font-light text-[clamp(1.6rem,1.5vw+0.95rem,2.45rem)] leading-[1.2] tracking-[-0.02em] text-foreground";
+  return (
+    <figure className="mx-auto max-w-3xl text-center">
+      <div aria-hidden className="flex items-center justify-center gap-4">
+        <span className="h-px w-14 bg-gradient-to-r from-transparent to-[color-mix(in_oklch,var(--gold)_55%,transparent)]" />
+        <span className="translate-y-2 font-serif text-[2.5rem] leading-none text-[color-mix(in_oklch,var(--gold)_60%,transparent)]">
+          “
+        </span>
+        <span className="h-px w-14 bg-gradient-to-l from-transparent to-[color-mix(in_oklch,var(--gold)_55%,transparent)]" />
+      </div>
+      <blockquote className="mt-3">
+        <p className={statement}>
+          {lead}
+          <em className="type-display-accent mt-1 block text-gold-warm">{accent}</em>
+        </p>
+        <p className="mx-auto mt-5 max-w-xl type-lead text-copy">{sub}</p>
+        {subAccent && (
+          <p className={cn(statement, "mt-1")}>
+            <em className="type-display-accent block text-gold-warm">{subAccent}</em>
+          </p>
+        )}
+      </blockquote>
+    </figure>
+  );
+}
+
 /* ---------------- COMMON INTERNAL NARRATIVES ---------------- */
 
-function InternalNarrativesSection() {
-  const quotes = INTERNAL_NARRATIVES;
-
+function InternalNarratives() {
   return (
-    <Section
-      as="section"
-      surface="cream"
-      pad="none"
-      className="relative overflow-hidden section-pad-top-major section-pad-bottom-major"
-      style={{ background: "color-mix(in oklch, var(--cream) 82%, var(--background))" }}
-    >
-      {/* Quiet depth behind the narratives — keeps the section from reading as a
-          flat panel without adding anything the eye has to process. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 55% 50% at 78% 18%, color-mix(in oklch, var(--gold-subtle) 34%, transparent), transparent 70%), radial-gradient(ellipse 45% 40% at 12% 88%, color-mix(in oklch, var(--blush-subtle) 45%, transparent), transparent 70%)",
-        }}
-      />
-
-      <Container className="relative">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10 lg:items-end">
-          <Reveal variant="fade-in" duration="slow" className="lg:col-span-5">
-            <p className="eyebrow text-gold-ink mb-6">The quieter story</p>
-            <h2 className="font-serif font-light text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.92] tracking-[-0.035em] text-foreground">
-              Common internal{" "}
-              <em className="type-display-accent not-italic font-light italic text-[clamp(2.75rem,5.5vw,4.75rem)] leading-[0.85] text-gold-warm">
-                narratives
-              </em>
-            </h2>
-            <p className="mt-6 max-w-sm type-body text-copy">
-              When performance does not convert into progression, the mind often turns the gap
-              inward.
-            </p>
-          </Reveal>
-
-          <div className="lg:col-span-7">
-            <ol className="grid grid-cols-1 gap-0 sm:grid-cols-2 sm:gap-x-10">
-              {quotes.map((q, i) => (
-                <Reveal key={q} delay={i * 120} variant="fade-up" duration="fast">
-                  <li
-                    className={`group relative py-7 border-b border-[color-mix(in_oklch,var(--gold)_30%,transparent)] last:border-b-0 sm:border-b-0 ${
-                      i < 2 ? "sm:border-b sm:border-[color-mix(in_oklch,var(--gold)_30%,transparent)]" : ""
-                    } ${
-                      i % 2 === 0
-                        ? "sm:pr-6 sm:border-r sm:border-[color-mix(in_oklch,var(--gold)_30%,transparent)]"
-                        : "sm:pl-6"
-                    }`}
-                  >
-                    <span
-                      aria-hidden
-                      className="mb-4 block font-serif italic leading-none text-[1.5rem] text-gold-deep transition-colors duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:text-gold-ink md:text-[1.85rem]"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <blockquote>
-                      <p className="font-serif italic text-[clamp(1.4rem,2.3vw,1.85rem)] leading-[1.3] tracking-[-0.01em] text-foreground/85 transition-colors duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:text-foreground">
-                        <span aria-hidden className="mr-1 text-gold-warm/70 not-italic">
-                          “
-                        </span>
-                        {q}
-                      </p>
-                    </blockquote>
-                  </li>
-                </Reveal>
-              ))}
-            </ol>
-          </div>
-        </div>
-
-        {/* Round 2 asks for more breathing room here than Round 1 allowed. */}
-        <Reveal variant="fade-in" duration="slow" delay={100} className="mt-20 md:mt-28">
-          <SectionQuote
-            sub={
-              <>
-                — but a lack of access to the unwritten rules of{" "}
-                <em className="type-display-accent not-italic text-gold-warm text-[1.15em]">
-                  advancement
-                </em>
-                .
-              </>
-            }
-          >
-            The challenge is not a lack of{" "}
-            <em className="italic text-gold-warm">ambition or ability</em>
-          </SectionQuote>
+    <div>
+      <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+        <Reveal variant="fade-in" duration="slow" className="lg:col-span-4">
+          <p className="eyebrow text-gold-ink mb-5">The quieter story</p>
+          <h2 className="font-serif font-light text-[clamp(2.1rem,2.6vw+0.7rem,3.4rem)] leading-[1.02] tracking-[-0.03em] text-foreground">
+            Common internal{" "}
+            <em className="type-display-accent text-gold-warm">narratives</em>
+          </h2>
+          <p className="mt-5 max-w-sm type-body text-copy">
+            When performance does not convert into progression, the mind often turns the gap
+            inward.
+          </p>
         </Reveal>
-      </Container>
-    </Section>
+
+        <ol className="grid gap-4 sm:grid-cols-2 lg:col-span-8">
+          {INTERNAL_NARRATIVES.map((q, i) => (
+            <Reveal
+              key={q}
+              as="li"
+              delay={i * 110}
+              variant="fade-up"
+              duration="slow"
+              className="relative overflow-hidden border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_55%,transparent)] px-6 pb-6 pt-5"
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -right-1 -top-5 select-none font-serif text-[6.5rem] leading-none text-[color-mix(in_oklch,var(--gold)_13%,transparent)]"
+              >
+                “
+              </span>
+              <span className="block font-serif text-[0.95rem] italic text-gold-deep">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span aria-hidden className="mt-3 block h-px w-8 bg-[color-mix(in_oklch,var(--gold)_55%,transparent)]" />
+              <blockquote className="relative mt-4">
+                <p className="font-serif italic text-[clamp(1.2rem,0.8vw+0.95rem,1.5rem)] leading-[1.35] text-foreground">
+                  {q}
+                </p>
+              </blockquote>
+            </Reveal>
+          ))}
+        </ol>
+      </div>
+
+      <Reveal variant="fade-in" duration="slow" delay={120} className="mt-14 md:mt-16">
+        <ChapterQuote
+          lead="The challenge is not a lack of"
+          accent="ambition or ability"
+          sub="— but a lack of access to the unwritten rules of"
+          subAccent="advancement."
+        />
+      </Reveal>
+    </div>
   );
 }
 
@@ -800,52 +770,57 @@ function ProgressNarrativeSection() {
       />
 
       <Container className="relative">
-        <Reveal variant="fade-in" duration="slow">
-          <p className="eyebrow text-gold-ink mb-6">Beneath the surface</p>
-          <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
-            The Progress Narrative
-            <br />
-            <span className="text-foreground/85">&amp; the </span>
-            <em className="type-display-accent not-italic text-gold-warm">Hidden Reality</em>
-          </h2>
-        </Reveal>
+        {/* Intro, the question and the eight gaps are one composition: the
+            intro sets up the claim, the gaps answer it, the quote closes it. */}
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-12">
+          <Reveal variant="fade-in" duration="slow" className="lg:col-span-6">
+            <p className="eyebrow text-gold-ink mb-5">Beneath the surface</p>
+            <h2 className="type-display font-light">
+              The Progress Narrative
+              <br />
+              <span className="text-foreground/85">&amp; the </span>
+              <em className="type-display-accent text-gold-warm">Hidden Reality</em>
+            </h2>
+          </Reveal>
+          <Reveal delay={80} variant="fade-in" duration="slow" className="lg:col-span-6">
+            <div className="max-w-xl space-y-4 type-body text-copy lg:border-l lg:border-[color-mix(in_oklch,var(--gold)_35%,transparent)] lg:pl-8">
+              <p>
+                On the surface, it appears that gender equality at work has largely been achieved.
+                Women are highly educated, widely represented in professional roles, and many
+                organizations publicly champion diversity.
+              </p>
+              <p>
+                Yet research in organizational behavior and leadership studies reveals persistent
+                gaps beneath this progress narrative.
+              </p>
+            </div>
+          </Reveal>
+        </div>
 
-        <Reveal delay={80} variant="fade-in">
-          <div className="mt-10 max-w-2xl space-y-5 type-body text-copy md:mt-12">
-            <p>
-              On the surface, it appears that gender equality at work has largely been achieved.
-              Women are highly educated, widely represented in professional roles, and many
-              organizations publicly champion diversity.
-            </p>
-            <p>
-              Yet research in organizational behavior and leadership studies reveals persistent
-              gaps beneath this progress narrative.
-            </p>
-          </div>
-        </Reveal>
-
-        {/* Transition moment — turns the intro's claim into the question the
-            eight gaps then answer, so the list is not encountered cold. */}
-        <Reveal variant="fade-in" duration="slow" className="mt-16 md:mt-24">
-          <div className="border-y border-[color-mix(in_oklch,var(--gold)_28%,transparent)] py-10 text-center md:py-14">
-            <p className="font-serif font-light italic text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] tracking-[-0.02em] text-gold-warm">
+        <Reveal variant="fade-in" duration="slow" className="mt-10 md:mt-12">
+          <div className="flex flex-col gap-3 border-y border-[color-mix(in_oklch,var(--gold)_26%,transparent)] py-6 text-center md:flex-row md:items-center md:justify-between md:gap-10 md:text-left">
+            <p className="shrink-0 font-serif italic text-[clamp(1.5rem,1.2vw+1rem,2.2rem)] leading-tight text-gold-warm">
               So why does this persist?
             </p>
-            <p className="mx-auto mt-5 max-w-xl type-body text-copy">
+            <p className="max-w-xl type-body text-copy">
               Because almost none of it is written down. These are the eight patterns research
               keeps finding — and the reason capable women stall without ever being told why.
             </p>
           </div>
         </Reveal>
 
-        {/* Gaps — same cream surface; hierarchy via type only */}
-        <div className="relative mt-14 md:mt-20">
-          <Reveal variant="fade-in">
-            <div className="mb-10 md:mb-14 max-w-2xl">
-              <p className="eyebrow text-gold-ink mb-3">What research keeps finding</p>
-              <h3 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.05] text-foreground">
-                Eight persistent{" "}
-                <em className="type-display-accent not-italic text-gold-warm">gaps</em>
+        <div className="relative mt-12 md:mt-14">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -top-10 right-0 hidden select-none font-serif font-light leading-none tracking-[-0.04em] text-[clamp(7rem,13vw,11rem)] text-[color-mix(in_oklch,var(--gold)_10%,transparent)] md:block"
+          >
+            08
+          </span>
+          <Reveal variant="fade-in" duration="slow">
+            <div className="relative mb-8 max-w-2xl md:mb-10">
+              <p className="eyebrow text-gold-ink mb-4">What research keeps finding</p>
+              <h3 className="font-serif font-light text-[clamp(2.1rem,2.6vw+0.7rem,3.4rem)] leading-[1.02] tracking-[-0.03em] text-foreground">
+                Eight persistent <em className="type-display-accent text-gold-warm">gaps</em>
               </h3>
               <p className="mt-4 text-[length:var(--text-small)] text-copy-muted">
                 Select a gap to see how it operates in practice.
@@ -853,12 +828,13 @@ function ProgressNarrativeSection() {
             </div>
           </Reveal>
 
-          <Reveal variant="fade-up">
+          <Reveal variant="fade-up" duration="slow">
             <SelectablePanel
               variant="numbered"
+              density="compact"
               label="Eight persistent gaps"
               listClassName="lg:col-span-7"
-              panelClassName="lg:col-span-5 lg:sticky lg:top-28 lg:self-start"
+              panelClassName="lg:col-span-5 lg:sticky lg:top-28 lg:self-start lg:border lg:border-t-2 lg:border-[color-mix(in_oklch,var(--gold)_22%,transparent)] lg:border-t-[color:var(--gold)] lg:bg-[color-mix(in_oklch,var(--background)_60%,transparent)] lg:p-8 lg:shadow-[var(--shadow-soft)]"
               items={GAPS.map((g) => ({
                 label: g.t,
                 meta: "How it operates",
@@ -873,13 +849,14 @@ function ProgressNarrativeSection() {
             />
           </Reveal>
 
-          <Reveal variant="fade-in" duration="slow" delay={100} className="mt-16 md:mt-20">
-            <SectionQuote
+          <ChapterDivider className="my-12 md:my-14" />
+
+          <Reveal variant="fade-in" duration="slow">
+            <ChapterQuote
+              lead="These dynamics are rarely"
+              accent="explicit or intentional"
               sub="— they are embedded in everyday organizational processes: performance reviews, leadership selection, project allocation, and informal influence channels."
-            >
-              These dynamics are rarely{" "}
-              <em className="italic text-gold-warm">explicit or intentional</em>
-            </SectionQuote>
+            />
           </Reveal>
         </div>
       </Container>
@@ -942,9 +919,9 @@ function MotherhoodSection() {
       <Container className="relative z-10">
         <Reveal variant="fade-in" duration="slow">
           <p className="eyebrow text-gold-ink mb-6">Life transitions</p>
-          <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+          <h2 className="type-display max-w-4xl font-light">
             The{" "}
-            <em className="type-display-accent not-italic font-light italic text-[clamp(3.4rem,8vw,7.5rem)] leading-[0.85] text-gold-warm">
+            <em className="type-display-accent accent-oval not-italic text-gold-warm">
               Motherhood
             </em>{" "}
             <span className="block sm:inline">Penalty</span>
@@ -970,7 +947,7 @@ function MotherhoodSection() {
             </p>
           </Reveal>
           <Reveal delay={100} variant="fade-in">
-            <p className="font-serif text-[clamp(1.35rem,2vw,1.8rem)] leading-snug text-foreground">
+            <p className="font-serif text-[length:var(--text-lead)] leading-snug text-foreground">
               Meanwhile, men often experience neutral or even positive career effects from
               fatherhood —{" "}
               <em className="type-display-accent not-italic italic text-gold-warm">
@@ -993,9 +970,9 @@ function MotherhoodSection() {
           <Reveal variant="fade-in">
             <div className="mb-10 md:mb-14 max-w-2xl md:mx-auto md:text-center">
               <p className="eyebrow text-gold-ink mb-3">What it feels like</p>
-              <h3 className="font-serif text-[clamp(2rem,4vw,3.5rem)] leading-[1.05] text-foreground">
+              <h3 className="type-h1">
                 The{" "}
-                <em className="type-display-accent not-italic text-gold-warm">Psychological</em>{" "}
+                <em className="type-display-accent accent-oval not-italic text-gold-warm">Psychological</em>{" "}
                 impact
               </h3>
             </div>
@@ -1077,9 +1054,9 @@ function StrategicWayForwardSection() {
 
       <Container className="relative z-10">
         <Reveal variant="fade-in" duration="slow">
-          <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+          <h2 className="type-display max-w-4xl font-light">
             A More Strategic Way{" "}
-            <em className="type-display-accent not-italic font-light italic text-gold-warm">
+            <em className="type-display-accent accent-oval not-italic text-gold-warm">
               Forward
             </em>
           </h2>
@@ -1127,10 +1104,49 @@ function StrategicWayForwardSection() {
 /* ---------------- HOW I SUPPORT ---------------- */
 
 /**
+ * Floor and contact shadow for a full-length cut-out. Values are percentages
+ * of the image box, measured from where the feet sit in each source file, so
+ * they stay under her feet at every rendered size.
+ */
+function PortraitFloor({
+  feetTop,
+  feetLeft,
+  feetWidth,
+}: {
+  feetTop: number;
+  feetLeft: number;
+  feetWidth: number;
+}) {
+  return (
+    <>
+      <div
+        aria-hidden
+        className="absolute left-0 right-0 h-[8%] -translate-y-1/2 rounded-[50%]"
+        style={{
+          top: `${feetTop}%`,
+          background:
+            "radial-gradient(closest-side, color-mix(in oklch, var(--gold) 30%, transparent), transparent)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute h-[4%] -translate-y-1/2 rounded-[50%] bg-black/15 blur-xl"
+        style={{ top: `${feetTop}%`, left: `${feetLeft - 8}%`, width: `${feetWidth + 16}%` }}
+      />
+      <div
+        aria-hidden
+        className="absolute z-10 h-[1.6%] -translate-y-1/2 rounded-[50%] bg-black/40 blur-[5px]"
+        style={{ top: `${feetTop}%`, left: `${feetLeft}%`, width: `${feetWidth}%` }}
+      />
+    </>
+  );
+}
+
+/**
  * Restores the client-approved structure: heading, intro lead, the numbered
  * SUPPORT_FOCUS list, then the two programmes flanking a centre portrait.
- * Only a summary paragraph is permanent — the rest sits behind an accordion so
- * the columns stay scannable.
+ * Each card shows its summary until the reader opens the detail, which then
+ * takes the summary's place.
  */
 function ProgrammeColumn({
   title,
@@ -1157,33 +1173,42 @@ function ProgrammeColumn({
   className?: string;
 }) {
   const dark = tone === "dark";
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
 
   return (
     <Reveal
       as="article"
       variant="fade-up"
       delay={delay}
-      className={cn("relative z-10 flex flex-col", className)}
+      className={cn("relative z-20 flex flex-col lg:items-center lg:text-center", className)}
     >
       <h3
         className={cn(
           "font-serif leading-[1.05] text-gold-deep",
-          dark
-            ? "text-[clamp(2.1rem,3.2vw,3rem)]"
-            : "text-[clamp(1.7rem,2.4vw,2.35rem)]",
+          dark ? "type-h2" : "type-h3",
         )}
       >
         {title}
       </h3>
-      <p className="mt-3 eyebrow text-foreground">{kicker}</p>
-      <div aria-hidden className="mt-3 h-px w-16 bg-[var(--gold)]" />
+      <div className="mt-3 w-full max-w-[26rem]">
+        <Hairline tone="gold" />
+        <p className="pt-3 eyebrow text-foreground">{kicker}</p>
+      </div>
 
-      {/* The gold panel is light enough that offwhite body copy fails contrast,
-          so it takes charcoal copy and leans on italics for emphasis instead. */}
+      {/* Summary and detail share one grid cell, so the card is always sized to
+          the longer of the two. Opening swaps the text in place instead of
+          growing the card, which kept resizing the row and shrinking the
+          portrait beside it. The gold panel is too light for offwhite copy, so
+          its emphasis is carried by weight rather than colour. */}
       <div
         className={cn(
-          "mt-6 flex-1 p-7 text-[length:var(--text-body)] leading-[1.6] md:p-8",
-          dark ? "text-background" : "text-foreground",
+          "relative mt-6 flex w-full flex-1 flex-col p-8 text-left md:p-10",
+          /* Base styles colour every <p> secondary grey, which vanished on the
+             dark panel, so the panel colour has to reach the paragraphs. */
+          dark
+            ? "border-l-4 border-l-[var(--gold)] text-background [&_p]:text-background/90 shadow-[0_30px_80px_color-mix(in_oklch,var(--charcoal)_22%,transparent)] lg:-rotate-[1.25deg]"
+            : "border-r-4 border-r-foreground/25 text-foreground [&_p]:text-foreground shadow-[0_30px_80px_color-mix(in_oklch,var(--gold)_24%,transparent)] lg:rotate-[1.25deg]",
         )}
         style={{
           background: dark
@@ -1191,43 +1216,56 @@ function ProgrammeColumn({
             : "color-mix(in oklch, var(--gold) 88%, var(--foreground))",
         }}
       >
-        {/* Full-strength charcoal on the gold panel: at 90% it drops to 4.0:1,
-            just under the threshold, and the panel is too light to absorb it. */}
-        <p className={dark ? "text-background/90" : "text-foreground"}>{summary}</p>
-
-        <Accordion
-          type="single"
-          collapsible
-          className="mt-5"
-          /* Radix reports "" on close, so this counts openings only. */
-          onValueChange={(value) => {
-            if (value) track("programme_explored", { section: "programmes", programme: ctaHash });
-          }}
-        >
-          <AccordionItem
-            value="detail"
-            className={cn("border-b-0 border-t", dark ? "border-background/20" : "border-foreground/25")}
+        <div className="grid flex-1 [grid-template-areas:'stack']">
+          <div
+            aria-hidden={open}
+            className={cn(
+              "[grid-area:stack] self-center transition-[opacity,visibility] duration-700 ease-out",
+              open ? "invisible opacity-0" : "visible opacity-100",
+            )}
           >
-            <AccordionTrigger
-              className={cn(
-                "gap-4 py-4 text-[length:var(--text-small)] font-medium uppercase tracking-[0.14em] no-underline hover:no-underline",
-                dark
-                  ? "text-gold-warm [&>svg]:text-gold-warm"
-                  : "text-foreground [&>svg]:text-foreground",
-              )}
-            >
-              {detailLabel}
-            </AccordionTrigger>
-            <AccordionContent
-              className={cn(
-                "space-y-4 pb-5 text-[length:var(--text-body)] leading-[1.6]",
-                dark ? "text-background/90" : "text-foreground",
-              )}
-            >
-              {detail}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+            <p className="hyphens-auto font-serif font-light text-[clamp(1.3rem,0.5vw+1rem,1.6rem)] leading-[1.45] sm:text-justify">
+              {summary}
+            </p>
+          </div>
+          <div
+            id={panelId}
+            aria-hidden={!open}
+            className={cn(
+              "[grid-area:stack] space-y-4 hyphens-auto text-[length:var(--text-small)] leading-[1.7] transition-[opacity,visibility] duration-700 ease-out sm:text-justify",
+              open ? "visible opacity-100" : "invisible opacity-0",
+            )}
+          >
+            {detail}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => {
+            if (!open) track("programme_explored", { section: "programmes", programme: ctaHash });
+            setOpen((v) => !v);
+          }}
+          className={cn(
+            "mt-8 flex w-full cursor-pointer items-center justify-between gap-4 border-t pt-5 text-left font-serif text-[clamp(1.4rem,0.6vw+1.05rem,1.8rem)] leading-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current",
+            dark
+              ? "border-background/20 text-gold-warm hover:text-background"
+              : "border-foreground/25 text-foreground hover:text-foreground/75",
+          )}
+        >
+          <span>{detailLabel}</span>
+          <span
+            aria-hidden
+            className={cn(
+              "grid h-9 w-9 shrink-0 place-items-center rounded-full border border-current font-sans text-xl leading-none transition-transform duration-500",
+              open && "rotate-45",
+            )}
+          >
+            +
+          </span>
+        </button>
       </div>
 
       {/* Deep-links to this programme's own section. Both CTAs previously landed
@@ -1236,7 +1274,7 @@ function ProgrammeColumn({
       <Link
         to="/work-with-me"
         hash={ctaHash}
-        className="cta-primary mt-6 self-start"
+        className="cta-primary mt-8 self-start lg:self-center"
         onClick={() => track("programme_explored", { section: "programmes", programme: ctaHash })}
       >
         {ctaLabel} <span aria-hidden className="cta-arrow">→</span>
@@ -1257,13 +1295,11 @@ function HowISupportSection() {
       <Container className="relative z-10">
         <Reveal variant="fade-in" duration="slow">
           <p className="eyebrow text-gold-ink mb-6">Programs</p>
-          <h2 className="max-w-5xl font-serif font-light text-[clamp(2.75rem,6.5vw,6.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+          <h2 className="type-display max-w-4xl font-light">
             How I Support{" "}
             <span className="text-foreground/90">High-Potential</span>
             <br />
-            <em className="type-display-accent not-italic font-light italic text-[clamp(3.4rem,8vw,7.5rem)] leading-[0.85] text-gold-warm">
-              Women
-            </em>
+            <em className="type-display-accent text-gold-warm">Women</em>
           </h2>
         </Reveal>
 
@@ -1304,19 +1340,8 @@ function HowISupportSection() {
         </ul>
 
         {/* Two programmes flanking the centre portrait */}
-        <div className="relative mt-16 grid items-end gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-8">
-          {/* Shared ground line across all three columns, so the portrait and the
-              two cards read as one composition standing on the same floor. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-px lg:block"
-            style={{
-              background:
-                "linear-gradient(to right, transparent, color-mix(in oklch, var(--gold) 30%, transparent) 18%, color-mix(in oklch, var(--gold) 30%, transparent) 82%, transparent)",
-            }}
-          />
+        <div className="relative mt-16 grid grid-cols-1 items-center gap-14 lg:mt-8 lg:grid-cols-[1fr_13rem_1fr] lg:gap-6 xl:grid-cols-[1fr_15rem_1fr] xl:gap-8">
           <ProgrammeColumn
-            className="lg:col-span-4"
             tone="dark"
             title={
               <>
@@ -1353,44 +1378,25 @@ function HowISupportSection() {
             }
           />
 
-          {/* Centre portrait — grounded on an arc with a contact shadow. The arc
-              bleeds into both gutters and she sits above the cards, so she reads
-              as part of the surrounding layout rather than parked inside a
-              circle of her own. */}
-          <div className="relative order-first lg:order-none lg:col-span-4 lg:self-end">
-            <div className="relative mx-auto flex max-w-[22rem] justify-center lg:max-w-none">
-              {/* -z-10 keeps the widened arc tucked behind both cards while she
-                  stays in front of them, so the bleed never washes a card edge. */}
-              <div
-                aria-hidden
-                className="absolute inset-x-2 bottom-0 top-10 -z-10 rounded-t-[999px] lg:-inset-x-8 lg:top-16"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, color-mix(in oklch, var(--gold-subtle) 70%, transparent), color-mix(in oklch, var(--gold-subtle) 20%, transparent))",
-                }}
+          {/* Centre portrait. The cut-out carries a lot of empty canvas above her
+              head, so it is drawn wider than its column and pulled up into the
+              space above; pointer-events-none keeps that empty canvas from
+              blocking the cards and CTAs it overlaps. */}
+          <div className="pointer-events-none relative z-30 order-first -mt-24 flex justify-center sm:-mt-32 lg:order-none lg:-mt-56 lg:self-end">
+            <Reveal variant="scale" duration="slow" className="relative">
+              <PortraitFloor feetTop={96} feetLeft={37} feetWidth={31} />
+              <img
+                src={programmePortrait}
+                alt="Amna Imran"
+                draggable={false}
+                loading="lazy"
+                className="relative z-10 h-[520px] w-auto max-w-none select-none object-contain object-bottom sm:h-[640px] lg:-mb-4 lg:h-[960px] xl:h-[1060px]"
               />
-              <div
-                aria-hidden
-                className="absolute bottom-1 left-1/2 h-8 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-2xl lg:h-10"
-              />
-              <Reveal variant="scale" duration="slow" className="relative lg:z-20">
-                <img
-                  src={programmePortrait}
-                  alt="Amna Imran"
-                  draggable={false}
-                  loading="lazy"
-                  className="relative z-10 h-[340px] w-auto select-none object-contain object-bottom sm:h-[430px] lg:h-[540px] xl:h-[600px]"
-                  style={{
-                    filter:
-                      "drop-shadow(0 18px 36px color-mix(in oklch, var(--charcoal) 16%, transparent))",
-                  }}
-                />
-              </Reveal>
-            </div>
+            </Reveal>
           </div>
 
           <ProgrammeColumn
-            className="lg:col-span-4 lg:mt-16"
+            className="lg:translate-y-16"
             tone="gold"
             delay={140}
             title={
@@ -1406,9 +1412,9 @@ function HowISupportSection() {
             summary={
               <>
                 Support for high-potential women through the{" "}
-                <em className="italic text-foreground">
+                <strong className="font-semibold">
                   profound transition into working parenthood
-                </em>
+                </strong>
                 .
               </>
             }
@@ -1417,20 +1423,20 @@ function HowISupportSection() {
                 <p>
                   Grounded in research on the motherhood penalty and organizational dynamics, this
                   program helps protect{" "}
-                  <em className="italic text-foreground">leadership trajectory</em> while navigating
+                  <strong className="font-semibold">leadership trajectory</strong> while navigating
                   the{" "}
-                  <em className="italic text-foreground">
+                  <strong className="font-semibold">
                     identity, visibility, and confidence shifts
-                  </em>{" "}
+                  </strong>{" "}
                   that often accompany maternity leave and return-to-work.
                 </p>
                 <p>
                   Rather than asking women to scale back ambition or overcompensate, we focus on{" "}
-                  <em className="italic text-foreground">
+                  <strong className="font-semibold">
                     strategic positioning, stakeholder alignment, and sustainable leadership
-                  </em>{" "}
+                  </strong>{" "}
                   — so motherhood becomes an integrated{" "}
-                  <em className="italic text-foreground">chapter of growth</em>.
+                  <strong className="font-semibold">chapter of growth</strong>.
                 </p>
               </>
             }
@@ -1443,24 +1449,169 @@ function HowISupportSection() {
 
 /* ---------------- WHY MY APPROACH IS DIFFERENT ---------------- */
 
-function WhyDifferentSection() {
-  const offers = [
-    {
-      title: "Leadership Coaching",
-      body: "ICF ACC-credentialed executive coaching grounded in real organisational insight — not generic personal development.",
-    },
-    {
-      title: "DE&I Consultancy",
-      body: "Gender strategy and inclusive leadership design that protects advancement pathways inside complex systems.",
-    },
-    {
-      title: "CliftonStrengths Assessment",
-      body: "Gallup-trained strengths science to build on what already drives effectiveness under pressure.",
-    },
-  ];
+const WHY_SURFACE = "color-mix(in oklch, var(--blush-subtle) 58%, var(--warm-cream))";
 
-  // The "Vs" pairs become the selectable principles: label is what I do,
-  // meta is the contrast it replaces, detail is the explanation.
+/**
+ * A gold line that draws down through the numbered stages as the reader
+ * scrolls, lighting each node as it arrives, so 01 → 02 → 03 read as one story.
+ * The track is measured between the first and last node centres, and
+ * re-measured on resize because the selectable panel changes stage heights.
+ */
+function StoryRail({
+  children,
+  className,
+  centered = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  centered?: boolean;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    const track = el?.querySelector<HTMLElement>("[data-rail-track]");
+    const fill = el?.querySelector<HTMLElement>("[data-rail-fill]");
+    if (!el || !track || !fill) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const nodes = [...el.querySelectorAll<HTMLElement>("[data-rail-node]")];
+      if (nodes.length < 2) return;
+      const top = el.getBoundingClientRect().top;
+      const centres = nodes.map((n) => {
+        const r = n.getBoundingClientRect();
+        return r.top + r.height / 2 - top;
+      });
+      const first = centres[0];
+      const span = centres[centres.length - 1] - first;
+      track.style.top = `${first}px`;
+      track.style.height = `${span}px`;
+
+      // The line's tip sits at 60% of the viewport height.
+      const reach = reduce ? Number.POSITIVE_INFINITY : window.innerHeight * 0.6 - top;
+      const progress = Math.min(1, Math.max(0, (reach - first) / span));
+      fill.style.transform = `scaleY(${progress})`;
+      nodes.forEach((n, i) => n.toggleAttribute("data-active", reach >= centres[i] - 1));
+    };
+    const schedule = () => {
+      if (!raf) raf = window.requestAnimationFrame(update);
+    };
+
+    update();
+    const observer = new ResizeObserver(schedule);
+    observer.observe(el);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div ref={ref} className={cn("relative", className)}>
+      <div
+        aria-hidden
+        data-rail-track
+        className={cn(
+          "pointer-events-none absolute w-px -translate-x-1/2 bg-[color-mix(in_oklch,var(--gold)_24%,transparent)]",
+          centered ? "left-1/2" : "left-6 md:left-7",
+        )}
+      >
+        <div
+          data-rail-fill
+          className="h-full w-full origin-top bg-[var(--gold-deep)] transition-transform duration-700 ease-out"
+          style={{ transform: "scaleY(0)" }}
+        />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function StoryStage({
+  index,
+  title,
+  children,
+  className,
+}: {
+  index: string;
+  title: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("grid grid-cols-[3rem_1fr] gap-x-5 md:grid-cols-[3.5rem_1fr] md:gap-x-8", className)}>
+      <div className="relative z-10 flex justify-center">
+        <span
+          data-rail-node
+          className="grid h-12 w-12 place-items-center rounded-full border border-[color-mix(in_oklch,var(--gold)_45%,transparent)] bg-[var(--why-surface)] font-serif text-[1.15rem] text-gold-deep transition-colors duration-700 data-active:border-[var(--gold-deep)] data-active:bg-[var(--gold-deep)] data-active:text-background md:h-14 md:w-14 md:text-[1.35rem]"
+        >
+          {index}
+        </span>
+      </div>
+      <div className="min-w-0">
+        <Reveal variant="fade-up" duration="slow">
+          <h3 className="pt-2 font-serif font-light text-[length:var(--text-heading-1)] leading-[1.1] tracking-[-0.02em] text-foreground md:pt-2.5">
+            {title}
+          </h3>
+        </Reveal>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+const WHY_OFFERS = [
+  {
+    title: "Leadership Coaching",
+    body: "ICF ACC-credentialed executive coaching grounded in real organisational insight — not generic personal development.",
+  },
+  {
+    title: "DE&I Consultancy",
+    body: "Gender strategy and inclusive leadership design that protects advancement pathways inside complex systems.",
+  },
+  {
+    title: "CliftonStrengths Assessment",
+    body: "Gallup-trained strengths science to build on what already drives effectiveness under pressure.",
+  },
+];
+
+const WHY_ARCH_BACKGROUND =
+  "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 48%, transparent), color-mix(in oklch, var(--blush) 14%, transparent))";
+
+function WhyVsHeader({ a, b }: { a: string; b: string }) {
+  return (
+    <span className="flex flex-wrap items-baseline gap-x-3">
+      <span className="text-gold-ink">{a}</span>
+      <span
+        className="type-display-accent normal-case leading-none tracking-normal text-gold-warm"
+        style={{ fontSize: "2.6rem" }}
+      >
+        Vs
+      </span>
+      <span className="text-copy-muted">{b}</span>
+    </span>
+  );
+}
+
+/** Temporary divider naming each layout option so the client can compare. */
+function VariantLabel({ name, note }: { name: string; note: string }) {
+  return (
+    <div className="bg-foreground px-6 py-4 text-center text-background">
+      <p className="text-[0.8rem] font-medium uppercase tracking-[0.22em] text-gold-warm">{name}</p>
+      <p className="mt-1 text-[0.85rem] text-background/80">{note}</p>
+    </div>
+  );
+}
+
+/** The section as approved before the latest round of client feedback. */
+function WhyDifferentSection() {
   const principles = COMPARISON.map((c) => ({
     label: c.a,
     meta: `Not ${c.b}`,
@@ -1473,19 +1624,16 @@ function WhyDifferentSection() {
       surface="blush"
       pad="none"
       className="relative overflow-hidden section-pad-top-major section-pad-bottom-major"
-      style={{ background: "color-mix(in oklch, var(--blush-subtle) 58%, var(--warm-cream))" }}
+      style={{ background: WHY_SURFACE, ["--why-surface" as string]: WHY_SURFACE }}
     >
       <Container className="relative">
-        {/* Heading + lead, with the portrait grounded beside them */}
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10">
-          <div className="relative z-20 lg:col-span-6">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+          <div className="relative z-20 lg:col-span-6 lg:pt-16">
             <Reveal variant="fade-up">
-              <h2 className="font-serif font-light text-[clamp(2.75rem,6vw,5.75rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+              <h2 className="type-display font-light">
                 Why My Approach
                 <br />
-                <em className="type-display-accent not-italic font-light italic text-[clamp(3rem,7vw,6.5rem)] leading-[0.85] text-gold-warm">
-                  Is Different
-                </em>
+                <em className="type-display-accent text-gold-warm">Is Different</em>
               </h2>
             </Reveal>
 
@@ -1498,124 +1646,93 @@ function WhyDifferentSection() {
             </Reveal>
           </div>
 
-          {/* Portrait — seated on an arc panel with a contact shadow so she is
-              grounded rather than floating, and masked at the base so the
-              cut-out does not end on a hard edge. */}
-          <div className="relative lg:col-span-6">
-            <div className="relative mx-auto flex max-w-[26rem] justify-center lg:max-w-none lg:justify-end lg:-mr-4 xl:-mr-8">
-              {/* The arch is biased left of her, so her right shoulder crosses its
-                  edge instead of the arch framing her like a cut-out box. */}
+          {/* The arch, floor and shadow are percentages of the image itself,
+              because the cut-out has a lot of empty canvas and they have to
+              track her figure, not the column. */}
+          <div className="relative -mt-20 flex justify-center sm:-mt-28 lg:col-span-6 lg:-mt-16 lg:justify-end lg:pr-6 xl:-mt-40 xl:pr-12">
+            <Reveal variant="scale" duration="slow" className="relative">
               <div
                 aria-hidden
-                className="absolute inset-x-4 bottom-0 top-12 rounded-t-[999px] lg:left-4 lg:right-20 lg:top-20"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 42%, transparent), color-mix(in oklch, var(--blush) 8%, transparent))",
-                }}
+                className="absolute bottom-[5%] left-[16%] right-[14%] top-[16%] rounded-t-[999px]"
+                style={{ background: WHY_ARCH_BACKGROUND }}
               />
-              <div
-                aria-hidden
-                className="absolute bottom-1 left-1/2 h-8 w-[62%] -translate-x-1/2 rounded-[50%] bg-black/18 blur-2xl lg:h-11"
+              <PortraitFloor feetTop={94.5} feetLeft={40} feetWidth={32} />
+              <img
+                src={approachPortrait}
+                alt="Amna Imran"
+                draggable={false}
+                loading="lazy"
+                className="relative z-10 h-[400px] w-auto max-w-none select-none object-contain object-bottom sm:h-[480px] md:h-[540px] lg:h-[640px] xl:h-[720px]"
               />
-              <Reveal variant="scale" duration="slow" className="relative">
-                <img
-                  src={approachPortrait}
-                  alt="Amna Imran"
-                  draggable={false}
-                  loading="lazy"
-                  className="relative z-10 h-[320px] w-auto select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_88%,transparent_100%)] sm:h-[420px] md:h-[480px] lg:h-[580px] xl:h-[650px]"
-                  style={{
-                    filter:
-                      "drop-shadow(0 16px 34px color-mix(in oklch, var(--charcoal) 15%, transparent))",
-                  }}
-                />
-              </Reveal>
+            </Reveal>
+          </div>
+        </div>
+
+        <StoryRail className="mt-16 md:mt-20">
+          <StoryStage index="01" title="What I bring">
+            <div className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
+              {WHY_OFFERS.map((offer, i) => (
+                <Reveal key={offer.title} delay={60 + i * 70} variant="fade-up">
+                  <div
+                    className={
+                      i > 0
+                        ? "md:border-l md:border-[color-mix(in_oklch,var(--gold)_28%,transparent)] md:pl-8"
+                        : ""
+                    }
+                  >
+                    <h4 className="font-serif text-[length:var(--text-heading-3)] leading-snug text-foreground">
+                      {offer.title}
+                    </h4>
+                    <p className="mt-4 type-body text-copy">{offer.body}</p>
+                  </div>
+                </Reveal>
+              ))}
             </div>
-          </div>
-        </div>
+          </StoryStage>
 
-        {/* 01 — the three disciplines behind the work */}
-        <div className="mt-20 md:mt-24">
-          <Reveal variant="fade-up">
-            <p className="eyebrow text-gold-ink">
-              <span className="text-gold-ink">01</span> — What I bring
-            </p>
-          </Reveal>
-          <div className="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
-            {offers.map((offer, i) => (
-              <Reveal key={offer.title} delay={60 + i * 70} variant="fade-up">
-                <div
-                  className={
-                    i > 0
-                      ? "md:border-l md:border-[color-mix(in_oklch,var(--gold)_28%,transparent)] md:pl-8"
-                      : ""
-                  }
-                >
-                  <h3 className="font-serif text-[length:var(--text-heading-3)] leading-snug text-foreground">
-                    {offer.title}
-                  </h3>
-                  <p className="mt-4 type-body text-copy">{offer.body}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
+          <StoryStage index="02" title="How I work" className="mt-20 md:mt-24">
+            <Reveal variant="fade-up">
+              <p className="mt-5 max-w-2xl type-lead text-foreground">
+                Five principles separate this from generic career advice. Select one to see what it
+                means in practice.
+              </p>
+            </Reveal>
 
-        {/* 02 — the principles, one description at a time */}
-        <div className="mt-20 md:mt-24">
-          <Reveal variant="fade-up">
-            <p className="eyebrow text-gold-ink">
-              <span className="text-gold-ink">02</span> — How I work
-            </p>
-            <p className="mt-5 max-w-2xl type-lead text-foreground">
-              Five principles separate this from generic career advice. Select one to see what it
-              means in practice.
-            </p>
-          </Reveal>
+            <Reveal delay={80} variant="fade-up" className="mt-10">
+              <SelectablePanel
+                label="Principles behind my approach"
+                variant="label"
+                items={principles}
+                listClassName="lg:pr-6"
+                panelClassName="lg:border-l lg:border-[color-mix(in_oklch,var(--gold)_30%,transparent)] lg:pl-10"
+                onSelect={(index) =>
+                  track("methodology_principle_selected", {
+                    section: "why_my_approach_is_different",
+                    principle: COMPARISON[index]?.a,
+                    position: index + 1,
+                  })
+                }
+              />
+            </Reveal>
 
-          <Reveal delay={80} variant="fade-up" className="mt-10">
-            <SelectablePanel
-              label="Principles behind my approach"
-              variant="label"
-              items={principles}
-              listClassName="lg:pr-6"
-              panelClassName="lg:border-l lg:border-[color-mix(in_oklch,var(--gold)_30%,transparent)] lg:pl-10"
-              onSelect={(index) =>
-                track("methodology_principle_selected", {
-                  section: "why_my_approach_is_different",
-                  principle: COMPARISON[index]?.a,
-                  position: index + 1,
-                })
-              }
-            />
-          </Reveal>
+            <Reveal delay={120} variant="fade-up">
+              <Link to="/work-with-me" className="cta-secondary mt-10">
+                See how we would work together <span aria-hidden className="cta-arrow">→</span>
+              </Link>
+            </Reveal>
+          </StoryStage>
 
-          <Reveal delay={120} variant="fade-up">
-            <Link to="/work-with-me" className="cta-secondary mt-10">
-              See how we would work together <span aria-hidden className="cta-arrow">→</span>
-            </Link>
-          </Reveal>
-        </div>
+          <StoryStage index="03" title="Where it lands" className="mt-20 md:mt-24">
+            <Reveal variant="fade-up" delay={80}>
+              <p className="mt-6 max-w-3xl font-serif font-light text-[length:var(--text-heading-2)] leading-[1.4] text-foreground">
+                My work sits at the intersection of{" "}
+                <em className="type-display-accent text-gold-warm">Individual capability</em> and{" "}
+                <em className="type-display-accent text-gold-warm">Organizational reality.</em>
+              </p>
+            </Reveal>
+          </StoryStage>
+        </StoryRail>
 
-        {/* 03 — where it lands */}
-        <Reveal variant="fade-up" className="mt-20 md:mt-24">
-          <p className="eyebrow text-gold-ink text-center">
-            <span className="text-gold-ink">03</span> — Where it lands
-          </p>
-          <p className="type-lead mt-6 max-w-3xl text-center mx-auto text-foreground">
-            My work sits at the intersection of{" "}
-            <em className="type-display-accent not-italic text-[1.8rem] md:text-[2.2rem] leading-none align-[-0.12em] text-gold-warm">
-              Individual capability
-            </em>{" "}
-            and{" "}
-            <em className="type-display-accent not-italic text-[1.8rem] md:text-[2.2rem] leading-none align-[-0.12em] text-gold-warm">
-              Organizational reality.
-            </em>
-          </p>
-        </Reveal>
-
-        {/* Motif carried down from the intersection statement above, so the quote
-            reads as a transition out of this section rather than a separate slide. */}
         <Reveal variant="fade-in" duration="slow" className="relative z-20">
           <div aria-hidden className="mx-auto mt-10 flex flex-col items-center md:mt-14">
             <span className="block h-14 w-px bg-gradient-to-b from-transparent via-[color-mix(in_oklch,var(--gold)_50%,transparent)] to-[color-mix(in_oklch,var(--gold)_50%,transparent)] md:h-20" />
@@ -1640,6 +1757,412 @@ function WhyDifferentSection() {
             </SectionQuote>
           </Reveal>
         </div>
+      </Container>
+    </Section>
+  );
+}
+
+/**
+ * Variant A: quote beside the portrait, intersection line under the heading,
+ * 03 removed, principles as bordered tiles.
+ */
+function WhyDifferentVariantA() {
+  const offers = WHY_OFFERS;
+
+  // The "Vs" pairs become the selectable principles: label is what I do,
+  // meta sets it against the approach it replaces, detail is the explanation.
+  const principles = COMPARISON.map((c, i) => ({
+    label: c.a,
+    meta: <WhyVsHeader a={c.a} b={c.b} />,
+    detail: (
+      <>
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-8 top-4 hidden select-none font-serif text-[5.5rem] leading-none text-[color-mix(in_oklch,var(--gold)_16%,transparent)] lg:block"
+        >
+          {String(i + 1).padStart(2, "0")}
+        </span>
+        {c.d}
+      </>
+    ),
+  }));
+
+  return (
+    <Section
+      as="section"
+      surface="blush"
+      pad="none"
+      className="relative overflow-hidden section-pad-top-major section-pad-bottom-major"
+      style={{ background: WHY_SURFACE, ["--why-surface" as string]: WHY_SURFACE }}
+    >
+      <Container className="relative">
+        <StoryRail>
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <div className="relative z-20 lg:col-span-7">
+            <Reveal variant="fade-up">
+              <h2 className="type-display font-light">
+                Why My Approach
+                <br />
+                <em className="type-display-accent text-gold-warm">Is Different</em>
+              </h2>
+            </Reveal>
+
+            <Reveal delay={60} variant="fade-up">
+              <p className="mt-6 max-w-xl font-serif font-light text-[length:var(--text-heading-3)] leading-[1.45] text-foreground">
+                My work sits at the intersection of{" "}
+                <em className="type-display-accent text-gold-warm">Individual capability</em> and{" "}
+                <em className="type-display-accent text-gold-warm">Organizational reality.</em>
+              </p>
+            </Reveal>
+
+            <Reveal delay={120} variant="fade-up">
+              <p className="mt-8 max-w-xl type-body text-copy md:border-l md:border-[color-mix(in_oklch,var(--gold)_38%,transparent)] md:pl-8">
+                Most coaching focuses on personal development in isolation — confidence, mindset, or
+                communication skills. While these matter, they do not fully explain why highly capable
+                women often struggle to translate performance into progression.
+              </p>
+            </Reveal>
+
+            {/* 01 — the three disciplines behind the work */}
+            <StoryStage index="01" title="What I bring" className="mt-14 md:mt-16">
+              <div className="mt-6 grid gap-6 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+                {offers.map((offer, i) => (
+                  <Reveal key={offer.title} delay={60 + i * 70} variant="fade-up">
+                    <div className="border-t border-[color-mix(in_oklch,var(--gold)_35%,transparent)] pt-5">
+                      <h4 className="font-serif text-[length:var(--text-heading-3)] leading-snug text-foreground">
+                        {offer.title}
+                      </h4>
+                      <p className="mt-3 text-[length:var(--text-small)] font-light leading-[1.65] text-copy">
+                        {offer.body}
+                      </p>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </StoryStage>
+          </div>
+
+          {/* Portrait with the closing quote beside her. The cut-out carries
+              wide transparent margins, so --ph drives both the image height
+              and negative margins that trim that empty canvas, leaving the
+              quote room beside the figure itself. The arch, floor and shadow
+              are percentages of the image box, so they track her at every
+              size. */}
+          <div className="relative flex flex-col items-center gap-8 lg:col-span-5 lg:-mt-24 xl:-mt-32 xl:flex-row xl:items-end xl:justify-end xl:gap-10">
+            <Reveal
+              variant="fade-up"
+              duration="slow"
+              delay={200}
+              className="relative z-20 order-2 max-w-[22rem] text-center xl:order-1 xl:mb-24 xl:flex-1 xl:text-right"
+            >
+              <figure>
+                <span
+                  aria-hidden
+                  className="block font-serif text-[3.5rem] leading-[0.6] text-[color-mix(in_oklch,var(--gold)_60%,transparent)]"
+                >
+                  &ldquo;
+                </span>
+                <blockquote className="mt-3 font-serif font-light text-[clamp(1.2rem,0.9vw+0.85rem,1.6rem)] leading-[1.25] text-foreground">
+                  <em className="type-display-accent block text-gold-warm">
+                    You don&apos;t need to change who you are.
+                  </em>
+                  <span className="mt-4 block text-[length:var(--text-lead)] leading-[1.45]">
+                    You need a strategy that works in the environment you&apos;re operating in.
+                  </span>
+                </blockquote>
+                <div
+                  aria-hidden
+                  className="mx-auto mt-6 h-px w-16 bg-[var(--gold)] xl:ml-auto xl:mr-0"
+                />
+              </figure>
+            </Reveal>
+
+            <div className="order-1 -mt-24 shrink-0 [--ph:440px] sm:-mt-32 sm:[--ph:520px] lg:mt-0 lg:[--ph:720px] xl:order-2 xl:[--ph:860px]">
+              <Reveal
+                variant="scale"
+                duration="slow"
+                className="relative ml-[calc(var(--ph)*-0.18)] mr-[calc(var(--ph)*-0.2)]"
+              >
+                <div
+                  aria-hidden
+                  className="absolute bottom-[5%] left-[24%] right-[27%] top-[16%] rounded-t-[999px]"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 48%, transparent), color-mix(in oklch, var(--blush) 14%, transparent))",
+                  }}
+                />
+                <PortraitFloor feetTop={94.5} feetLeft={40} feetWidth={32} />
+                <img
+                  src={approachPortrait}
+                  alt="Amna Imran"
+                  draggable={false}
+                  loading="lazy"
+                  className="relative z-10 h-[var(--ph)] w-auto max-w-none select-none object-contain object-bottom"
+                />
+              </Reveal>
+            </div>
+          </div>
+        </div>
+
+        {/* 02 — the principles, one description at a time */}
+        <StoryStage index="02" title="How I work" className="mt-20 md:mt-24">
+          <Reveal variant="fade-up">
+            <p className="mt-5 max-w-2xl type-lead text-foreground">
+              Five principles separate this from generic career advice. Select one to see what it
+              means in practice.
+            </p>
+          </Reveal>
+
+          <Reveal delay={80} variant="fade-up" className="mt-10">
+            <SelectablePanel
+              label="Principles behind my approach"
+              variant="label"
+              items={principles}
+              className="principles"
+              listClassName="lg:pr-2"
+              panelClassName="relative lg:self-start lg:border lg:border-t-2 lg:border-[color-mix(in_oklch,var(--gold)_26%,transparent)] lg:border-t-[color:var(--gold-deep)] lg:bg-[color-mix(in_oklch,var(--offwhite)_80%,transparent)] lg:p-10 lg:pr-28 lg:shadow-[0_24px_60px_color-mix(in_oklch,var(--charcoal)_8%,transparent)]"
+              onSelect={(index) =>
+                track("methodology_principle_selected", {
+                  section: "why_my_approach_variant_a",
+                  principle: COMPARISON[index]?.a,
+                  position: index + 1,
+                })
+              }
+            />
+          </Reveal>
+
+          <Reveal delay={120} variant="fade-up">
+            <Link to="/work-with-me" className="cta-secondary mt-10">
+              See how we would work together <span aria-hidden className="cta-arrow">→</span>
+            </Link>
+          </Reveal>
+        </StoryStage>
+        </StoryRail>
+      </Container>
+    </Section>
+  );
+}
+
+/** Centred numbered heading used as a rail node in Variant B. */
+function CentredStageHead({ index, title }: { index: string; title: string }) {
+  return (
+    <div className="relative z-10 flex flex-col items-center text-center">
+      <span
+        data-rail-node
+        className="grid h-14 w-14 place-items-center rounded-full border border-[color-mix(in_oklch,var(--gold)_45%,transparent)] bg-[var(--why-surface)] font-serif text-[1.35rem] text-gold-deep transition-colors duration-700 data-active:border-[var(--gold-deep)] data-active:bg-[var(--gold-deep)] data-active:text-background"
+      >
+        {index}
+      </span>
+      <Reveal variant="fade-up" duration="slow">
+        <h3 className="mt-5 font-serif font-light text-[length:var(--text-heading-1)] leading-[1.1] tracking-[-0.02em] text-foreground">
+          {title}
+        </h3>
+      </Reveal>
+    </div>
+  );
+}
+
+/** Small dot a centred rail starts from. */
+function RailStart() {
+  return (
+    <span
+      data-rail-node
+      aria-hidden
+      className="relative z-10 mx-auto block h-2 w-2 rounded-full bg-[color-mix(in_oklch,var(--gold)_55%,transparent)] transition-colors duration-700 data-active:bg-[var(--gold-deep)]"
+    />
+  );
+}
+
+/**
+ * Variant B: centred editorial layout. The quote is a card resting on the
+ * portrait's arch, the disciplines are cards, the principles are pill tabs
+ * above one detail card, and a scroll-drawn line joins intro → 01 → 02.
+ */
+function WhyDifferentVariantB() {
+  const [active, setActive] = useState(0);
+  const tabs = useSelectableList(COMPARISON.length, {
+    orientation: "horizontal",
+    value: active,
+    onValueChange: setActive,
+    onSelect: (index) =>
+      track("methodology_principle_selected", {
+        section: "why_my_approach_variant_b",
+        principle: COMPARISON[index]?.a,
+        position: index + 1,
+      }),
+  });
+  const panelState = usePanelTransition(active);
+  const current = COMPARISON[active];
+
+  return (
+    <Section
+      as="section"
+      surface="blush"
+      pad="none"
+      className="relative overflow-hidden section-pad-top-major section-pad-bottom-major"
+      style={{ background: WHY_SURFACE, ["--why-surface" as string]: WHY_SURFACE }}
+    >
+      <Container className="relative">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+          <div className="relative z-20 lg:col-span-6">
+            <Reveal variant="fade-up">
+              <h2 className="type-display font-light">
+                Why My Approach
+                <br />
+                <em className="type-display-accent text-gold-warm">Is Different</em>
+              </h2>
+            </Reveal>
+            <Reveal delay={60} variant="fade-up">
+              <p className="mt-6 max-w-xl font-serif font-light text-[length:var(--text-heading-3)] leading-[1.45] text-foreground">
+                My work sits at the intersection of{" "}
+                <em className="type-display-accent text-gold-warm">Individual capability</em> and{" "}
+                <em className="type-display-accent text-gold-warm">Organizational reality.</em>
+              </p>
+            </Reveal>
+            <Reveal delay={120} variant="fade-up">
+              <p className="mt-8 max-w-xl type-body text-copy md:border-l md:border-[color-mix(in_oklch,var(--gold)_38%,transparent)] md:pl-8">
+                Most coaching focuses on personal development in isolation — confidence, mindset, or
+                communication skills. While these matter, they do not fully explain why highly capable
+                women often struggle to translate performance into progression.
+              </p>
+            </Reveal>
+          </div>
+
+          <div className="relative -mt-20 flex flex-col items-center sm:-mt-28 lg:col-span-6 lg:-mt-24 lg:items-end">
+            <Reveal variant="scale" duration="slow" className="relative">
+              <div
+                aria-hidden
+                className="absolute bottom-[5%] left-[16%] right-[14%] top-[16%] rounded-t-[999px]"
+                style={{ background: WHY_ARCH_BACKGROUND }}
+              />
+              <PortraitFloor feetTop={94.5} feetLeft={40} feetWidth={32} />
+              <img
+                src={approachPortrait}
+                alt="Amna Imran"
+                draggable={false}
+                loading="lazy"
+                className="relative z-10 h-[400px] w-auto max-w-none select-none object-contain object-bottom sm:h-[480px] md:h-[540px] lg:h-[680px] xl:h-[760px]"
+              />
+            </Reveal>
+
+            {/* Rests on the lower-left of the arch on desktop, so the quote reads
+                as hers; stacks under the portrait on smaller screens. */}
+            <Reveal
+              variant="fade-up"
+              duration="slow"
+              delay={240}
+              className="relative z-20 mt-6 w-full max-w-sm lg:absolute lg:bottom-[10%] lg:-left-6 lg:mt-0 lg:w-[14rem] xl:-left-8 xl:w-[15.5rem]"
+            >
+              <figure className="border border-t-2 border-[color-mix(in_oklch,var(--gold)_26%,transparent)] border-t-[color:var(--gold-deep)] bg-[var(--offwhite)] p-7 shadow-[0_24px_60px_color-mix(in_oklch,var(--charcoal)_10%,transparent)]">
+                <span
+                  aria-hidden
+                  className="block font-serif text-[3rem] leading-[0.6] text-[color-mix(in_oklch,var(--gold)_60%,transparent)]"
+                >
+                  &ldquo;
+                </span>
+                <blockquote className="mt-3 font-serif font-light text-[clamp(1.15rem,0.7vw+0.9rem,1.45rem)] leading-[1.25] text-foreground">
+                  <em className="type-display-accent block text-gold-warm">
+                    You don&apos;t need to change who you are.
+                  </em>
+                  <span className="mt-4 block text-[length:var(--text-body)] leading-[1.5]">
+                    You need a strategy that works in the environment you&apos;re operating in.
+                  </span>
+                </blockquote>
+              </figure>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* intro → 01 */}
+        <StoryRail centered className="mt-16 md:mt-20">
+          <RailStart />
+          <div className="h-16 md:h-20" />
+          <CentredStageHead index="01" title="What I bring" />
+        </StoryRail>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {WHY_OFFERS.map((offer, i) => (
+            <Reveal key={offer.title} delay={60 + i * 90} variant="fade-up" duration="slow">
+              <div className="group relative h-full border border-[color-mix(in_oklch,var(--gold)_26%,transparent)] bg-[color-mix(in_oklch,var(--offwhite)_55%,transparent)] p-7 transition-[transform,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-[color-mix(in_oklch,var(--gold)_60%,transparent)] hover:shadow-[0_18px_40px_color-mix(in_oklch,var(--charcoal)_8%,transparent)] md:p-8">
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-7 h-8 w-[3px] bg-[var(--gold)] transition-[height] duration-500 group-hover:h-12"
+                />
+                <h4 className="font-serif text-[length:var(--text-heading-3)] leading-snug text-foreground">
+                  {offer.title}
+                </h4>
+                <p className="mt-4 text-[length:var(--text-small)] font-light leading-[1.65] text-copy">
+                  {offer.body}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* 01 → 02 */}
+        <StoryRail centered className="mt-14 md:mt-16">
+          <RailStart />
+          <div className="h-16 md:h-20" />
+          <CentredStageHead index="02" title="How I work" />
+        </StoryRail>
+
+        <Reveal variant="fade-up">
+          <p className="mx-auto mt-5 max-w-2xl text-center type-lead text-foreground">
+            Five principles separate this from generic career advice. Select one to see what it
+            means in practice.
+          </p>
+        </Reveal>
+
+        <Reveal delay={80} variant="fade-up">
+          <div
+            {...tabs.listProps}
+            aria-label="Principles behind my approach"
+            className="mt-10 flex flex-wrap justify-center gap-3"
+          >
+            {COMPARISON.map((c, i) => (
+              <button
+                key={c.a}
+                {...tabs.getItemProps(i)}
+                className="group inline-flex cursor-pointer items-center gap-3 rounded-full border border-[color-mix(in_oklch,var(--gold)_40%,transparent)] bg-[color-mix(in_oklch,var(--offwhite)_55%,transparent)] py-2 pl-5 pr-2 font-serif text-[length:var(--text-lead)] text-foreground transition-[background-color,border-color,color,box-shadow] duration-500 hover:border-[var(--gold-deep)] hover:shadow-[0_10px_24px_color-mix(in_oklch,var(--charcoal)_8%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gold-deep)] data-[active=true]:border-[var(--gold-deep)] data-[active=true]:bg-[var(--gold-deep)] data-[active=true]:text-background"
+              >
+                {c.a}
+                <span
+                  aria-hidden
+                  className="grid h-8 w-8 place-items-center rounded-full border border-current font-sans text-base leading-none transition-transform duration-500 group-hover:translate-x-0.5 group-data-[active=true]:rotate-90"
+                >
+                  →
+                </span>
+              </button>
+            ))}
+          </div>
+        </Reveal>
+
+        <div
+          {...tabs.panelProps}
+          data-state={panelState}
+          className="selectable-panel relative mx-auto mt-10 max-w-3xl border border-t-2 border-[color-mix(in_oklch,var(--gold)_26%,transparent)] border-t-[color:var(--gold-deep)] bg-[color-mix(in_oklch,var(--offwhite)_80%,transparent)] p-8 pr-10 shadow-[0_24px_60px_color-mix(in_oklch,var(--charcoal)_8%,transparent)] md:p-12 md:pr-32"
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute right-8 top-5 hidden select-none font-serif text-[6rem] leading-none text-[color-mix(in_oklch,var(--gold)_16%,transparent)] md:block"
+          >
+            {String(active + 1).padStart(2, "0")}
+          </span>
+          {current && (
+            <>
+              <p className="eyebrow mb-5">
+                <WhyVsHeader a={current.a} b={current.b} />
+              </p>
+              <div className="type-body-emphasis">{current.d}</div>
+            </>
+          )}
+        </div>
+
+        <Reveal delay={120} variant="fade-up" className="mt-10 flex justify-center">
+          <Link to="/work-with-me" className="cta-secondary">
+            See how we would work together <span aria-hidden className="cta-arrow">→</span>
+          </Link>
+        </Reveal>
       </Container>
     </Section>
   );
@@ -1695,7 +2218,7 @@ function PathwayCard({
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none absolute right-6 top-4 select-none font-serif text-[clamp(4.5rem,10vw,7.5rem)] leading-none",
+          "pointer-events-none absolute right-6 top-4 select-none font-serif text-[clamp(3.25rem,7vw,5.25rem)] leading-none",
           dark ? "text-background/10" : "text-[color-mix(in_oklch,var(--gold)_12%,transparent)]",
         )}
       >
@@ -1707,7 +2230,7 @@ function PathwayCard({
       </p>
       <h3
         className={cn(
-          "relative z-10 mt-5 max-w-md font-serif font-light text-[clamp(1.9rem,3vw,2.75rem)] leading-[1.05] tracking-[-0.02em]",
+          "relative z-10 mt-5 max-w-md font-serif font-light type-h2 leading-[1.08] tracking-[-0.02em]",
           dark ? "text-background" : "text-foreground",
         )}
       >
@@ -1813,10 +2336,10 @@ function TwoPathwaysSection() {
       <Container className="relative">
         <Reveal variant="fade-up">
           <p className="eyebrow text-gold-ink mb-6">Two pathways</p>
-          <h2 className="max-w-4xl font-serif font-light text-[clamp(2.75rem,6vw,5.5rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+          <h2 className="type-display max-w-4xl font-light">
             Choose the pathway that
             <br />
-            <em className="type-display-accent not-italic font-light italic text-[clamp(3rem,6.5vw,5.75rem)] leading-[0.85] text-gold-warm">
+            <em className="type-display-accent accent-oval not-italic text-gold-warm">
               fits your context.
             </em>
           </h2>
@@ -1873,7 +2396,7 @@ function TwoPathwaysSection() {
         </div>
 
         <Reveal variant="fade-in" duration="slow" className="mt-14 md:mt-20">
-          <p className="mx-auto max-w-2xl text-center font-serif font-light text-[clamp(1.5rem,2.8vw,2.35rem)] leading-[1.2] tracking-[-0.02em] text-foreground">
+          <p className="mx-auto max-w-2xl text-center font-serif font-light text-[length:var(--text-heading-2)] leading-[1.25] tracking-[-0.02em] text-foreground">
             Two programmes, one{" "}
             <em className="type-display-accent not-italic italic text-gold-warm">
               strategic foundation.
@@ -1903,10 +2426,10 @@ function FounderSection() {
           <div className="relative z-20 py-10 md:col-span-5 md:py-16 lg:col-span-5 md:pr-0 text-center md:text-left">
             <Reveal variant="fade-up">
               <p className="eyebrow text-gold-ink mb-4">A statement from the founder</p>
-              <h2 className="font-serif font-semibold text-[clamp(2.75rem,5.8vw,5.25rem)] leading-[0.9] tracking-[-0.035em] text-foreground">
+              <h2 className="type-display font-light">
                 Amna
                 <br />
-                <em className="type-display-accent not-italic font-light italic text-[clamp(3.15rem,6.8vw,5.75rem)] leading-[0.85] text-gold-warm">
+                <em className="type-display-accent accent-oval not-italic text-gold-warm">
                   Imran.
                 </em>
               </h2>
@@ -1916,7 +2439,7 @@ function FounderSection() {
                 words rather than body copy. */}
             <Reveal delay={80} variant="fade-up">
               <blockquote className="mx-auto mt-7 max-w-sm border-[color-mix(in_oklch,var(--gold)_45%,transparent)] md:mx-0 md:max-w-md md:border-l-2 md:pl-8">
-                <p className="font-serif font-light text-[clamp(1.35rem,2.2vw,1.85rem)] leading-[1.35] tracking-[-0.01em] text-foreground">
+                <p className="font-serif font-light text-[length:var(--text-lead)] leading-[1.4] tracking-[-0.01em] text-foreground">
                   Gender-informed leadership strategist helping high-potential women progress
                   without{" "}
                   <em className="type-display-accent not-italic italic text-gold-warm">
@@ -2032,10 +2555,10 @@ function FinalCTA() {
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <Reveal variant="fade-up">
             <p className="eyebrow text-gold mb-6">Begin here</p>
-            <h2 className="font-serif font-light text-[clamp(2.6rem,6vw,5rem)] leading-[0.92] tracking-[-0.035em] text-background">
+            <h2 className="type-display font-light text-background">
               Ready to move forward
               <br />
-              <em className="type-display-accent not-italic font-light italic text-[clamp(3rem,7vw,5.75rem)] leading-[0.85] text-gold-warm">
+              <em className="type-display-accent accent-oval not-italic text-gold-warm">
                 strategically?
               </em>
             </h2>

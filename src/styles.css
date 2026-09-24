@@ -124,20 +124,18 @@
   --text-muted:     oklch(0.43 0.012 60);
   --text-faint:     oklch(0.52 0.012 60);
 
-  /* Typography scale — sized for reading at 100% desktop zoom, not for
-     screenshots. Body bottoms out at 18px and tops out at 21px. Prose leading is
-     deliberately generous; raise these tokens rather than adding per-section em
-     multipliers, or the scale drifts apart again. */
-  --text-display-1: clamp(3.25rem, 4.8vw + 1rem, 6.5rem);
-  --text-display-2: clamp(2.75rem, 3.4vw + 0.85rem, 5.25rem);
-  --text-heading-1: clamp(2.25rem, 2.4vw + 0.95rem, 4rem);
-  --text-heading-2: clamp(1.9rem, 1.6vw + 0.85rem, 3rem);
-  --text-heading-3: clamp(1.5rem, 0.9vw + 0.75rem, 2.15rem);
-  --text-lead:      clamp(1.25rem, 0.55vw + 1.05rem, 1.7rem);
-  --text-body:      clamp(1.125rem, 0.28vw + 1.05rem, 1.3125rem);
-  --text-body-emphasis: clamp(1.1875rem, 0.34vw + 1.1rem, 1.4375rem);
-  --text-small:     clamp(0.9375rem, 0.12vw + 0.9rem, 1.0625rem);
-  --text-caption:   clamp(0.75rem, 0.1vw + 0.72rem, 0.8125rem);
+  /* Typography scale — headlines a step down from the previous display sizes;
+     body sits around 17–19px so the page reads as editorial, not poster-sized. */
+  --text-display-1: clamp(2.5rem, 3.4vw + 0.75rem, 4.5rem);
+  --text-display-2: clamp(2.05rem, 2.3vw + 0.7rem, 3.65rem);
+  --text-heading-1: clamp(1.75rem, 1.6vw + 0.7rem, 2.85rem);
+  --text-heading-2: clamp(1.45rem, 1vw + 0.65rem, 2.15rem);
+  --text-heading-3: clamp(1.28rem, 0.55vw + 0.6rem, 1.7rem);
+  --text-lead:      clamp(1.1rem, 0.28vw + 1rem, 1.4rem);
+  --text-body:      clamp(1.0625rem, 0.16vw + 1rem, 1.1875rem);
+  --text-body-emphasis: clamp(1.1rem, 0.2vw + 1.02rem, 1.25rem);
+  --text-small:     clamp(0.875rem, 0.1vw + 0.84rem, 1rem);
+  --text-caption:   clamp(0.72rem, 0.08vw + 0.7rem, 0.8rem);
 
   --leading-display: 1.05;
   --leading-heading: 1.12;
@@ -301,10 +299,18 @@
     color: var(--text-faint);
     letter-spacing: 0.04em;
   }
+  /* Rastanty Cortez sits optically smaller than Cormorant at the same px.
+     Scale it in ems of the surrounding headline so italics read as the same
+     voice, not a miniature caption. */
   .type-display-accent {
     font-family: var(--font-display);
     font-feature-settings: normal;
     font-variant-ligatures: none;
+    font-size: 1.34em;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 0.9;
+    vertical-align: -0.06em;
   }
 
   /* —— Mixed-voice heading fragments ——
@@ -403,6 +409,7 @@
   }
   .section-pad-top-hero    { padding-top: var(--space-section-hero); }
   .section-pad-top-major   { padding-top: var(--space-section-major); }
+  .section-pad-top-minor   { padding-top: var(--space-section-minor); }
   .section-pad-bottom-major { padding-bottom: var(--space-section-major); }
 
   .stack-lg > * + * { margin-top: var(--space-stack-lg); }
@@ -413,8 +420,14 @@
   .section-surface-default { background-color: var(--background); }
   .section-surface-cream {
     background-color: color-mix(in oklch, var(--cream) 72%, var(--background));
+    background-image: radial-gradient(color-mix(in oklch, var(--gold) 11%, transparent) 0.7px, transparent 0.8px);
+    background-size: 22px 22px;
   }
-  .section-surface-warm { background-color: var(--warm-cream); }
+  .section-surface-warm {
+    background-color: var(--warm-cream);
+    background-image: radial-gradient(color-mix(in oklch, var(--gold) 10%, transparent) 0.7px, transparent 0.8px);
+    background-size: 22px 22px;
+  }
   .section-surface-panel { background-color: var(--warm-panel); }
   .section-surface-blush { background-color: color-mix(in oklch, var(--blush-subtle) 85%, var(--offwhite)); }
 
@@ -544,6 +557,24 @@
     width: 5rem;
     height: 2px;
     background: var(--gold);
+  }
+
+  /* —— Editorial marks ——
+     Quiet structure so long narrative pages do not read as stacked type. */
+  .accent-oval {
+    position: relative;
+    display: inline-block;
+    padding: 0.02em 0.12em 0.08em;
+  }
+  .accent-oval::after {
+    content: "";
+    position: absolute;
+    inset: 8% -10% -28%;
+    border: 1.5px solid color-mix(in oklch, var(--gold) 70%, transparent);
+    border-radius: 50%;
+    transform: rotate(-6deg);
+    pointer-events: none;
+    opacity: 0.7;
   }
 
   /* —— Gold accents —— */
@@ -1038,4 +1069,67 @@
 
 .hero-enter-soft {
   animation: hero-enter-fade var(--motion-reveal-slow) var(--ease-out-soft) both;
+}
+
+/* Why My Approach principles. A bare list of labels did not read as
+   clickable, so each row becomes a bordered tile with a permanent round arrow
+   button. Unlayered on purpose: the rows carry Tailwind border utilities,
+   which would otherwise override these borders from the utilities layer. */
+.principles [role="group"] > div { border-top: 0; }
+.principles .selectable-row {
+  align-items: center;
+  margin-bottom: 0.625rem;
+  padding-left: 1.25rem;
+  padding-right: 0.875rem;
+  border: 1px solid color-mix(in oklch, var(--gold) 28%, transparent);
+  background-color: color-mix(in oklch, var(--offwhite) 45%, transparent);
+  box-shadow: none;
+}
+.principles .selectable-row:hover {
+  border-color: color-mix(in oklch, var(--gold) 65%, transparent);
+  background-color: color-mix(in oklch, var(--offwhite) 75%, transparent);
+  box-shadow: 0 10px 24px color-mix(in oklch, var(--charcoal) 6%, transparent);
+}
+.principles .selectable-row[data-active="true"],
+.principles .selectable-row[data-active="true"]:hover {
+  border-color: var(--gold-deep);
+  background-color: var(--offwhite);
+  box-shadow:
+    inset 3px 0 0 var(--gold-deep),
+    0 14px 30px color-mix(in oklch, var(--charcoal) 8%, transparent);
+}
+.principles .selectable-row::before { display: none; }
+.principles .selectable-bar { margin-top: 0; }
+.principles .selectable-chevron {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: 0;
+  border: 1px solid color-mix(in oklch, var(--gold) 55%, transparent);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  opacity: 1;
+  transform: none;
+  transition:
+    background-color var(--motion-interaction) var(--ease-out-soft),
+    border-color var(--motion-interaction) var(--ease-out-soft),
+    color var(--motion-interaction) var(--ease-out-soft),
+    transform var(--motion-interaction) var(--ease-out-soft);
+}
+.principles .selectable-item:hover .selectable-chevron,
+.principles .selectable-item:focus-visible .selectable-chevron {
+  opacity: 1;
+  border-color: var(--gold-deep);
+  transform: translateX(3px);
+}
+.principles .selectable-item[data-active="true"] .selectable-chevron {
+  background-color: var(--gold-deep);
+  border-color: var(--gold-deep);
+  color: var(--offwhite);
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .principles .selectable-item:hover .selectable-chevron { transform: none; }
 }
