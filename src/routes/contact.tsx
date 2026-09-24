@@ -53,7 +53,7 @@ function PathCard({
   return (
     <div
       className={cn(
-        "group relative flex h-full flex-col p-8 transition-[transform,box-shadow,border-color] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] hover:-translate-y-1.5 md:p-10",
+        "group relative flex h-full flex-col p-5 sm:p-8 transition-[transform,box-shadow,border-color] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] hover:-translate-y-1.5 md:max-lg:p-6 lg:p-10",
         dark
           ? "bg-foreground text-background"
           : "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)] hover:border-[color-mix(in_oklch,var(--gold)_45%,transparent)]",
@@ -74,7 +74,7 @@ function PathCard({
       </h2>
       <p className={cn("mt-5 type-body flex-1", dark ? "text-background/80" : "text-copy")}>{body}</p>
       <div className="mt-auto pt-9">
-        <a href="#book" className={cn(dark ? "cta-primary-invert" : "cta-primary", "px-5 text-left tracking-[0.08em]")}>
+        <a href="#book" className={cn(dark ? "cta-primary-invert" : "cta-primary", "gap-3 whitespace-nowrap max-[359px]:whitespace-normal px-4 py-3 text-left text-[0.6875rem] tracking-[0.1em] max-sm:gap-2 max-sm:px-3 max-sm:text-[0.625rem] max-sm:tracking-[0.02em] md:max-lg:gap-2 md:max-lg:px-3 md:max-lg:text-[0.5625rem] md:max-lg:tracking-[0.02em]")}>
           {cta} <CtaArrow />
         </a>
       </div>
@@ -87,6 +87,8 @@ function Contact() {
     <>
       <PageHero
         eyebrow="Contact"
+        eyebrowScript
+        containerClassName="pb-6 md:pb-10"
         title={
           <>
             Begin with a strategic <Accent>conversation.</Accent>
@@ -101,14 +103,14 @@ function Contact() {
         }
       />
 
-      <Seam from="warm" into="cream" />
+      <Seam from="warm" into="cream" intensity="soft" />
 
       {/* PATHWAYS */}
-      <PageSection surface="cream">
+      <PageSection surface="cream" className="py-12 md:py-16">
         <PageHeading>
           Two ways to <Accent>begin.</Accent>
         </PageHeading>
-        <div className="mt-12 grid gap-6 md:grid-cols-2 items-stretch">
+        <div className="mt-8 grid gap-6 md:grid-cols-2 items-stretch [&>*]:min-w-0">
           <Reveal duration="slow">
             <PathCard
               eyebrow="For Individuals"
@@ -129,15 +131,15 @@ function Contact() {
         </div>
       </PageSection>
 
-      <Seam from="cream" into="sand" />
+      <Seam from="cream" into="sand" intensity="soft" />
 
       {/* BOOKING EMBED */}
-      <PageSection surface="sand" id="book">
+      <PageSection surface="sand" id="book" className="py-12 md:py-16">
         <PageHeading eyebrow="Schedule">
           Book a <Accent>time.</Accent>
         </PageHeading>
         <Reveal variant="fade-up" delay={160} duration="slow">
-          <div className="mt-10 border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-background min-h-[240px] flex flex-col items-center justify-center px-8 py-12 text-center">
+          <div className="mt-8 border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-background min-h-[240px] flex flex-col items-center justify-center px-8 py-12 text-center">
             <p className="eyebrow text-copy-muted">Booking Embed</p>
             <p className="mt-4 max-w-md font-serif italic text-[length:var(--text-lead)] text-copy leading-relaxed">
               Calendly or booking system embed to be added here.
@@ -146,10 +148,10 @@ function Contact() {
         </Reveal>
       </PageSection>
 
-      <Seam from="sand" into="cream" />
+      <Seam from="sand" into="cream" intensity="soft" />
 
       {/* ENQUIRY FORM */}
-      <PageSection surface="cream">
+      <PageSection surface="cream" className="py-12 md:py-16">
         <div className="grid gap-10 md:gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
             <PageHeading eyebrow="Message" size="h1">

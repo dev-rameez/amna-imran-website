@@ -5,13 +5,47 @@ import { cn } from "@/lib/utils";
 import { Container } from "./primitives";
 import logoSrc from "@/assets/logo.png";
 
-const NAV = [
+type NavItem = {
+  to: "/work-with-me" | "/organizations" | "/organizations-figma" | "/about" | "/about-v2" | "/insights" | "/contact" | "/contact-v2";
+  label: string;
+  children?: readonly { to: NavItem["to"]; label: string }[];
+};
+
+/* The Organizations, About and Contact dropdowns are review-only; drop the children once the client picks a version. */
+const NAV: readonly NavItem[] = [
   { to: "/work-with-me", label: "Work With Me" },
-  { to: "/organizations", label: "Organizations" },
-  { to: "/about", label: "About" },
+  {
+    to: "/organizations",
+    label: "Organizations",
+    children: [
+      { to: "/organizations", label: "Current version" },
+      { to: "/organizations-figma", label: "Figma version" },
+    ],
+  },
+  {
+    to: "/about",
+    label: "About",
+    children: [
+      { to: "/about", label: "About" },
+      { to: "/about-v2", label: "About Version Two" },
+    ],
+  },
   { to: "/insights", label: "Insights" },
-  { to: "/contact", label: "Contact" },
-] as const;
+  {
+    to: "/contact",
+    label: "Contact",
+    children: [
+      { to: "/contact", label: "Contact" },
+      { to: "/contact-v2", label: "Contact Form Version 2" },
+    ],
+  },
+];
+
+const NAV_LINK = cn(
+  "relative py-2 text-[length:var(--text-small)] font-medium tracking-wide text-foreground/90 transition-colors hover:text-foreground",
+  "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-[var(--gold-deep)] after:transition-transform after:duration-[var(--motion-interaction)] after:ease-[var(--ease-out-soft)] hover:after:scale-x-100",
+  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]",
+);
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -62,20 +96,54 @@ export function SiteHeader() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-7 xl:gap-9">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={cn(
-                  "relative py-2 text-[length:var(--text-small)] font-medium tracking-wide text-foreground/90 transition-colors hover:text-foreground",
-                  "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-[var(--gold-deep)] after:transition-transform after:duration-[var(--motion-interaction)] after:ease-[var(--ease-out-soft)] hover:after:scale-x-100",
-                  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]",
-                  pathname === item.to && "text-foreground after:scale-x-100",
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) => {
+              const active =
+                pathname === item.to || !!item.children?.some((c) => c.to === pathname);
+              if (!item.children) {
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={cn(NAV_LINK, active && "text-foreground after:scale-x-100")}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+              return (
+                <div key={item.to} className="group/menu relative">
+                  <Link
+                    to={item.to}
+                    aria-haspopup="true"
+                    className={cn(NAV_LINK, "inline-flex items-center gap-1.5", active && "text-foreground after:scale-x-100")}
+                  >
+                    {item.label}
+                    <span
+                      aria-hidden
+                      className="text-[0.6rem] text-copy-muted transition-transform duration-300 group-hover/menu:rotate-180 group-focus-within/menu:rotate-180"
+                    >
+                      ▾
+                    </span>
+                  </Link>
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 transition-[opacity,visibility] duration-300 group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:opacity-100">
+                    <div className="min-w-[13rem] border border-[color-mix(in_oklch,var(--gold)_25%,transparent)] bg-background py-2 shadow-[0_18px_40px_-24px_color-mix(in_oklch,var(--charcoal)_45%,transparent)]">
+                      {item.children.map((c) => (
+                        <Link
+                          key={c.to + c.label}
+                          to={c.to}
+                          className={cn(
+                            "block px-5 py-2.5 text-[length:var(--text-small)] text-foreground/85 transition-colors hover:bg-[color-mix(in_oklch,var(--gold)_10%,transparent)] hover:text-foreground focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--gold-deep)]",
+                            pathname === c.to && "text-gold-ink",
+                          )}
+                        >
+                          {c.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </nav>
 
           <div className="hidden lg:block">
@@ -98,19 +166,40 @@ export function SiteHeader() {
       {open && (
         <div className="lg:hidden border-t border-[var(--hairline)]/60 bg-background">
           <Container className="py-6 flex flex-col gap-5">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setOpen(false)}
-                /* py-2.5 rather than py-1: at body size that lifts the tap
-                   target from roughly 30px to 41px, which is a comfortable
-                   thumb target without changing the menu's spacing rhythm. */
-                className="py-2.5 text-[length:var(--text-body)] text-foreground/90 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) =>
+              item.children ? (
+                <div key={item.to} className="flex flex-col">
+                  <p className="py-2.5 text-[length:var(--text-body)] text-foreground/90">{item.label}</p>
+                  <div className="ml-1 flex flex-col border-l border-[color-mix(in_oklch,var(--gold)_40%,transparent)] pl-4">
+                    {item.children.map((c) => (
+                      <Link
+                        key={c.to + c.label}
+                        to={c.to}
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "py-2.5 text-[length:var(--text-body)] text-foreground/75 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]",
+                          pathname === c.to && "text-gold-ink",
+                        )}
+                      >
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  /* py-2.5 rather than py-1: at body size that lifts the tap
+                     target from roughly 30px to 41px, which is a comfortable
+                     thumb target without changing the menu's spacing rhythm. */
+                  className="py-2.5 text-[length:var(--text-body)] text-foreground/90 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--gold-deep)]"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
             <Link to="/contact" onClick={() => setOpen(false)} className="cta-secondary mt-2 w-full">
               Book a Call <span aria-hidden className="cta-arrow">→</span>
             </Link>

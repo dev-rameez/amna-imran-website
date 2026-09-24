@@ -4,12 +4,15 @@ import { Eyebrow, Reveal } from "@/components/site/primitives";
 import {
   Accent,
   CtaArrow,
+  ONE_LINE_CTA,
   PageCta,
+  SCRIPT_LABEL,
   PageHeading,
   PageHero,
   PageSection,
   Seam,
 } from "@/components/site/page-kit";
+import { cn } from "@/lib/utils";
 import founderLeaning from "@/assets/amna-founder-leaning.png";
 import realizationPortrait from "@/assets/amna-full-portrait.png";
 
@@ -77,6 +80,7 @@ function About() {
     <>
       <PageHero
         eyebrow="About · Amna Imran"
+        eyebrowScript
         size="h1"
         title={
           <>
@@ -92,12 +96,13 @@ function About() {
             wellbeing.
           </p>
         }
+        inlineActions
         actions={
           <>
-            <Link to="/contact" className="cta-primary w-full justify-between text-left lg:whitespace-nowrap">
+            <Link to="/contact" className={cn("cta-primary w-full sm:w-auto", ONE_LINE_CTA)}>
               Book a Strategic Clarity Call <CtaArrow />
             </Link>
-            <Link to="/organizations" className="cta-secondary w-full justify-between text-left lg:whitespace-nowrap">
+            <Link to="/organizations" className={cn("cta-secondary w-full sm:w-auto", ONE_LINE_CTA)}>
               For Organizations <CtaArrow />
             </Link>
           </>
@@ -169,7 +174,7 @@ function About() {
                     className="block h-auto w-full scale-[2] translate-x-[-32px]"
                   />
                 </div>
-                <figcaption className="eyebrow mt-4 text-copy-muted">
+                <figcaption className={cn(SCRIPT_LABEL, "mt-5")}>
                   A personal note from Amna
                 </figcaption>
               </figure>
@@ -272,7 +277,7 @@ function About() {
 
                 <div className="mt-12 flex items-center gap-4">
                   <span aria-hidden className="h-px w-12 bg-[var(--gold)]" />
-                  <p className="font-serif italic text-[20px] md:text-[22px] text-foreground">— Amna</p>
+                  <p className="font-serif italic text-[20px] md:text-[22px] text-foreground">Amna</p>
                 </div>
               </article>
             </Reveal>
@@ -357,12 +362,13 @@ function About() {
             <Accent>strategically?</Accent>
           </>
         }
+        inlineActions
         actions={
           <>
-            <Link to="/contact" className="cta-primary-invert justify-between px-6 tracking-[0.12em]">
+            <Link to="/contact" className={cn("cta-primary-invert", ONE_LINE_CTA)}>
               Book a Strategic Clarity Call <CtaArrow />
             </Link>
-            <Link to="/organizations" className="cta-secondary-invert justify-between px-6 tracking-[0.12em]">
+            <Link to="/organizations" className={cn("cta-secondary-invert", ONE_LINE_CTA)}>
               For Organizations <CtaArrow />
             </Link>
           </>

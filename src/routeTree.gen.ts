@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkWithMeRouteImport } from './routes/work-with-me'
 import { Route as PrivatePaymentRouteImport } from './routes/private-payment'
+import { Route as OrganizationsFigmaRouteImport } from './routes/organizations-figma'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as ContactV2RouteImport } from './routes/contact-v2'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutV2RouteImport } from './routes/about-v2'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -27,6 +30,11 @@ const PrivatePaymentRoute = PrivatePaymentRouteImport.update({
   path: '/private-payment',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrganizationsFigmaRoute = OrganizationsFigmaRouteImport.update({
+  id: '/organizations-figma',
+  path: '/organizations-figma',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrganizationsRoute = OrganizationsRouteImport.update({
   id: '/organizations',
   path: '/organizations',
@@ -37,9 +45,19 @@ const InsightsRoute = InsightsRouteImport.update({
   path: '/insights',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactV2Route = ContactV2RouteImport.update({
+  id: '/contact-v2',
+  path: '/contact-v2',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutV2Route = AboutV2RouteImport.update({
+  id: '/about-v2',
+  path: '/about-v2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -56,18 +74,24 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/about-v2': typeof AboutV2Route
   '/contact': typeof ContactRoute
+  '/contact-v2': typeof ContactV2Route
   '/insights': typeof InsightsRoute
   '/organizations': typeof OrganizationsRoute
+  '/organizations-figma': typeof OrganizationsFigmaRoute
   '/private-payment': typeof PrivatePaymentRoute
   '/work-with-me': typeof WorkWithMeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/about-v2': typeof AboutV2Route
   '/contact': typeof ContactRoute
+  '/contact-v2': typeof ContactV2Route
   '/insights': typeof InsightsRoute
   '/organizations': typeof OrganizationsRoute
+  '/organizations-figma': typeof OrganizationsFigmaRoute
   '/private-payment': typeof PrivatePaymentRoute
   '/work-with-me': typeof WorkWithMeRoute
 }
@@ -75,9 +99,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/about-v2': typeof AboutV2Route
   '/contact': typeof ContactRoute
+  '/contact-v2': typeof ContactV2Route
   '/insights': typeof InsightsRoute
   '/organizations': typeof OrganizationsRoute
+  '/organizations-figma': typeof OrganizationsFigmaRoute
   '/private-payment': typeof PrivatePaymentRoute
   '/work-with-me': typeof WorkWithMeRoute
 }
@@ -86,27 +113,36 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/about-v2'
     | '/contact'
+    | '/contact-v2'
     | '/insights'
     | '/organizations'
+    | '/organizations-figma'
     | '/private-payment'
     | '/work-with-me'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/about-v2'
     | '/contact'
+    | '/contact-v2'
     | '/insights'
     | '/organizations'
+    | '/organizations-figma'
     | '/private-payment'
     | '/work-with-me'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/about-v2'
     | '/contact'
+    | '/contact-v2'
     | '/insights'
     | '/organizations'
+    | '/organizations-figma'
     | '/private-payment'
     | '/work-with-me'
   fileRoutesById: FileRoutesById
@@ -114,9 +150,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AboutV2Route: typeof AboutV2Route
   ContactRoute: typeof ContactRoute
+  ContactV2Route: typeof ContactV2Route
   InsightsRoute: typeof InsightsRoute
   OrganizationsRoute: typeof OrganizationsRoute
+  OrganizationsFigmaRoute: typeof OrganizationsFigmaRoute
   PrivatePaymentRoute: typeof PrivatePaymentRoute
   WorkWithMeRoute: typeof WorkWithMeRoute
 }
@@ -137,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivatePaymentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/organizations-figma': {
+      id: '/organizations-figma'
+      path: '/organizations-figma'
+      fullPath: '/organizations-figma'
+      preLoaderRoute: typeof OrganizationsFigmaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/organizations': {
       id: '/organizations'
       path: '/organizations'
@@ -151,11 +197,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact-v2': {
+      id: '/contact-v2'
+      path: '/contact-v2'
+      fullPath: '/contact-v2'
+      preLoaderRoute: typeof ContactV2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about-v2': {
+      id: '/about-v2'
+      path: '/about-v2'
+      fullPath: '/about-v2'
+      preLoaderRoute: typeof AboutV2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -178,9 +238,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AboutV2Route: AboutV2Route,
   ContactRoute: ContactRoute,
+  ContactV2Route: ContactV2Route,
   InsightsRoute: InsightsRoute,
   OrganizationsRoute: OrganizationsRoute,
+  OrganizationsFigmaRoute: OrganizationsFigmaRoute,
   PrivatePaymentRoute: PrivatePaymentRoute,
   WorkWithMeRoute: WorkWithMeRoute,
 }

@@ -12,6 +12,10 @@ export const PAGE_SURFACE = {
 
 export type PageSurface = keyof typeof PAGE_SURFACE;
 
+/** A short label set in the headline script accent, for signature-style captions. */
+export const SCRIPT_LABEL =
+  "type-display-accent block text-[2.1rem] tracking-normal md:text-[2.4rem] leading-none text-gold-warm";
+
 /** Script accent used in every headline on the homepage. */
 export function Accent({ children, className }: { children: React.ReactNode; className?: string }) {
   return <em className={cn("type-display-accent not-italic text-gold-warm", className)}>{children}</em>;
@@ -106,24 +110,35 @@ export function PageHero({
   actions,
   aside,
   size = "display",
+  inlineActions = false,
+  eyebrowScript = false,
+  containerClassName,
   children,
 }: {
-  eyebrow: React.ReactNode;
+  /** Overrides for the hero's padding, e.g. a tighter bottom on short pages. */
+  containerClassName?: string;
+  eyebrow?: React.ReactNode;
+  /** Set the eyebrow in the gold script accent instead of small caps. */
+  eyebrowScript?: boolean;
   title: React.ReactNode;
   size?: "display" | "h1";
   lead?: React.ReactNode;
   actions?: React.ReactNode;
+  /** Buttons side by side from `sm`, wrapping if the column is too narrow. */
+  inlineActions?: boolean;
   aside?: React.ReactNode;
   children?: React.ReactNode;
 }) {
   return (
     <section className="relative overflow-x-clip" style={{ background: PAGE_SURFACE.warm }}>
-      <Container className="relative pt-12 pb-14 md:pt-20 md:pb-20">
+      <Container className={cn("relative pt-12 pb-14 md:pt-20 md:pb-20", containerClassName)}>
         <div className={cn("grid gap-12 md:gap-10", aside && "md:grid-cols-12 md:items-center")}>
           <div className={cn(aside ? "md:col-span-7" : "max-w-4xl")}>
-            <Reveal variant="fade-in" duration="slow">
-              <p className="eyebrow text-gold-ink mb-5">{eyebrow}</p>
-            </Reveal>
+            {eyebrow && (
+              <Reveal variant="fade-in" duration="slow">
+                <p className={cn(eyebrowScript ? cn(SCRIPT_LABEL, "mb-4") : "eyebrow text-gold-ink mb-5")}>{eyebrow}</p>
+              </Reveal>
+            )}
             <Reveal variant="fade-up" duration="slow" delay={60}>
               <h1
                 className={cn(
@@ -141,7 +156,14 @@ export function PageHero({
             )}
             {actions && (
               <Reveal variant="fade-up" delay={220} duration="fast">
-                <div className="mt-9 flex max-w-md flex-col gap-3">{actions}</div>
+                <div
+                  className={cn(
+                    "mt-9 flex flex-col gap-3",
+                    inlineActions ? "sm:flex-row sm:flex-wrap" : "max-w-md",
+                  )}
+                >
+                  {actions}
+                </div>
               </Reveal>
             )}
           </div>
@@ -158,10 +180,13 @@ export function PageCta({
   title,
   body,
   actions,
+  inlineActions = false,
 }: {
   title: React.ReactNode;
   body?: React.ReactNode;
   actions: React.ReactNode;
+  /** Buttons side by side from `sm`, wrapping if the band is too narrow. */
+  inlineActions?: boolean;
 }) {
   return (
     <section className="bg-foreground text-background">
@@ -171,7 +196,14 @@ export function PageCta({
           {body && <p className="mt-6 max-w-xl text-background/75">{body}</p>}
         </Reveal>
         <Reveal delay={100} variant="fade-up">
-          <div className="flex w-full flex-col gap-4 sm:w-[28rem]">{actions}</div>
+          <div
+            className={cn(
+              "flex w-full flex-col gap-4",
+              inlineActions ? "sm:flex-row sm:flex-wrap" : "sm:w-fit sm:min-w-[28rem]",
+            )}
+          >
+            {actions}
+          </div>
         </Reveal>
       </Container>
     </section>
@@ -227,6 +259,10 @@ export function VariantLabel({ name, note }: { name: string; note: string }) {
     </div>
   );
 }
+
+/** Keeps long CTA labels on one line down to a 320px phone. */
+export const ONE_LINE_CTA =
+  "justify-between gap-6 whitespace-nowrap px-5 text-left tracking-[0.08em] max-sm:gap-3 max-sm:px-4 max-sm:text-[0.625rem] max-sm:tracking-[0.05em]";
 
 export function CtaArrow({ down }: { down?: boolean }) {
   return (
