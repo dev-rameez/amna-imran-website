@@ -306,7 +306,7 @@
     font-family: var(--font-display);
     font-feature-settings: normal;
     font-variant-ligatures: none;
-    font-size: 1.34em;
+    font-size: max(1.6em, 2.35rem);
     font-weight: 400;
     font-style: normal;
     line-height: 0.9;

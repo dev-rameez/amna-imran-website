@@ -18,7 +18,8 @@ import { Frown, HelpCircle, Scale, Unplug, History } from "lucide-react";
 import heroPortrait from "@/assets/amna-hero-v2.png";
 import approachPortrait from "@/assets/amna-approach.png";
 import programmePortrait from "@/assets/amna-support.png";
-import founderPortrait from "@/assets/amna-about-realization.png";
+import founderLeaning from "@/assets/amna-founder-leaning.png";
+import logoMark from "@/assets/logo.png";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
 import cdpLogo from "@/assets/cdp.png";
@@ -165,20 +166,6 @@ const SUPPORT_FOCUS = [
   "Create sustainable success on their own terms",
 ];
 
-/* DRAFT COPY — pathway qualifiers, written to client brief, awaiting sign-off. */
-const INDIVIDUAL_QUALIFIERS = [
-  "You are delivering at a high level, but progression has slowed or stalled.",
-  "You keep being told you are nearly ready, without being told what is missing.",
-  "You are returning from parental leave, or planning to, and want to protect your trajectory.",
-];
-
-/* DRAFT COPY — pathway qualifiers, written to client brief, awaiting sign-off. */
-const ORG_QUALIFIERS = [
-  "Your hiring is close to balanced, but your senior leadership is not.",
-  "You are losing high-potential women at the manager-to-director step.",
-  "You have the policies in place and want the informal dynamics to match them.",
-];
-
 /**
  * One source of truth for the page's surface colours. Section backgrounds and the
  * seams between them read from the same values, so a seam can never band against
@@ -276,10 +263,23 @@ function HomePage() {
         into="blush"
         intensity="default"
         fromFill={SURFACE.warmPathways}
-        intoFill={SURFACE.blushFounder}
+        intoFill={CLOSING_SURFACE.founder}
       />
-      <FounderSection />
-      <FinalCTA />
+      <VariantLabel
+        name="Option 1 — Figma layout"
+        note="Founder, Ready to move forward and footer exactly as in Figma · cushion removed from the photo"
+      />
+      <ClosingFigma />
+      <VariantLabel
+        name="Option 2 — for client review"
+        note="She leans on the dark band · call to action and footer share one dark surface"
+      />
+      <ClosingLeanOnBand />
+      <VariantLabel
+        name="Option 3 — for client review"
+        note="One warm canvas · she leans on a dark call-to-action card · light footer"
+      />
+      <ClosingLeanOnCard />
     </>
   );
 }
@@ -317,7 +317,7 @@ function Hero() {
                   Coaching for
                 </span>
                 <span style={{ fontSize: "clamp(1.85rem, 3.4vw, 2.75rem)", lineHeight: 0.95 }}>
-                  <em className="type-display-accent not-italic text-gold-warm">
+                  <em className="type-display-accent not-italic text-[1.34em] text-gold-warm">
                     High-Potential
                   </em>{" "}
                   <span className="font-serif font-light">Women</span>
@@ -337,14 +337,14 @@ function Hero() {
               <div className="mt-9 flex max-w-md flex-col gap-3">
                 <Link
                   to="/contact"
-                  className="cta-primary w-full justify-between text-left sm:whitespace-nowrap"
+                  className="cta-primary w-full justify-between text-left lg:whitespace-nowrap"
                   onClick={() => track("strategic_clarity_call", { section: "hero_intro" })}
                 >
                   Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
                 </Link>
                 <Link
                   to="/organizations"
-                  className="cta-secondary w-full justify-between text-left sm:whitespace-nowrap"
+                  className="cta-secondary w-full justify-between text-left lg:whitespace-nowrap"
                   onClick={() => track("organisational_engagement", { section: "hero_intro" })}
                 >
                   For Corporate &amp; HR Enquiries <span aria-hidden className="cta-arrow">→</span>
@@ -503,7 +503,7 @@ function CredentialsBand() {
                   src={c.logo}
                   alt={c.label}
                   loading="lazy"
-                  className="h-16 w-auto max-w-[240px] object-contain md:h-[4.5rem]"
+                  className="h-16 w-auto max-w-[65%] object-contain md:h-[4.5rem] md:max-w-[240px]"
                   style={{ transform: `scale(${c.scale})`, transformOrigin: "center" }}
                 />
               </div>
@@ -751,6 +751,8 @@ function InternalNarratives() {
 /* ---------------- PROGRESS NARRATIVE ---------------- */
 
 function ProgressNarrativeSection() {
+  const [activeGap, setActiveGap] = useState(0);
+
   return (
     <Section
       as="section"
@@ -810,11 +812,13 @@ function ProgressNarrativeSection() {
         </Reveal>
 
         <div className="relative mt-12 md:mt-14">
+          {/* Mirrors the selected gap; keyed so each change replays the fade. */}
           <span
+            key={activeGap}
             aria-hidden
-            className="pointer-events-none absolute -top-10 right-0 hidden select-none font-serif font-light leading-none tracking-[-0.04em] text-[clamp(7rem,13vw,11rem)] text-[color-mix(in_oklch,var(--gold)_10%,transparent)] md:block"
+            className="hero-enter-soft pointer-events-none absolute -top-10 right-0 hidden select-none font-serif font-light leading-none tracking-[-0.04em] text-[clamp(7rem,13vw,11rem)] text-[color-mix(in_oklch,var(--gold)_10%,transparent)] md:block"
           >
-            08
+            {String(activeGap + 1).padStart(2, "0")}
           </span>
           <Reveal variant="fade-in" duration="slow">
             <div className="relative mb-8 max-w-2xl md:mb-10">
@@ -840,12 +844,13 @@ function ProgressNarrativeSection() {
                 meta: "How it operates",
                 detail: <p>{g.d}</p>,
               }))}
-              onSelect={(index) =>
+              onSelect={(index) => {
+                setActiveGap(index);
                 track("gap_selected", {
                   section: "eight_persistent_gaps",
                   position: index + 1,
-                })
-              }
+                });
+              }}
             />
           </Reveal>
 
@@ -1181,19 +1186,27 @@ function ProgrammeColumn({
       as="article"
       variant="fade-up"
       delay={delay}
-      className={cn("relative z-20 flex flex-col lg:items-center lg:text-center", className)}
+      /* On lg the two programmes share the grid's three rows (title, card,
+         CTA) through subgrid, so both cards start, end and measure the same
+         even though the titles differ in length. */
+      className={cn(
+        "relative z-20 flex flex-col lg:row-span-3 lg:grid lg:grid-rows-subgrid lg:justify-items-center lg:text-center",
+        className,
+      )}
     >
-      <h3
-        className={cn(
-          "font-serif leading-[1.05] text-gold-deep",
-          dark ? "type-h2" : "type-h3",
-        )}
-      >
-        {title}
-      </h3>
-      <div className="mt-3 w-full max-w-[26rem]">
-        <Hairline tone="gold" />
-        <p className="pt-3 eyebrow text-foreground">{kicker}</p>
+      <div className="flex w-full flex-col items-center lg:h-full lg:justify-end">
+        <h3
+          className={cn(
+            "font-serif leading-[1.05] text-gold-deep",
+            dark ? "type-h2" : "type-h3",
+          )}
+        >
+          {title}
+        </h3>
+        <div className="mt-3 w-full max-w-[26rem]">
+          <Hairline tone="gold" />
+          <p className="pt-3 eyebrow text-foreground">{kicker}</p>
+        </div>
       </div>
 
       {/* Summary and detail share one grid cell, so the card is always sized to
@@ -1207,8 +1220,8 @@ function ProgrammeColumn({
           /* Base styles colour every <p> secondary grey, which vanished on the
              dark panel, so the panel colour has to reach the paragraphs. */
           dark
-            ? "border-l-4 border-l-[var(--gold)] text-background [&_p]:text-background/90 shadow-[0_30px_80px_color-mix(in_oklch,var(--charcoal)_22%,transparent)] lg:-rotate-[1.25deg]"
-            : "border-r-4 border-r-foreground/25 text-foreground [&_p]:text-foreground shadow-[0_30px_80px_color-mix(in_oklch,var(--gold)_24%,transparent)] lg:rotate-[1.25deg]",
+            ? "border-l-4 border-l-[var(--gold)] text-background [&_p]:text-background/90 shadow-[0_30px_80px_color-mix(in_oklch,var(--charcoal)_22%,transparent)]"
+            : "border-r-4 border-r-foreground/25 text-foreground [&_p]:text-foreground shadow-[0_30px_80px_color-mix(in_oklch,var(--gold)_24%,transparent)]",
         )}
         style={{
           background: dark
@@ -1224,7 +1237,7 @@ function ProgrammeColumn({
               open ? "invisible opacity-0" : "visible opacity-100",
             )}
           >
-            <p className="hyphens-auto font-serif font-light text-[clamp(1.3rem,0.5vw+1rem,1.6rem)] leading-[1.45] sm:text-justify">
+            <p className="font-serif font-light text-[clamp(1.3rem,0.5vw+1rem,1.6rem)] leading-[1.45]">
               {summary}
             </p>
           </div>
@@ -1232,7 +1245,7 @@ function ProgrammeColumn({
             id={panelId}
             aria-hidden={!open}
             className={cn(
-              "[grid-area:stack] space-y-4 hyphens-auto text-[length:var(--text-small)] leading-[1.7] transition-[opacity,visibility] duration-700 ease-out sm:text-justify",
+              "[grid-area:stack] space-y-4 text-[length:var(--text-small)] leading-[1.7] transition-[opacity,visibility] duration-700 ease-out",
               open ? "visible opacity-100" : "invisible opacity-0",
             )}
           >
@@ -1274,7 +1287,7 @@ function ProgrammeColumn({
       <Link
         to="/work-with-me"
         hash={ctaHash}
-        className="cta-primary mt-8 self-start lg:self-center"
+        className="cta-primary mt-8 self-start lg:justify-self-center"
         onClick={() => track("programme_explored", { section: "programmes", programme: ctaHash })}
       >
         {ctaLabel} <span aria-hidden className="cta-arrow">→</span>
@@ -1340,8 +1353,9 @@ function HowISupportSection() {
         </ul>
 
         {/* Two programmes flanking the centre portrait */}
-        <div className="relative mt-16 grid grid-cols-1 items-center gap-14 lg:mt-8 lg:grid-cols-[1fr_13rem_1fr] lg:gap-6 xl:grid-cols-[1fr_15rem_1fr] xl:gap-8">
+        <div className="relative mt-16 grid grid-cols-1 gap-14 lg:mt-24 lg:grid-cols-[1fr_13rem_1fr] lg:grid-rows-[auto_1fr_auto] lg:gap-x-6 lg:gap-y-0 xl:grid-cols-[1fr_15rem_1fr] xl:gap-x-8">
           <ProgrammeColumn
+            className="lg:col-start-1 lg:row-start-1"
             tone="dark"
             title={
               <>
@@ -1378,11 +1392,11 @@ function HowISupportSection() {
             }
           />
 
-          {/* Centre portrait. The cut-out carries a lot of empty canvas above her
-              head, so it is drawn wider than its column and pulled up into the
-              space above; pointer-events-none keeps that empty canvas from
-              blocking the cards and CTAs it overlaps. */}
-          <div className="pointer-events-none relative z-30 order-first -mt-24 flex justify-center sm:-mt-32 lg:order-none lg:-mt-56 lg:self-end">
+          {/* Centre portrait. On lg it is taken out of the grid so its height
+              cannot stretch the card rows; it stands on the grid's floor and its
+              empty upper canvas rises into the space above. pointer-events-none
+              keeps that canvas from blocking anything it overlaps. */}
+          <div className="pointer-events-none relative z-30 order-first -mt-24 flex justify-center sm:-mt-32 lg:absolute lg:inset-x-0 lg:bottom-0 lg:order-none lg:mt-0">
             <Reveal variant="scale" duration="slow" className="relative">
               <PortraitFloor feetTop={96} feetLeft={37} feetWidth={31} />
               <img
@@ -1396,7 +1410,7 @@ function HowISupportSection() {
           </div>
 
           <ProgrammeColumn
-            className="lg:translate-y-16"
+            className="lg:col-start-3 lg:row-start-1"
             tone="gold"
             delay={140}
             title={
@@ -2176,21 +2190,17 @@ function WhyDifferentVariantB() {
  * each whole card clickable while keeping exactly one link per card.
  */
 function PathwayCard({
-  index,
   eyebrow,
   title,
   titleAccent,
-  qualifiers,
   programmes,
   cta,
   to,
   dark = false,
 }: {
-  index: string;
   eyebrow: string;
   title: string;
   titleAccent: string;
-  qualifiers: string[];
   programmes: string[];
   cta: string;
   to: string;
@@ -2205,25 +2215,10 @@ function PathwayCard({
           : "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)] hover:border-[color-mix(in_oklch,var(--gold)_45%,transparent)]",
       )}
     >
-      {/* No whole-card overlay link: the card contains its own CTA, and stacking
-          a second link over it gives one visual target two competing controls.
-          The hover lift and the growing gold rail carry the affordance instead,
-          and the CTA below is the only interaction. */}
       <span
         aria-hidden
-        className={cn(
-          "pointer-events-none absolute left-0 top-8 h-10 w-1 transition-[height] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:h-16 bg-[var(--gold)]",
-        )}
+        className="pointer-events-none absolute left-0 top-8 h-10 w-1 bg-[var(--gold)] transition-[height] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:h-16"
       />
-      <span
-        aria-hidden
-        className={cn(
-          "pointer-events-none absolute right-6 top-4 select-none font-serif text-[clamp(3.25rem,7vw,5.25rem)] leading-none",
-          dark ? "text-background/10" : "text-[color-mix(in_oklch,var(--gold)_12%,transparent)]",
-        )}
-      >
-        {index}
-      </span>
 
       <p className={cn("eyebrow relative z-10", dark ? "text-gold" : "text-copy-muted")}>
         {eyebrow}
@@ -2238,62 +2233,35 @@ function PathwayCard({
         <em className="type-display-accent not-italic italic text-gold-warm">{titleAccent}</em>
       </h3>
 
-      <div className="relative z-10 my-7 h-px w-16 bg-[var(--gold)]" />
-
-      <p
+      <div
         className={cn(
-          "relative z-10 text-[length:var(--text-small)] uppercase tracking-[0.14em]",
-          dark ? "text-background/70" : "text-copy-muted",
+          "relative z-10 my-7 h-px w-full",
+          dark ? "bg-background/15" : "bg-[color-mix(in_oklch,var(--gold)_30%,transparent)]",
         )}
-      >
-        This is for you if…
-      </p>
-      <ul className="relative z-10 mt-4 space-y-3">
-        {qualifiers.map((q) => (
+      />
+
+      <ul className="relative z-10 space-y-3">
+        {programmes.map((item) => (
           <li
-            key={q}
+            key={item}
             className={cn(
               "flex gap-3 text-[length:var(--text-body)] leading-[1.55]",
               dark ? "text-background/90" : "text-copy",
             )}
           >
-            <span aria-hidden className="mt-[0.7em] h-px w-4 shrink-0 bg-[var(--gold)]" />
-            {q}
-          </li>
-        ))}
-      </ul>
-
-      <p
-        className={cn(
-          "relative z-10 mt-8 text-[length:var(--text-small)] uppercase tracking-[0.14em]",
-          dark ? "text-background/70" : "text-copy-muted",
-        )}
-      >
-        What that looks like
-      </p>
-      <ul className="relative z-10 mt-3 space-y-0">
-        {programmes.map((item) => (
-          <li
-            key={item}
-            className={cn(
-              "border-t py-4 font-serif text-[clamp(1.1rem,1.25vw,1.35rem)] leading-snug",
-              dark
-                ? "border-background/20 text-background/90"
-                : "border-[color-mix(in_oklch,var(--gold)_18%,transparent)] text-copy",
-            )}
-          >
+            <span aria-hidden className="mt-[0.75em] h-px w-4 shrink-0 bg-[var(--gold)]" />
             {item}
           </li>
         ))}
       </ul>
 
-      {/* mt-auto rather than flex-1 on the list above: the cards keep a shared
-          CTA baseline, but the slack in the shorter card lands as breathing room
-          before the button instead of a void inside the list. */}
       <div className="relative z-10 mt-auto pt-9">
         <Link
           to={to}
-          className={dark ? "cta-primary-invert" : "cta-primary"}
+          className={cn(
+            dark ? "cta-primary-invert" : "cta-primary",
+            "px-5 tracking-[0.08em] xl:whitespace-nowrap",
+          )}
           onClick={() =>
             track(dark ? "organisational_engagement" : "strategic_clarity_call", {
               section: "choose_the_pathway",
@@ -2335,7 +2303,6 @@ function TwoPathwaysSection() {
 
       <Container className="relative">
         <Reveal variant="fade-up">
-          <p className="eyebrow text-gold-ink mb-6">Two pathways</p>
           <h2 className="type-display max-w-4xl font-light">
             Choose the pathway that
             <br />
@@ -2360,11 +2327,9 @@ function TwoPathwaysSection() {
           <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-2 lg:gap-10">
             <Reveal as="article" variant="fade-up" className="flex flex-col">
               <PathwayCard
-                index="01"
                 eyebrow="For Individuals"
                 title="Accelerate Your Leadership"
                 titleAccent="Trajectory"
-                qualifiers={INDIVIDUAL_QUALIFIERS}
                 programmes={[
                   "ELEVATE™ Strategic Advancement Program",
                   "Lead & Thrive Through Motherhood™",
@@ -2377,11 +2342,9 @@ function TwoPathwaysSection() {
             <Reveal delay={120} as="article" variant="fade-up" className="flex flex-col">
               <PathwayCard
                 dark
-                index="02"
                 eyebrow="For Organizations"
                 title="Develop & Retain High-Potential"
                 titleAccent="Women"
-                qualifiers={ORG_QUALIFIERS}
                 programmes={[
                   "Sponsored 1:1 Coaching",
                   "Leadership Workshops",
@@ -2394,202 +2357,376 @@ function TwoPathwaysSection() {
             </Reveal>
           </div>
         </div>
-
-        <Reveal variant="fade-in" duration="slow" className="mt-14 md:mt-20">
-          <p className="mx-auto max-w-2xl text-center font-serif font-light text-[length:var(--text-heading-2)] leading-[1.25] tracking-[-0.02em] text-foreground">
-            Two programmes, one{" "}
-            <em className="type-display-accent not-italic italic text-gold-warm">
-              strategic foundation.
-            </em>
-          </p>
-        </Reveal>
       </Container>
     </Section>
   );
 }
 
-/* ---------------- FOUNDER ---------------- */
+/* ---------------- FOUNDER · CTA · FOOTER (client review options) ---------------- */
 
-function FounderSection() {
+const CLOSING_NAV = [
+  ["/work-with-me", "Work With Me"],
+  ["/organizations", "Organizations"],
+  ["/about", "About"],
+  ["/insights", "Insights"],
+  ["/contact", "Contact"],
+] as const;
+
+const CLOSING_CREDENTIALS = [
+  { logo: icfLogo, label: "ICF ACC Certified", wide: false },
+  { logo: gallupLogo, label: "Gallup Certified CliftonStrengths Coach", wide: false },
+  { logo: cdpLogo, label: "Certified Diversity Professional (CDP®)", wide: false },
+  { logo: inseadLogo, label: "Gender Specialist trained at INSEAD", wide: true },
+];
+
+const CLOSING_SURFACE = {
+  founder: "color-mix(in oklch, var(--cream) 55%, var(--background))",
+  footer: "var(--warm-cream)",
+} as const;
+
+function FounderLeaningPortrait({ className }: { className?: string }) {
   return (
-    <Section
-      as="section"
-      surface="blush"
-      pad="none"
-      className="relative z-10 overflow-hidden py-0"
-      style={{ background: "color-mix(in oklch, var(--blush-subtle) 52%, var(--warm-cream))" }}
+    <Reveal variant="fade-up" duration="slow" className={cn("relative", className)}>
+      <img
+        src={founderLeaning}
+        alt="Amna Imran — Founder"
+        className="block h-auto w-full select-none"
+        draggable={false}
+      />
+    </Reveal>
+  );
+}
+
+function ClosingCtaButtons({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex w-full flex-col gap-4 sm:w-[26rem] sm:whitespace-nowrap", className)}>
+      <Link
+        to="/contact"
+        className="cta-primary-invert justify-between px-6 tracking-[0.12em]"
+        onClick={() => track("strategic_clarity_call", { section: "final_cta" })}
+      >
+        Book a Strategic Clarity Call <span aria-hidden className="cta-arrow">→</span>
+      </Link>
+      <Link
+        to="/organizations"
+        className="cta-secondary-invert justify-between px-6 tracking-[0.12em]"
+        onClick={() => track("organisational_engagement", { section: "final_cta" })}
+      >
+        For Corporate &amp; HR Enquiries <span aria-hidden className="cta-arrow">→</span>
+      </Link>
+    </div>
+  );
+}
+
+function ClosingFooterColumns({ dark = false }: { dark?: boolean }) {
+  const muted = dark ? "text-background/75" : "text-copy";
+  const link = dark
+    ? "text-background/80 hover:text-background"
+    : "text-copy hover:text-foreground";
+  return (
+    <div className="grid gap-12 md:grid-cols-12 md:gap-x-10">
+      <div className="md:col-span-5">
+        <Link to="/" aria-label="Amna Imran home" className="inline-flex items-center gap-3.5">
+          <img
+            src={logoMark}
+            alt=""
+            aria-hidden
+            className={cn("h-10 w-auto shrink-0", dark && "brightness-0 invert opacity-90")}
+            draggable={false}
+          />
+          <span>
+            <span
+              className={cn(
+                "block font-serif text-[1.6rem] leading-none tracking-[-0.01em]",
+                dark ? "text-background" : "text-foreground",
+              )}
+            >
+              Amna Imran
+            </span>
+            <span className={cn("eyebrow mt-2 block", dark ? "text-gold" : "text-copy-muted")}>
+              Coaching · Consulting
+            </span>
+          </span>
+        </Link>
+        <p className={cn("mt-6 max-w-sm text-[length:var(--text-small)] leading-[1.7]", muted)}>
+          Executive coaching and organizational consulting for high potential women navigating
+          advancement in complex environments.
+        </p>
+      </div>
+
+      <nav aria-label="Footer" className="md:col-span-3">
+        <p className={cn("eyebrow mb-5", dark ? "text-gold" : "text-copy-muted")}>Navigate</p>
+        <ul className="space-y-3">
+          {CLOSING_NAV.map(([to, label]) => (
+            <li key={to}>
+              <Link
+                to={to}
+                className={cn("text-[length:var(--text-small)] transition-colors", link)}
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <ul className="space-y-4 md:col-span-4">
+        {CLOSING_CREDENTIALS.map((c) => (
+          <li key={c.label} className="flex items-center gap-4">
+            <span
+              className={cn(
+                "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full",
+                dark ? "bg-background" : "bg-background/70",
+              )}
+            >
+              <img
+                src={c.logo}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                className={c.wide ? "h-10 w-auto max-w-none object-left" : "h-8 w-8 object-contain"}
+              />
+            </span>
+            <span className={cn("text-[length:var(--text-small)] leading-snug", muted)}>
+              {c.label}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ClosingLegal({ dark = false }: { dark?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "mt-14 flex flex-col gap-3 border-t pt-8 text-[length:var(--text-small)] sm:flex-row sm:items-center sm:justify-between",
+        dark
+          ? "border-background/15 text-background/70"
+          : "border-[color-mix(in_oklch,var(--foreground)_12%,transparent)] text-copy-muted",
+      )}
     >
-      <Container className="relative !px-6 md:!px-10 py-0">
-        <div className="grid min-h-0 grid-cols-1 items-center gap-4 md:grid-cols-12 md:gap-x-3 lg:gap-x-4">
-          {/* Copy — vertically centered with portrait. Explicitly labelled as a
-              founder statement so it can never be mistaken for a testimonial. */}
-          <div className="relative z-20 py-10 md:col-span-5 md:py-16 lg:col-span-5 md:pr-0 text-center md:text-left">
+      <div>© {new Date().getFullYear()} Amna Imran. All rights reserved.</div>
+      <div className={cn("eyebrow", dark ? "text-gold" : "text-foreground")}>
+        Strategy · Coaching · Advancement
+      </div>
+    </div>
+  );
+}
+
+function ClosingFooterLight({ background }: { background: string }) {
+  return (
+    <footer style={{ background }}>
+      <Container className="py-16 md:py-20">
+        <Reveal variant="fade-up" duration="slow">
+          <ClosingFooterColumns />
+          <ClosingLegal />
+        </Reveal>
+      </Container>
+    </footer>
+  );
+}
+
+/** Option 1 — the Figma layout as supplied, with the cushion cropped out of the photo. */
+function ClosingFigma() {
+  return (
+    <>
+      <section style={{ background: CLOSING_SURFACE.founder }}>
+        <Container>
+          <div className="grid grid-cols-1 items-end gap-10 pt-14 md:grid-cols-12 md:gap-x-12 md:pt-20">
+            <FounderLeaningPortrait className="order-last mx-auto w-full max-w-[24rem] md:order-first md:col-span-5 md:mx-0 md:max-w-none lg:col-span-4 lg:col-start-2" />
+            <div className="md:col-span-7 md:self-center lg:col-span-6">
+              <Reveal variant="fade-up">
+                <h2 className="type-display font-serif font-light text-gold-warm">Amna Imran.</h2>
+                <p className="mt-6 max-w-xl text-copy">
+                  Gender-informed leadership strategist helping high-potential women progress
+                  without burnout or compromise.
+                </p>
+                <Link
+                  to="/about"
+                  className="link-underline mt-8 font-sans text-[length:var(--text-small)] uppercase tracking-[0.16em]"
+                  onClick={() => track("founder_story_opened", { section: "founder_statement" })}
+                >
+                  Read the Founder Story <span aria-hidden className="cta-arrow">→</span>
+                </Link>
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-foreground text-background">
+        <Container className="flex flex-col gap-10 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
+          <Reveal variant="fade-up">
+            <h2 className="type-display font-light text-background">
+              Ready to move forward
+              <br />
+              <span className="text-gold-warm">strategically?</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={100} variant="fade-up">
+            <ClosingCtaButtons />
+          </Reveal>
+        </Container>
+      </section>
+
+      <ClosingFooterLight background={CLOSING_SURFACE.footer} />
+    </>
+  );
+}
+
+/**
+ * Option 2 — she leans on the dark band itself, and the call to action and the
+ * footer share that one dark surface, so the close reads as a single piece.
+ */
+function ClosingLeanOnBand() {
+  return (
+    <>
+      <section className="relative overflow-hidden" style={{ background: CLOSING_SURFACE.founder }}>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-40 top-10 h-[34rem] w-[34rem] rounded-full border border-[color-mix(in_oklch,var(--gold)_18%,transparent)]"
+        />
+        <Container className="relative">
+          <div className="grid grid-cols-1 items-end gap-10 pt-16 md:grid-cols-12 md:gap-x-10 md:pt-24">
+            <div className="pb-4 md:col-span-6 md:self-center md:pb-16">
+              <Reveal variant="fade-up">
+                <h2 className="type-display font-light">
+                  Amna
+                  <br />
+                  <em className="type-display-accent not-italic text-gold-warm">Imran.</em>
+                </h2>
+              </Reveal>
+              <Reveal delay={80} variant="fade-up">
+                <blockquote className="mt-7 max-w-md border-l-2 border-[color-mix(in_oklch,var(--gold)_45%,transparent)] pl-7">
+                  <p className="font-serif font-light text-[length:var(--text-lead)] leading-[1.45] text-foreground">
+                    Gender-informed leadership strategist helping high-potential women progress
+                    without burnout or compromise.
+                  </p>
+                </blockquote>
+              </Reveal>
+              <Reveal delay={140} variant="fade-up" duration="fast">
+                <Link
+                  to="/about"
+                  className="cta-secondary mt-9"
+                  onClick={() => track("founder_story_opened", { section: "founder_statement" })}
+                >
+                  Read the Founder Story <span aria-hidden className="cta-arrow">→</span>
+                </Link>
+              </Reveal>
+            </div>
+            <FounderLeaningPortrait className="mx-auto w-full max-w-[26rem] md:col-span-6 md:mx-0 md:max-w-[34rem] md:justify-self-end" />
+          </div>
+        </Container>
+      </section>
+
+      <section className="relative overflow-hidden bg-foreground text-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-60"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 50% at 85% 0%, color-mix(in oklch, var(--gold) 16%, transparent), transparent 60%)",
+          }}
+        />
+        <Container className="relative pt-16 md:pt-20">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
             <Reveal variant="fade-up">
-              <p className="eyebrow text-gold-ink mb-4">A statement from the founder</p>
-              <h2 className="type-display font-light">
-                Amna
+              <h2 className="type-display font-light text-background">
+                Ready to move forward
                 <br />
-                <em className="type-display-accent accent-oval not-italic text-gold-warm">
-                  Imran.
-                </em>
+                <em className="type-display-accent not-italic text-gold-warm">strategically?</em>
               </h2>
             </Reveal>
-
-            {/* Statement block — gold rule and display type mark this as her own
-                words rather than body copy. */}
-            <Reveal delay={80} variant="fade-up">
-              <blockquote className="mx-auto mt-7 max-w-sm border-[color-mix(in_oklch,var(--gold)_45%,transparent)] md:mx-0 md:max-w-md md:border-l-2 md:pl-8">
-                <p className="font-serif font-light text-[length:var(--text-lead)] leading-[1.4] tracking-[-0.01em] text-foreground">
-                  Gender-informed leadership strategist helping high-potential women progress
-                  without{" "}
-                  <em className="type-display-accent not-italic italic text-gold-warm">
-                    burnout or compromise.
-                  </em>
-                </p>
-              </blockquote>
+            <Reveal delay={100} variant="fade-up">
+              <ClosingCtaButtons />
             </Reveal>
+          </div>
 
-            <Reveal delay={140} variant="fade-up" duration="fast">
-              {/* Promoted from a text link to a button, per review — it was not
-                  reading as an interactive control. */}
+          <div className="mt-16 flex items-center gap-4 md:mt-20" aria-hidden>
+            <span className="h-px flex-1 bg-background/15" />
+            <span className="h-1.5 w-1.5 rotate-45 bg-[var(--gold)]" />
+            <span className="h-px flex-1 bg-background/15" />
+          </div>
+
+          <footer className="py-14 md:py-16">
+            <Reveal variant="fade-up" duration="slow">
+              <ClosingFooterColumns dark />
+              <ClosingLegal dark />
+            </Reveal>
+          </footer>
+        </Container>
+      </section>
+    </>
+  );
+}
+
+/**
+ * Option 3 — one warm canvas from the founder statement to the footer. She leans
+ * on a dark call-to-action card set into that canvas instead of a full-width band.
+ */
+function ClosingLeanOnCard() {
+  return (
+    <section className="relative overflow-hidden" style={{ background: CLOSING_SURFACE.footer }}>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-32 top-24 h-[30rem] w-[30rem] rounded-full border border-[color-mix(in_oklch,var(--gold)_16%,transparent)]"
+      />
+      <Container className="relative">
+        <div className="grid grid-cols-1 items-end gap-10 pt-16 md:grid-cols-12 md:gap-x-12 md:pt-24">
+          <FounderLeaningPortrait className="order-last mx-auto w-full max-w-[24rem] md:order-first md:col-span-5 md:mx-0 md:max-w-none lg:col-span-4 lg:col-start-2" />
+          <div className="md:col-span-7 md:self-center md:pb-16 lg:col-span-6">
+            <Reveal variant="fade-up">
+              <p className="eyebrow text-gold-ink mb-5">Amna Imran</p>
+              <h2 className="type-h1 max-w-xl font-serif font-light text-foreground">
+                Gender-informed leadership strategist helping high-potential women progress
+                without{" "}
+                <em className="type-display-accent not-italic text-gold-warm">burnout or compromise.</em>
+              </h2>
+            </Reveal>
+            <Reveal delay={120} variant="fade-up" duration="fast">
               <Link
                 to="/about"
-                className="cta-secondary mt-8"
+                className="link-underline mt-9"
                 onClick={() => track("founder_story_opened", { section: "founder_statement" })}
               >
                 Read the Founder Story <span aria-hidden className="cta-arrow">→</span>
               </Link>
             </Reveal>
           </div>
+        </div>
 
-          {/* Portrait — seated on an arc with a contact shadow and a masked base,
-              so she is part of the section rather than a PNG cropped by its edge. */}
-          <div className="relative z-10 h-[360px] sm:h-[470px] md:col-span-7 md:col-start-6 md:h-[560px] lg:h-[640px]">
-            <div
-              aria-hidden
-              className="absolute inset-x-8 bottom-0 top-16 rounded-t-[999px] md:inset-x-16 md:top-24"
-              style={{
-                background:
-                  "linear-gradient(to bottom, color-mix(in oklch, var(--blush) 38%, transparent), color-mix(in oklch, var(--blush) 6%, transparent))",
-              }}
-            />
-            {/* Open gold arc behind her, so the portrait sits within the
-                surrounding shapes rather than on top of a single flat panel.
-                Behind the image, not across it. */}
-            <div
-              aria-hidden
-              className="absolute inset-x-2 bottom-0 top-8 -z-10 rounded-t-[999px] border border-b-0 border-[color-mix(in_oklch,var(--gold)_30%,transparent)] md:inset-x-6 md:top-12"
-            />
-            <div
-              aria-hidden
-              className="absolute bottom-2 left-1/2 h-9 w-[60%] -translate-x-1/2 rounded-[50%] bg-black/18 blur-2xl md:h-12"
-            />
-            <Reveal variant="scale" duration="slow" className="h-full">
-              <div className="relative h-full overflow-hidden">
-                <img
-                  src={founderPortrait}
-                  alt="Amna Imran — Founder"
-                  className="absolute bottom-0 left-1/2 h-[128%] w-auto max-w-none -translate-x-1/2 select-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_86%,transparent_100%)] md:left-0 md:translate-x-0"
-                  draggable={false}
-                />
-              </div>
+        <div className="relative overflow-hidden border-l-4 border-l-[var(--gold)] bg-foreground px-8 py-12 text-background shadow-[0_30px_80px_color-mix(in_oklch,var(--charcoal)_22%,transparent)] md:px-14 md:py-14">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-40 -right-24 h-[26rem] w-[26rem] rounded-full border border-[color-mix(in_oklch,var(--gold)_16%,transparent)]"
+          />
+          <div className="relative flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+            <Reveal variant="fade-up">
+              <h2 className="type-display font-light text-background">
+                Ready to move forward
+                <br />
+                <em className="type-display-accent not-italic text-gold-warm">strategically?</em>
+              </h2>
+            </Reveal>
+            <Reveal delay={100} variant="fade-up">
+              <ClosingCtaButtons />
             </Reveal>
           </div>
         </div>
-      </Container>
-    </Section>
-  );
-}
 
-/* ---------------- FINAL CTA ---------------- */
-
-function FinalCTA() {
-  return (
-    <Section
-      as="section"
-      surface="default"
-      pad="none"
-      className="relative overflow-hidden bg-foreground text-background"
-    >
-      {/* Soft transition in from the blush founder section: the pink is carried a
-          short way into the dark surface instead of stopping at a hard line. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-40 md:h-56"
-        style={{
-          background:
-            "linear-gradient(to bottom, color-mix(in oklch, var(--blush-subtle) 42%, var(--foreground)), transparent)",
-        }}
-      />
-
-      <ParallaxLayer speed={0.08} className="pointer-events-none absolute inset-0">
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 60% at 50% 120%, color-mix(in oklch, var(--gold) 22%, transparent), transparent 55%)",
-          }}
-        />
-      </ParallaxLayer>
-
-      {/* Texture — concentric gold arcs, very low contrast, so the dark panel has
-          some material quality without competing with the headline. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-1/4 left-1/2 h-[min(46rem,90vw)] w-[min(46rem,90vw)] -translate-x-1/2"
-      >
-        <ParallaxLayer speed={0.12} className="h-full w-full">
-          <div className="absolute inset-0 rounded-full border border-[color-mix(in_oklch,var(--gold)_16%,transparent)]" />
-          <div className="absolute inset-[12%] rounded-full border border-[color-mix(in_oklch,var(--gold)_11%,transparent)]" />
-          <div className="absolute inset-[26%] rounded-full border border-[color-mix(in_oklch,var(--gold)_8%,transparent)]" />
-        </ParallaxLayer>
-      </div>
-
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-px w-[min(40%,18rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-70"
-      />
-
-      <Container className="relative section-pad-major">
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <Reveal variant="fade-up">
-            <p className="eyebrow text-gold mb-6">Begin here</p>
-            <h2 className="type-display font-light text-background">
-              Ready to move forward
-              <br />
-              <em className="type-display-accent accent-oval not-italic text-gold-warm">
-                strategically?
-              </em>
-            </h2>
-            <p className="mx-auto mt-7 max-w-xl type-lead font-light text-background/80">
-              Whether you are advancing your own leadership or building pathways for women in your
-              organization — the work starts with a clear conversation.
-            </p>
+        <footer className="py-16 md:py-20">
+          <Reveal variant="fade-up" duration="slow">
+            <ClosingFooterColumns />
+            <ClosingLegal />
           </Reveal>
-
-          <Reveal delay={100} variant="fade-up" className="mt-10 w-full max-w-2xl">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:justify-center sm:gap-4">
-              <Link
-                to="/contact"
-                className="cta-primary-invert flex-1"
-                onClick={() => track("strategic_clarity_call", { section: "final_cta" })}
-              >
-                Book a Strategic Clarity Call{" "}
-                <span aria-hidden className="cta-arrow">→</span>
-              </Link>
-              <Link
-                to="/organizations"
-                className="cta-secondary-invert flex-1"
-                onClick={() => track("organisational_engagement", { section: "final_cta" })}
-              >
-                Discuss an Organisational Engagement{" "}
-                <span aria-hidden className="cta-arrow">→</span>
-              </Link>
-            </div>
-          </Reveal>
-        </div>
+        </footer>
       </Container>
-    </Section>
+    </section>
   );
 }

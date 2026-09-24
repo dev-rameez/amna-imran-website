@@ -113,6 +113,8 @@ function RootComponent() {
   const matches = useMatches();
   // Hide chrome on private payment page
   const hideChrome = matches.some((m) => m.routeId === "/private-payment");
+  // The homepage renders its own footer options while the client compares them.
+  const hideFooter = hideChrome || matches.some((m) => m.routeId === "/");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -121,7 +123,7 @@ function RootComponent() {
         <main className="flex-1">
           <Outlet />
         </main>
-        {!hideChrome && <SiteFooter />}
+        {!hideFooter && <SiteFooter />}
       </div>
     </QueryClientProvider>
   );

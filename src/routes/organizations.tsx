@@ -1,6 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Container, Eyebrow, Hairline, Reveal } from "@/components/site/primitives";
+import { Hairline, Reveal } from "@/components/site/primitives";
+import {
+  Accent,
+  CtaArrow,
+  PageCta,
+  PageHeading,
+  PageHero,
+  PageSection,
+  Seam,
+} from "@/components/site/page-kit";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -8,6 +17,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 import icfLogo from "@/assets/icf-acc.png";
 import gallupLogo from "@/assets/gallup-strengths.png";
 import cdpLogo from "@/assets/cdp.png";
@@ -150,6 +160,12 @@ const CREDENTIAL_LOGOS = [
   { logo: inseadLogo, label: "Gender Specialist trained at INSEAD", scale: 1.53 },
 ];
 
+const NUMERAL =
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] font-serif italic text-[1rem] text-gold-deep";
+
+const CARD =
+  "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)]";
+
 function DiagnosisAccordion({
   items,
   badge,
@@ -169,14 +185,17 @@ function DiagnosisAccordion({
         <AccordionItem
           key={item.t}
           value={`item-${i}`}
-          className="border-0 bg-background border border-[var(--hairline)] data-[state=open]:border-l-2 data-[state=open]:border-l-[var(--gold)] data-[state=open]:bg-[var(--cream)]/40 transition-colors"
+          className={cn(
+            CARD,
+            "data-[state=open]:border-l-2 data-[state=open]:border-l-[var(--gold)] data-[state=open]:bg-background transition-colors duration-500",
+          )}
         >
           <AccordionTrigger className="px-6 py-5 hover:no-underline [&>svg]:hidden group">
             <div className="flex items-center gap-5 flex-1 text-left">
               <span className={`inline-flex shrink-0 items-center px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] font-medium ${badgeClass}`}>
                 {badge}
               </span>
-              <span className="font-serif text-[18px] md:text-[20px] text-foreground leading-tight">
+              <span className="font-serif font-light type-h3 text-foreground leading-tight">
                 {item.t}
               </span>
             </div>
@@ -187,7 +206,7 @@ function DiagnosisAccordion({
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6 pt-0">
             <div className="border-t border-[var(--hairline)]/70 pt-4">
-              <p className="text-[14.5px] md:text-[15px] text-foreground/75 leading-relaxed max-w-3xl">{item.d}</p>
+              <p className="type-body text-copy max-w-3xl">{item.d}</p>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -198,442 +217,322 @@ function DiagnosisAccordion({
 
 function Organizations() {
   const [diagnose, setDiagnose] = useState<"not" | "moves">("not");
+  const toggleClass = (active: boolean) =>
+    cn(
+      "flex-1 md:flex-none px-6 py-3.5 font-sans text-[length:var(--text-small)] font-medium uppercase tracking-[0.16em] transition-colors duration-500",
+      active ? "bg-foreground text-background" : "bg-background/70 text-copy hover:text-foreground",
+    );
   return (
     <>
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden border-b border-[var(--hairline)]/60 bg-[var(--background)]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] hidden lg:block"
-          style={{
-            background:
-              "linear-gradient(135deg, color-mix(in oklch, var(--cream) 96%, var(--gold)) 0%, color-mix(in oklch, var(--cream) 88%, var(--gold-subtle)) 100%)",
-          }}
-        />
-        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
-          <div
-            className="absolute left-[42%] top-[15%] bottom-[12%] w-px"
-            style={{
-              background:
-                "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--gold) 35%, transparent) 30%, color-mix(in oklch, var(--gold) 35%, transparent) 70%, transparent)",
-            }}
-          />
-          <div
-            className="absolute left-[6%] w-[32%] h-px bottom-[14%]"
-            style={{
-              background:
-                "linear-gradient(to right, color-mix(in oklch, var(--gold) 50%, transparent), transparent)",
-            }}
-          />
+      <PageHero
+        eyebrow="For Organizations"
+        title={
+          <>
+            The investment is real.
+            <br />
+            The returns <Accent>have not been.</Accent>
+          </>
+        }
+        lead={
+          <p>
+            A decade of DEI programs. The pipeline is still broken. Here is what the research says
+            about why — and what actually changes things.
+          </p>
+        }
+        actions={
+          <Link to="/contact" className="cta-primary w-full justify-between px-6 text-left tracking-[0.12em] lg:whitespace-nowrap">
+            Schedule an Organizational Consultation <CtaArrow />
+          </Link>
+        }
+      >
+        <div className="relative mt-16 md:mt-20 grid gap-8 sm:grid-cols-3 sm:gap-6">
+          {STATS.map((s, i) => (
+            <Reveal
+              key={s.l}
+              delay={i * 100}
+              duration="slow"
+              as="div"
+              className={`relative pl-6 border-l-2 border-[var(--gold)]/50 ${i === 1 ? "sm:mt-8" : ""}`}
+            >
+              <div className="font-serif font-light text-[3rem] md:text-[4rem] text-gold-warm leading-none">
+                {s.n}<span className="text-copy-muted text-[1.5rem] md:text-[2rem]">{s.suffix}</span>
+              </div>
+              <p className="mt-4 type-body text-copy max-w-xs">{s.l}</p>
+              <p className="type-micro mt-3">{s.s}</p>
+            </Reveal>
+          ))}
         </div>
+      </PageHero>
 
-        <Container className="relative pt-20 pb-28 md:pt-28 md:pb-36" style={{ zIndex: 10 }}>
-          <div className="max-w-4xl">
-            <Reveal variant="fade-in" duration="slow">
-              <div className="flex items-center gap-4 mb-8">
-                <span className="h-px w-10" style={{ background: "var(--gold)" }} />
-                <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.22em" }}>
-                  For Organizations
-                </span>
-              </div>
-            </Reveal>
-            <Reveal variant="slide-right" duration="slow" delay={80}>
-              <h1 className="leading-[0.95] text-[clamp(2.4rem,5.5vw,4.2rem)]">
-                <span className="voice-serif-light block text-foreground">The investment is real.</span>
-                <span className="voice-sans-bold block mt-1 text-foreground/90">The returns </span>
-                <span className="voice-serif-italic block -mt-1">have not been.</span>
-              </h1>
-            </Reveal>
-            <Reveal variant="fade-in" delay={180}>
-              <div
-                className="mt-8 mb-2"
-                style={{ height: "1px", width: "3rem", background: "var(--gold)", opacity: 0.65 }}
-              />
-              <p
-                className="max-w-2xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light"
-                style={{
-                  borderLeft: "1px solid color-mix(in oklch, var(--gold) 38%, transparent)",
-                  paddingLeft: "1.25rem",
-                }}
-              >
-                A decade of DEI programs. The pipeline is still broken. Here is what the research says
-                about why — and what actually changes things.
-              </p>
-            </Reveal>
-            <Reveal variant="fade-up" duration="fast" delay={260}>
-              <div className="mt-10" style={{ paddingLeft: "1.25rem" }}>
-                <Link to="/contact" className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-foreground/90 transition-colors">
-                  Schedule an Organizational Consultation <span aria-hidden>→</span>
-                </Link>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Stats — no longer a flat grid; staggered, bridges into next section */}
-          <div className="relative mt-16 md:mt-20 grid gap-8 sm:grid-cols-3 sm:gap-6">
-            {STATS.map((s, i) => (
-              <Reveal
-                key={s.l}
-                delay={i * 80}
-                as="div"
-                className={`relative pl-6 border-l-2 border-[var(--gold)]/50 ${i === 1 ? "sm:mt-8" : ""}`}
-              >
-                <div className="font-serif text-[3rem] md:text-[4rem] text-[var(--gold)] leading-none">
-                  {s.n}<span className="text-copy-muted text-[1.5rem] md:text-[2rem]">{s.suffix}</span>
-                </div>
-                <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed max-w-xs">{s.l}</p>
-                <p className="type-micro mt-3">{s.s}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-        {/* Connector bridging hero into the diagnostic panel below */}
-        <div aria-hidden className="connector-thread h-24 bottom-0" />
-      </section>
+      <Seam from="warm" into="cream" />
 
       {/* DIAGNOSIS — toggle + accordion */}
-      <section className="relative bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
-        <Container>
-          <Reveal variant="slide-right" duration="slow">
-            <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-              <span className="voice-serif-light text-foreground">The diagnostic is clear</span>
-              <span className="voice-sans-bold text-foreground/85"> — the </span>
-              <span className="voice-serif-italic">prescriptions have not been.</span>
-            </h2>
-          </Reveal>
+      <PageSection surface="cream">
+        <PageHeading>
+          The diagnostic is clear — the <Accent>prescriptions have not been.</Accent>
+        </PageHeading>
 
-          <div className="mt-12 inline-flex border border-[var(--hairline)] w-full md:w-auto">
-            <button
-              onClick={() => setDiagnose("not")}
-              className={`flex-1 md:flex-none px-6 py-3 text-[11px] uppercase tracking-[0.22em] transition-colors ${diagnose === "not" ? "bg-foreground text-background" : "bg-background text-foreground/70 hover:text-foreground"}`}
-            >
-              What isn't working
-            </button>
-            <button
-              onClick={() => setDiagnose("moves")}
-              className={`flex-1 md:flex-none px-6 py-3 text-[11px] uppercase tracking-[0.22em] border-l border-[var(--hairline)] transition-colors ${diagnose === "moves" ? "bg-foreground text-background" : "bg-background text-foreground/70 hover:text-foreground"}`}
-            >
-              What moves the needle
-            </button>
+        <div className="mt-12 inline-flex w-full border border-[color-mix(in_oklch,var(--gold)_30%,transparent)] md:w-auto">
+          <button onClick={() => setDiagnose("not")} className={toggleClass(diagnose === "not")}>
+            What isn't working
+          </button>
+          <button
+            onClick={() => setDiagnose("moves")}
+            className={cn(toggleClass(diagnose === "moves"), "border-l border-[color-mix(in_oklch,var(--gold)_30%,transparent)]")}
+          >
+            What moves the needle
+          </button>
+        </div>
+
+        {diagnose === "not" ? (
+          <DiagnosisAccordion items={NOT_WORKING} badge="Low Yield" badgeTone="low" />
+        ) : (
+          <DiagnosisAccordion items={MOVES_NEEDLE} badge="High Impact" badgeTone="high" />
+        )}
+      </PageSection>
+
+      <Seam from="cream" into="sand" />
+
+      {/* CORPORATE OFFERINGS — Sounds Familiar */}
+      <PageSection surface="sand">
+        <PageHeading>
+          Four ways to move from <Accent>intention</Accent> to measurable outcome.
+        </PageHeading>
+        <Reveal delay={100} duration="slow">
+          <p className="mt-6 max-w-3xl type-lead font-light text-copy">
+            Designed for HR, L&amp;D, and leadership teams ready to go beyond programs &mdash; into
+            structural change that actually retains and advances talent.
+          </p>
+        </Reveal>
+
+        <Reveal duration="slow">
+          <div className="mt-20 text-center">
+            <h3 className="type-h1 font-serif font-light text-foreground">
+              <Accent>Sounds familiar?</Accent>
+            </h3>
+            <div className="mx-auto mt-5 h-px w-16 bg-[var(--gold)]/60" />
           </div>
+        </Reveal>
 
-          {diagnose === "not" ? (
-            <DiagnosisAccordion items={NOT_WORKING} badge="Low Yield" badgeTone="low" />
-          ) : (
-            <DiagnosisAccordion items={MOVES_NEEDLE} badge="High Impact" badgeTone="high" />
-          )}
-        </Container>
-      </section>
-
-      {/* CORPORATE OFFERINGS — Sounds Familiar + The Engagements */}
-      <section className="bg-background py-20 md:py-28">
-        <Container>
-          <Reveal>
-            <div className="max-w-4xl">
-              <h2 className="leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-                <span className="voice-serif-light text-foreground">Four ways to move from </span>
-                <span className="voice-serif-italic">intention</span>
-                <span className="voice-serif-light text-foreground"> to </span>
-                <span className="voice-sans-bold text-foreground/90">measurable outcome.</span>
-              </h2>
-              <p className="mt-6 max-w-4xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
-                Designed for HR, L&amp;D, and leadership teams ready to go beyond programs &mdash; into
-                structural change that actually retains and advances talent.
+        <div className="mt-14 grid gap-10 md:gap-6 md:grid-cols-3">
+          {SOUND_FAMILIAR.map((q, i) => (
+            <Reveal
+              key={q}
+              delay={i * 100}
+              duration="slow"
+              as="div"
+              className={`group pl-6 border-l border-[var(--gold)]/60 hover:border-[var(--gold)] hover:-translate-y-1 transition-all duration-500 ${
+                i === 1 ? "md:mt-14" : i === 2 ? "md:mt-7" : ""
+              }`}
+            >
+              <div className="font-serif text-[var(--gold)] text-6xl leading-none -mt-2 mb-2 select-none">
+                &ldquo;
+              </div>
+              <p className="font-serif italic text-[clamp(1.2rem,0.8vw+0.95rem,1.5rem)] leading-[1.35] text-foreground">
+                {q}
               </p>
-            </div>
-          </Reveal>
-          {/* Sounds Familiar — editorial subtitle */}
-          <Reveal>
-            <div className="mt-20 text-center">
-              <h3 className="mt-4 font-serif italic text-3xl md:text-4xl text-[var(--gold)] font-light">
-                Sounds familiar?
-              </h3>
-              <div className="mx-auto mt-5 h-px w-16 bg-[var(--gold)]/60" />
-            </div>
-          </Reveal>
+              <p className="eyebrow mt-5 text-copy-muted">From conversations with HR leaders</p>
+            </Reveal>
+          ))}
+        </div>
+      </PageSection>
 
-          {/* Editorial quote trio — staggered, no boxes */}
-          <div className="mt-14 grid gap-10 md:gap-6 md:grid-cols-3">
-            {SOUND_FAMILIAR.map((q, i) => (
-              <Reveal
-                key={q}
-                delay={i * 80}
-                as="div"
-                className={`group pl-6 border-l border-[var(--gold)]/60 hover:border-[var(--gold)] hover:-translate-y-1 transition-all duration-500 ${
-                  i === 1 ? "md:mt-14" : i === 2 ? "md:mt-7" : ""
-                }`}
-              >
-                <div className="font-serif text-[var(--gold)] text-6xl leading-none -mt-2 mb-2 select-none">
-                  &ldquo;
-                </div>
-                <p className="font-serif italic text-[17px] md:text-[18px] text-foreground/85 leading-relaxed">
-                  {q}
-                </p>
-                <div className="type-micro mt-5 flex items-center gap-3 uppercase tracking-[0.22em]">
-                  <span className="h-px w-6 bg-foreground/25" />
-                  From conversations with HR leaders
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          {/* The Engagements — title block */}
-        </Container>
-      </section>
+      <Seam from="sand" into="cream" />
 
       {/* CORPORATE ENGAGEMENTS */}
-      <section className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
-        <Container>
-          <Reveal className="hidden">
-            <div className="max-w-4xl">
-              <h2 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Four ways to move from{" "}
-                <em className="text-[var(--gold)] not-italic font-light">
-                  intention to measurable outcome.
-                </em>
-              </h2>
-              <p className="mt-6 max-w-4xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light">
-                Designed for HR, L&amp;D, and leadership teams ready to go beyond programs — into
-                structural change that actually retains and advances talent.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal>
-            <div className="hidden">
-              <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-3xl">
-                The engagements<em className="text-[var(--gold)] not-italic font-light">.</em>
-              </h2>
-              <p className="mt-7 max-w-2xl text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light">
-                Four ways to move from intention to measurable outcome. Designed for HR, L&amp;D,
-                and leadership teams ready to go beyond programs — into structural change that
-                actually retains and advances talent.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal>
-            <Tabs defaultValue="coaching" className="w-full">
-              <TabsList className="flex flex-wrap h-auto p-0 bg-transparent gap-0 border border-[var(--hairline)] rounded-none w-full">
-                {OFFERINGS.map((o) => (
-                  <TabsTrigger
-                    key={o.key}
-                    value={o.key}
-                    className="flex-1 min-w-[140px] rounded-none py-3 px-3 text-[11px] uppercase tracking-[0.18em] font-medium bg-background text-foreground/70 border-r border-[var(--hairline)] last:border-r-0 data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-none"
-                  >
-                    {o.tab}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+      <PageSection surface="cream">
+        <Reveal duration="slow">
+          <Tabs defaultValue="coaching" className="w-full">
+            <TabsList className="flex flex-wrap h-auto p-0 bg-transparent gap-0 border border-[color-mix(in_oklch,var(--gold)_30%,transparent)] rounded-none w-full">
               {OFFERINGS.map((o) => (
-                <TabsContent key={o.key} value={o.key} className="mt-0 border border-t-0 border-[var(--hairline)] bg-background">
-                  <div className="p-8 md:p-12">
-                    <div>
-                      <div className="eyebrow text-[var(--gold)]">{o.badge}</div>
-                      <h3 className="mt-4 font-serif text-3xl md:text-[2.2rem] leading-tight text-foreground">{o.title}</h3>
-                      <p className="mt-3 font-serif italic text-[var(--gold)] text-[15px]">{o.tagline}</p>
-                    </div>
-                    <Hairline className="my-8" />
-                    <div className="grid gap-8 md:grid-cols-2">
-                      <div>
-                        <div className="eyebrow text-[var(--gold)]">Focus areas</div>
-                        <ul className="mt-4 space-y-2">
-                          {o.focus.map((f) => (
-                            <li key={f} className="flex items-baseline gap-3 text-[14px] text-foreground/80 border-b border-[var(--hairline)]/60 py-1.5">
-                              <span aria-hidden className="text-[var(--gold)] text-[10px]">◆</span>
+                <TabsTrigger
+                  key={o.key}
+                  value={o.key}
+                  className="flex-1 min-w-[140px] rounded-none py-3.5 px-3 font-sans text-[length:var(--text-small)] font-medium uppercase tracking-[0.16em] bg-background/70 text-copy border-r border-[color-mix(in_oklch,var(--gold)_30%,transparent)] last:border-r-0 data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-none"
+                >
+                  {o.tab}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {OFFERINGS.map((o) => (
+              <TabsContent key={o.key} value={o.key} className="mt-0 border border-t-0 border-[color-mix(in_oklch,var(--gold)_30%,transparent)] bg-background">
+                <div className="p-8 md:p-12">
+                  <div>
+                    <p className="eyebrow text-gold-ink">{o.badge}</p>
+                    <h3 className="mt-4 font-serif font-light type-h1 text-foreground">{o.title}</h3>
+                    <p className="mt-3 font-serif italic text-gold-warm text-[length:var(--text-lead)]">{o.tagline}</p>
+                  </div>
+                  <Hairline className="my-8" />
+                  <div className="grid gap-8 md:grid-cols-2">
+                    {[
+                      { label: "Focus areas", items: o.focus },
+                      { label: "Delivery", items: o.delivery },
+                    ].map((col) => (
+                      <div key={col.label}>
+                        <p className="eyebrow text-gold-ink">{col.label}</p>
+                        <ul className="mt-4 space-y-3">
+                          {col.items.map((f) => (
+                            <li key={f} className="flex gap-3 text-[length:var(--text-body)] leading-[1.55] text-copy">
+                              <span aria-hidden className="mt-[0.75em] h-px w-4 shrink-0 bg-[var(--gold)]" />
                               {f}
                             </li>
                           ))}
                         </ul>
                       </div>
-                      <div>
-                        <div className="eyebrow text-[var(--gold)]">Delivery</div>
-                        <ul className="mt-4 space-y-2">
-                          {o.delivery.map((d) => (
-                            <li key={d} className="flex items-baseline gap-3 text-[14px] text-foreground/80 border-b border-[var(--hairline)]/60 py-1.5">
-                              <span aria-hidden className="text-[var(--gold)] text-[10px]">◆</span>
-                              {d}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <Hairline className="my-8" />
-                    <div>
-                      <div className="eyebrow text-foreground/55">Best for</div>
-                      <p className="mt-3 text-[15px] text-foreground/80 leading-relaxed max-w-2xl">{o.bestFor}</p>
-                    </div>
+                    ))}
                   </div>
-                </TabsContent>
-              ))}
-            </Tabs>
-          </Reveal>
-        </Container>
-      </section>
+                  <Hairline className="my-8" />
+                  <div>
+                    <p className="eyebrow text-copy-muted">Best for</p>
+                    <p className="mt-3 type-body text-copy max-w-2xl">{o.bestFor}</p>
+                  </div>
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </Reveal>
+      </PageSection>
+
+      <Seam from="cream" into="sand" />
 
       {/* WHAT THE RESEARCH SAYS */}
-      <section className="bg-background py-20 md:py-28">
-        <Container>
-          <Reveal>
-            <div className="eyebrow text-[var(--gold)]">What the research says happens when this works</div>
-          </Reveal>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {RESEARCH_OUTCOMES.map((r, i) => (
-              <Reveal
-                key={r.l}
-                delay={i * 80}
-                as="div"
-                className={`relative text-center px-6 py-8 ${i === 1 ? "md:-translate-y-4" : ""}`}
-              >
-                {i > 0 && (
-                  <span aria-hidden className="hidden md:block absolute left-0 top-8 bottom-8 w-px bg-[color-mix(in_oklch,var(--gold)_25%,transparent)]" />
-                )}
-                <div className="font-serif text-[4rem] md:text-[5rem] text-[var(--gold)] leading-none">{r.n}</div>
-                <p className="mt-6 text-[15px] md:text-[16px] text-foreground/80 leading-relaxed max-w-[260px] mx-auto">{r.l}</p>
-                <p className="type-micro mt-5 font-serif italic">{r.s}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <PageSection surface="sand">
+        <Reveal duration="slow">
+          <p className="eyebrow text-gold-ink">What the research says happens when this works</p>
+        </Reveal>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {RESEARCH_OUTCOMES.map((r, i) => (
+            <Reveal
+              key={r.l}
+              delay={i * 100}
+              duration="slow"
+              as="div"
+              className={`relative text-center px-6 py-8 ${i === 1 ? "md:-translate-y-4" : ""}`}
+            >
+              {i > 0 && (
+                <span aria-hidden className="hidden md:block absolute left-0 top-8 bottom-8 w-px bg-[color-mix(in_oklch,var(--gold)_25%,transparent)]" />
+              )}
+              <div className="font-serif font-light text-[4rem] md:text-[5rem] text-gold-warm leading-none">{r.n}</div>
+              <p className="mt-6 type-body text-copy max-w-[260px] mx-auto">{r.l}</p>
+              <p className="type-micro mt-5 font-serif italic">{r.s}</p>
+            </Reveal>
+          ))}
+        </div>
+      </PageSection>
+
+      <Seam from="sand" into="cream" />
 
       {/* OUTCOMES — editorial list */}
-      <section className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
-        <Container>
-          <Reveal>
-            <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-              <span className="voice-sans-bold text-foreground/90">What partners typically </span>
-              <span className="voice-serif-italic">achieve.</span>
-            </h2>
-          </Reveal>
-          <div className="mt-14 max-w-4xl border-t border-[var(--hairline)]">
-            {OUTCOMES.map((o, i) => (
-              <Reveal
-                key={o.l}
-                delay={i * 40}
-                as="div"
-                className="group flex items-center gap-6 md:gap-10 py-6 md:py-7 border-b border-[var(--hairline)] hover:pl-3 transition-[padding] duration-500"
-              >
-                <div className="w-14 md:w-16 shrink-0 font-serif text-[2.5rem] md:text-[3rem] text-[var(--gold)] leading-none text-center">
-                  {o.n}
-                </div>
-                <p className="font-serif text-[19px] md:text-[22px] text-foreground leading-snug">{o.l}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <PageSection surface="cream">
+        <PageHeading>
+          What partners typically <Accent>achieve.</Accent>
+        </PageHeading>
+        <div className="mt-14 max-w-4xl border-t border-[var(--hairline)]">
+          {OUTCOMES.map((o, i) => (
+            <Reveal
+              key={o.l}
+              delay={i * 60}
+              duration="slow"
+              as="div"
+              className="group flex items-center gap-6 md:gap-10 py-6 md:py-7 border-b border-[var(--hairline)] hover:pl-3 transition-[padding] duration-500"
+            >
+              <div className="w-14 md:w-16 shrink-0 font-serif font-light text-[2.5rem] md:text-[3rem] text-gold-warm leading-none text-center">
+                {o.n}
+              </div>
+              <p className="font-serif text-[length:var(--text-lead)] text-foreground leading-snug">{o.l}</p>
+            </Reveal>
+          ))}
+        </div>
+      </PageSection>
+
+      <Seam from="cream" into="sand" />
 
       {/* ORGANIZATIONS SERIOUS ABOUT PROGRESSION */}
-      <section className="bg-background py-20 md:py-28">
-        <Container>
-          <div className="grid gap-12 md:gap-16 md:grid-cols-2 items-start">
-            <Reveal>
-              <h2 className="leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-                <span className="voice-serif-light text-foreground">Organizations serious about </span>
-                <span className="voice-serif-italic">progression.</span>
-              </h2>
-              <p className="mt-7 max-w-md text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light">
+      <PageSection surface="sand">
+        <div className="grid gap-12 md:gap-16 md:grid-cols-2 items-start">
+          <div>
+            <PageHeading>
+              Organizations serious about <Accent>progression.</Accent>
+            </PageHeading>
+            <Reveal delay={100} duration="slow">
+              <p className="mt-7 max-w-md type-body text-copy">
                 Leadership equity is not achieved through intention alone. It requires deliberate
                 development, structured support, and informed navigation of organizational realities.
               </p>
-              <p className="mt-5 max-w-md text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light">
+              <p className="mt-5 max-w-md type-body text-copy">
                 If your organization is committed to strengthening its leadership pipeline through
                 strategic, evidence-based coaching and consulting, I welcome a conversation.
               </p>
             </Reveal>
-            <Reveal delay={120}>
-              <div className="border border-[var(--hairline)] bg-background p-8 md:p-10">
-                <div className="eyebrow text-foreground/55">We partner with organizations that:</div>
-                <Hairline className="mt-5" />
-                <ul className="mt-6 space-y-5">
-                  {PARTNER_CRITERIA.map((c, i) => (
-                    <li key={c} className="flex items-baseline gap-5">
-                      <span className="font-serif italic text-[var(--gold)] text-xl md:text-2xl w-10 shrink-0">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="text-[15px] text-foreground/80 leading-relaxed">{c}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
           </div>
-        </Container>
-      </section>
+          <Reveal delay={120} duration="slow">
+            <div className={cn(CARD, "p-8 md:p-10")}>
+              <p className="eyebrow text-copy-muted">We partner with organizations that:</p>
+              <div className="mt-6 h-px w-full bg-[color-mix(in_oklch,var(--gold)_30%,transparent)]" />
+              <ul className="mt-6 space-y-5">
+                {PARTNER_CRITERIA.map((c, i) => (
+                  <li key={c} className="flex items-center gap-5">
+                    <span className={NUMERAL}>{String(i + 1).padStart(2, "0")}</span>
+                    <span className="type-body text-copy">{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </PageSection>
+
+      <Seam from="sand" into="cream" />
 
       {/* TRAINING BEHIND METHODOLOGY */}
-      <section className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-28">
-        <Container>
-          <Reveal>
-            <h2 className="max-w-3xl leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-              <span className="voice-serif-light text-foreground">The training behind the </span>
-              <span className="voice-sans-bold text-foreground/90">methodology.</span>
-            </h2>
-          </Reveal>
-          <div className="relative mt-14 grid gap-y-10 gap-x-6 grid-cols-2 md:grid-cols-4">
-            {CREDENTIAL_LOGOS.map((c, i) => (
-              <Reveal
-                key={c.label}
-                delay={i * 60}
-                as="article"
-                className={`flex flex-col items-center text-center gap-5 px-3 ${
-                  i > 0 ? "md:border-l md:border-[color-mix(in_oklch,var(--hairline)_55%,transparent)]" : ""
-                }`}
-              >
-                <div className="flex items-center justify-center w-full h-20 md:h-24">
-                  <img
-                    src={c.logo}
-                    alt={c.label}
-                    loading="lazy"
-                    className="object-contain h-14 md:h-16 w-auto max-w-[220px]"
-                    style={{ transform: `scale(${c.scale})`, transformOrigin: "center" }}
-                  />
-                </div>
-                <p className="type-micro min-h-[2.5rem]">{c.label}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="bg-foreground text-background">
-        <Container className="py-12 md:py-16">
-          <div className="grid gap-10 md:grid-cols-12 items-end">
-            <div className="md:col-span-8">
-              <Reveal variant="fade-in" duration="slow">
-                <div className="flex items-center gap-4">
-                  <span className="h-px w-10 bg-[var(--gold)]" />
-                  <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
-                    Begin
-                  </span>
-                </div>
-              </Reveal>
-              <Reveal variant="slide-right" duration="slow" delay={80}>
-                <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-                  <span className="voice-serif-light text-background">Strengthen the pipeline. </span>
-                  <span className="voice-sans-bold text-background/90">Support the leaders </span>
-                  <span className="voice-serif-italic">already within it.</span>
-                </h2>
-              </Reveal>
-              <Reveal variant="fade-in" delay={180}>
-                <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-background/70 leading-relaxed font-light">
-                  A confidential discussion to explore your leadership goals, current challenges, and
-                  how structured advancement coaching could support your talent strategy.
-                </p>
-              </Reveal>
-            </div>
-            <Reveal variant="fade-up" duration="fast" delay={260} className="md:col-span-4 flex flex-col gap-4">
-              <Link to="/contact" className="inline-flex items-center justify-between gap-2 bg-background text-foreground px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--cream)] transition-colors">
-                Schedule an Organizational Consultation <span aria-hidden>→</span>
-              </Link>
-              <Link to="/work-with-me" className="inline-flex items-center justify-between gap-2 border border-background/50 px-7 py-4 text-[11px] uppercase tracking-[0.22em] text-background hover:bg-background hover:text-foreground transition-colors">
-                Explore Individual Coaching <span aria-hidden>→</span>
-              </Link>
+      <PageSection surface="cream">
+        <PageHeading>
+          The training behind the <Accent>methodology.</Accent>
+        </PageHeading>
+        <div className="relative mt-14 grid gap-y-10 gap-x-6 grid-cols-2 md:grid-cols-4">
+          {CREDENTIAL_LOGOS.map((c, i) => (
+            <Reveal
+              key={c.label}
+              delay={i * 100}
+              duration="slow"
+              as="article"
+              className={`flex flex-col items-center text-center gap-5 px-3 ${
+                i > 0 ? "md:border-l md:border-[color-mix(in_oklch,var(--hairline)_55%,transparent)]" : ""
+              }`}
+            >
+              <div className="flex items-center justify-center w-full h-20 md:h-24">
+                <img
+                  src={c.logo}
+                  alt={c.label}
+                  loading="lazy"
+                  className="object-contain h-14 md:h-16 w-auto max-w-[220px]"
+                  style={{ transform: `scale(${c.scale})`, transformOrigin: "center" }}
+                />
+              </div>
+              <p className="eyebrow min-h-[2.5rem] max-w-[15rem] leading-[1.45] tracking-[0.11em] text-copy">{c.label}</p>
             </Reveal>
-          </div>
-        </Container>
-      </section>
+          ))}
+        </div>
+      </PageSection>
+
+      <PageCta
+        title={
+          <>
+            Strengthen the pipeline. Support the leaders <Accent>already within it.</Accent>
+          </>
+        }
+        body="A confidential discussion to explore your leadership goals, current challenges, and how structured advancement coaching could support your talent strategy."
+        actions={
+          <>
+            <Link to="/contact" className="cta-primary-invert justify-between px-6 text-left tracking-[0.12em]">
+              Schedule an Organizational Consultation <CtaArrow />
+            </Link>
+            <Link to="/work-with-me" className="cta-secondary-invert justify-between px-6 text-left tracking-[0.12em]">
+              Explore Individual Coaching <CtaArrow />
+            </Link>
+          </>
+        }
+      />
     </>
   );
 }

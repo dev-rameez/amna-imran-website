@@ -1,16 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Hairline, Reveal } from "@/components/site/primitives";
 import {
-  Container,
-  Eyebrow,
-  Hairline,
-  Reveal,
-} from "@/components/site/primitives";
+  Accent,
+  ChapterDivider,
+  CtaArrow,
+  PageCta,
+  PageQuote,
+  PageHeading,
+  PageHero,
+  PageSection,
+  Seam,
+  VariantLabel,
+} from "@/components/site/page-kit";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
+import portrait from "@/assets/amna-work-with-me.png";
 
 export const Route = createFileRoute("/work-with-me")({
   head: () => ({
@@ -125,568 +134,582 @@ const LT_OUTCOMES = [
   "Reduced self-doubt and increased clarity",
 ];
 
+const LT_DESIGNED_TO = [
+  "Protect your leadership positioning before leave",
+  "Maintain visibility and influence during absence",
+  "Re-establish executive presence upon return",
+  "Navigate perception shifts proactively",
+  "Build a sustainable model of ambition that integrates caregiving",
+];
+
+const NUMERAL =
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] font-serif italic text-[1rem] text-gold-deep";
+
+function ProgramCard({
+  eyebrow,
+  title,
+  body,
+  cta,
+  href,
+  dark = false,
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  body: string;
+  cta: string;
+  href: string;
+  dark?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "group relative flex h-full flex-col p-8 transition-[transform,box-shadow,border-color] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] hover:-translate-y-1.5 md:p-10",
+        dark
+          ? "bg-foreground text-background"
+          : "border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)] hover:border-[color-mix(in_oklch,var(--gold)_45%,transparent)]",
+      )}
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute left-0 top-8 h-10 w-1 bg-[var(--gold)] transition-[height] duration-[var(--motion-interaction)] ease-[var(--ease-out-soft)] group-hover:h-16"
+      />
+      <p className={cn("eyebrow", dark ? "text-gold" : "text-copy-muted")}>{eyebrow}</p>
+      <h3
+        className={cn(
+          "mt-5 max-w-md font-serif font-light type-h2 leading-[1.08] tracking-[-0.02em]",
+          dark ? "text-background" : "text-foreground",
+        )}
+      >
+        {title}
+      </h3>
+      <p className={cn("mt-5 type-body", dark ? "text-background/80" : "text-copy")}>{body}</p>
+      <div className="mt-auto pt-9">
+        <a href={href} className={cn(dark ? "cta-primary-invert" : "cta-primary", "whitespace-nowrap px-5 tracking-[0.08em]")}>
+          {cta} <CtaArrow down />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Six months as one journey: each step sits on a gold progress line, the line
+ * grows as the step reveals, and the final month is the filled destination.
+ */
+function ElevateJourney() {
+  return (
+    <ol className="mt-16 grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3">
+      {ELEVATE_TIMELINE.map((step, i) => {
+        const destination = i === ELEVATE_TIMELINE.length - 1;
+        return (
+          <Reveal key={step.m} as="li" delay={(i % 3) * 140} duration="slow" className="group relative pt-10">
+            <span
+              aria-hidden
+              className="absolute left-5 right-0 top-[7px] h-px bg-gradient-to-r from-[var(--gold)] to-[color-mix(in_oklch,var(--gold)_12%,transparent)]"
+            />
+            <span
+              aria-hidden
+              className={cn(
+                "absolute left-0 top-0 h-4 w-4 rounded-full border border-[var(--gold)] transition-colors duration-700",
+                destination
+                  ? "bg-[var(--gold)] ring-4 ring-[color-mix(in_oklch,var(--gold)_22%,transparent)]"
+                  : "bg-foreground group-hover:bg-[var(--gold)]",
+              )}
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute right-0 top-5 select-none font-serif font-light leading-none text-[5rem] text-background/[0.06] transition-colors duration-700 group-hover:text-[color-mix(in_oklch,var(--gold)_22%,transparent)]"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p className="eyebrow text-gold">{step.m}</p>
+            <h3 className="mt-3 max-w-xs pr-16 font-serif font-light type-h2 leading-tight text-background">
+              {step.t}
+            </h3>
+            <p className="mt-4 max-w-sm type-body text-background/75">{step.d}</p>
+          </Reveal>
+        );
+      })}
+    </ol>
+  );
+}
+
+function WhoThisIsForSplit() {
+  return (
+    <PageSection surface="cream">
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+          <PageHeading size="h1" eyebrow="Who This Is For">
+            Designed for high-performing women approaching advancement{" "}
+            <Accent>intentionally.</Accent>
+          </PageHeading>
+          <Reveal duration="slow" delay={120}>
+            <div className="mt-10 h-px w-24 bg-[var(--gold)]/70" />
+            <p className="mt-8 max-w-md font-serif font-light text-[length:var(--text-lead)] leading-snug text-foreground">
+              You may be self-funding your development — or sponsored by your organization.
+              Either way, the work is{" "}
+              <em className="italic text-gold-warm">structured, strategic, and advancement-focused.</em>
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="relative lg:col-span-7">
+          <div
+            aria-hidden
+            className="absolute left-5 top-6 bottom-6 w-px bg-gradient-to-b from-[var(--gold)] via-[color-mix(in_oklch,var(--gold)_40%,transparent)] to-transparent"
+          />
+          <ol className="relative">
+            {FOR_YOU.map((f, i) => (
+              <Reveal
+                key={f}
+                as="li"
+                delay={i * 100}
+                duration="slow"
+                className="group relative flex items-center gap-6 py-5 md:py-6"
+              >
+                <span
+                  className={cn(
+                    NUMERAL,
+                    "relative z-10 bg-[var(--cream)] transition-colors duration-500 group-hover:bg-[var(--gold)] group-hover:text-background",
+                  )}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p className="flex-1 font-serif font-light text-[length:var(--text-lead)] leading-snug text-foreground transition-transform duration-500 group-hover:translate-x-1">
+                  {f}
+                </p>
+                {i < FOR_YOU.length - 1 && (
+                  <span
+                    aria-hidden
+                    className="absolute bottom-0 left-16 right-0 h-px bg-[color-mix(in_oklch,var(--gold)_22%,transparent)]"
+                  />
+                )}
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </PageSection>
+  );
+}
+
 function WorkWithMe() {
   return (
     <>
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden border-b border-[var(--hairline)]/60 bg-[var(--background)]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-[55%] hidden lg:block"
-          style={{
-            background:
-              "linear-gradient(135deg, color-mix(in oklch, var(--cream) 96%, var(--gold)) 0%, color-mix(in oklch, var(--cream) 88%, var(--gold-subtle)) 100%)",
-          }}
-        />
-        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
-          <div
-            className="absolute left-[42%] top-[15%] bottom-[12%] w-px"
-            style={{
-              background:
-                "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--gold) 35%, transparent) 30%, color-mix(in oklch, var(--gold) 35%, transparent) 70%, transparent)",
-            }}
-          />
-          <div
-            className="absolute left-[6%] w-[32%] h-px bottom-[14%]"
-            style={{
-              background:
-                "linear-gradient(to right, color-mix(in oklch, var(--gold) 50%, transparent), transparent)",
-            }}
-          />
-        </div>
-
-        <Container className="relative pt-16 md:pt-28 pb-20 md:pb-32" style={{ zIndex: 10 }}>
-          <div className="relative max-w-4xl">
-            <Reveal variant="fade-in" duration="slow">
-              <div className="flex items-center gap-4 mb-8">
-                <span className="h-px w-10" style={{ background: "var(--gold)" }} />
-                <span className="eyebrow" style={{ color: "var(--gold)", letterSpacing: "0.22em" }}>
-                  For Individuals
-                </span>
-              </div>
-            </Reveal>
-            <Reveal variant="slide-right" duration="slow" delay={80}>
-              <h1 className="font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground">
-                Strategic coaching for women ready to advance with{" "}
-                <em className="text-[var(--gold)] not-italic font-light">
-                  clarity, visibility, and influence.
-                </em>
-              </h1>
-            </Reveal>
-            <Reveal variant="fade-in" delay={180}>
-              <div
-                className="mt-8 mb-6"
-                style={{ height: "1px", width: "3rem", background: "var(--gold)", opacity: 0.65 }}
-              />
-              <p
-                className="max-w-2xl text-[15px] md:text-[16px] text-foreground/80 leading-relaxed font-light"
-                style={{
-                  borderLeft: "1px solid color-mix(in oklch, var(--gold) 38%, transparent)",
-                  paddingLeft: "1.25rem",
-                }}
-              >
-                For high-performing professionals preparing for promotion, navigating complex
-                organizational dynamics, or protecting leadership trajectory through major career
-                transitions.
-              </p>
-            </Reveal>
-            <Reveal variant="fade-in" delay={220}>
-              <p
-                className="mt-6 max-w-2xl font-serif italic text-xl md:text-2xl leading-snug text-foreground/85"
-                style={{ paddingLeft: "1.25rem" }}
-              >
-                This is not generic confidence coaching. It is{" "}
-                <span className="text-[var(--gold)] not-italic font-normal">
-                  evidence-informed advancement strategy
-                </span>{" "}
-                for women operating within real organizational systems.
-              </p>
-            </Reveal>
-            <Reveal variant="fade-up" duration="fast" delay={300}>
-              <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4" style={{ paddingLeft: "1.25rem" }}>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center gap-2 bg-foreground text-background px-7 py-4 text-[11px] uppercase tracking-[0.22em] shadow-[0_18px_45px_rgba(36,32,28,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-foreground/90"
-                >
-                  Book a Strategic Clarity Call <span aria-hidden>→</span>
-                </Link>
-                <Link
-                  to="/organizations"
-                  className="inline-flex items-center gap-2 border-b border-[var(--gold)]/70 pb-1 text-[11px] uppercase tracking-[0.22em] transition-all duration-300 hover:border-foreground hover:text-foreground"
-                >
-                  Exploring corporate support? Visit Organizations <span aria-hidden>→</span>
-                </Link>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </section>
-
-      {/* WHO THIS IS FOR — orbit/staggered cluster */}
-      <section className="relative overflow-hidden bg-[var(--cream)]/70 border-b border-[var(--hairline)]/60 pt-6 pb-20 md:pt-8 md:pb-28">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-[-5vw] top-12 hidden font-serif text-[9rem] leading-none text-foreground/[0.035] lg:block"
-        >
-          clarity
-        </div>
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-[-3vw] bottom-20 hidden font-serif text-[8rem] leading-none text-[var(--gold)]/[0.08] lg:block"
-        >
-          visibility
-        </div>
-        <Container className="relative">
-          <Reveal>
-            <div className="max-w-3xl">
-              <Eyebrow>Who This Is For</Eyebrow>
-              <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-                <span className="voice-serif-light text-foreground">Designed for high-performing women approaching advancement </span>
-                <span className="voice-serif-italic">intentionally.</span>
-              </h2>
-            </div>
-          </Reveal>
-
-          {/* Cluster grid with staggered offsets */}
-          <div className="mt-16 grid gap-x-6 gap-y-6 md:grid-cols-12 md:items-start">
-            {FOR_YOU.map((f, i) => {
-              // Cluster placement for editorial feel
-              const layout = [
-                "md:col-span-5",
-                "md:col-span-7 md:mt-8",
-                "md:col-span-6 md:-mt-2",
-                "md:col-span-6 md:mt-6",
-                "md:col-span-7",
-                "md:col-span-5 md:mt-10",
-                "md:col-span-8 md:ml-10",
-              ][i];
-              return (
-                <Reveal key={f} delay={i * 60} as="article" className={`${layout} group bg-background/60 border border-[var(--hairline)] px-7 py-6 flex items-baseline gap-5 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--gold)]/70 hover:bg-background hover:shadow-[0_18px_45px_rgba(36,32,28,0.08)]`}>
-                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--gold)]/45 font-serif italic text-[var(--gold)] text-lg md:text-xl transition-colors duration-300 group-hover:bg-[var(--gold)] group-hover:text-background">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <p className="text-[15px] md:text-[16px] text-foreground/85 leading-relaxed font-light">{f}</p>
-                </Reveal>
-              );
-            })}
-          </div>
-
-          <Reveal>
-            <div className="mt-20 h-px w-24 bg-[var(--gold)]/70" />
-            <p className="mt-8 max-w-3xl font-serif text-2xl md:text-[1.85rem] leading-snug text-foreground/90">
-              You may be self-funding your development — or sponsored by your organization. Either
-              way, the work is{" "}
-              <em className="text-[var(--gold)] not-italic">
-                structured, strategic, and advancement-focused.
-              </em>
+      <PageHero
+        eyebrow="For Individuals"
+        size="h1"
+        title={
+          <>
+            Strategic coaching for women ready to advance with{" "}
+            <Accent>clarity, visibility, and influence.</Accent>
+          </>
+        }
+        lead={
+          <>
+            <p className="type-body text-copy">
+              For high-performing professionals preparing for promotion, navigating complex
+              organizational dynamics, or protecting leadership trajectory through major career
+              transitions.
             </p>
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* PROGRAM OVERVIEW */}
-      <section className="py-20 md:py-28">
-        <Container>
-          <Reveal>
-            <Eyebrow>Programs</Eyebrow>
-            <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)] max-w-3xl">
-              <span className="voice-serif-light text-foreground">Two Programs. </span>
-              <span className="voice-sans-bold text-foreground/90">One </span>
-              <span className="voice-serif-italic">Strategic Foundation.</span>
-            </h2>
-          </Reveal>
-
-          <div className="mt-14 grid gap-6 md:grid-cols-2">
-            <Reveal as="article" className="relative bg-foreground text-background p-8 md:p-10 flex flex-col">
-              <div className="absolute top-0 left-0 h-1 w-24 bg-[var(--gold)]" />
-              <div className="eyebrow text-[var(--gold)]">Signature Program</div>
-              <h3 className="mt-5 font-serif text-[1.85rem] md:text-[2.1rem] leading-tight text-background">
-                ELEVATE<span className="text-[var(--gold)]">™</span> Strategic Advancement Program
-              </h3>
-              <p className="mt-4 text-[15px] text-background/80 leading-relaxed font-light">
-                A six-month, evidence-based coaching program to translate capability into recognised
-                progression.
-              </p>
-              <a
-                href="#elevate"
-                className="mt-8 self-start inline-flex items-center gap-2 border-b border-background/50 pb-1 text-[11px] uppercase tracking-[0.22em] text-background hover:border-background"
-              >
-                Explore ELEVATE <span aria-hidden>↓</span>
-              </a>
-            </Reveal>
-            <Reveal delay={100} as="article" className="relative bg-[var(--cream)]/70 border border-[var(--hairline)] p-8 md:p-10 flex flex-col">
-              <div className="absolute top-0 left-0 h-1 w-24 bg-[var(--gold)]" />
-              <div className="eyebrow text-[var(--gold)]">Career Continuity</div>
-              <h3 className="mt-5 font-serif text-[1.85rem] md:text-[2.1rem] leading-tight text-foreground">
-                Lead &amp; Thrive Through Motherhood<span className="text-[var(--gold)]">™</span>
-              </h3>
-              <p className="mt-4 text-[15px] text-foreground/75 leading-relaxed font-light">
-                Strategic career continuity for high-potential women through maternity leave,
-                re-entry, and identity transition.
-              </p>
-              <a
-                href="#lead-thrive"
-                className="mt-8 self-start inline-flex items-center gap-2 border-b border-foreground/40 pb-1 text-[11px] uppercase tracking-[0.22em] text-foreground hover:border-foreground"
-              >
-                Explore Lead &amp; Thrive <span aria-hidden>↓</span>
-              </a>
-            </Reveal>
-          </div>
-        </Container>
-      </section>
-
-      {/* ELEVATE DETAILED — timeline */}
-      <section id="elevate" className="bg-foreground text-background py-20 md:py-32 scroll-mt-24">
-        <Container>
-          <div className="grid gap-12 md:gap-16 md:grid-cols-12 items-end">
-            <div className="md:col-span-8">
-              <Reveal>
-                <Eyebrow className="text-[var(--gold)]">ELEVATE™</Eyebrow>
-              </Reveal>
-              <Reveal delay={80}>
-                <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-                  <span className="voice-sans-bold text-background/90">ELEVATE<span className="text-[var(--gold)]">™</span> — </span>
-                  <span className="voice-serif-italic">Strategic Advancement Program</span>
-                </h2>
-              </Reveal>
-              <Reveal delay={140}>
-                <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-background/80 leading-relaxed font-light">
-                  High-performing women are passed over every day — not because they lack capability,
-                  but because advancement is shaped by visibility, perception, and sponsorship as
-                  much as it is by results. ELEVATE is a six-month, evidence-based coaching program
-                  designed to change that.
-                </p>
-              </Reveal>
-            </div>
-          </div>
-
-          <Reveal>
-            <div className="mt-14 border border-background/20 bg-background/5 p-7 md:p-9 max-w-4xl">
-              <div className="eyebrow text-[var(--gold)]">Who this is for</div>
-              <p className="mt-5 font-serif text-2xl md:text-[1.85rem] leading-snug text-background">
-                Senior women who are performing well and ready to move with intention.
-              </p>
-              <p className="mt-5 text-[15px] md:text-[16px] text-background/80 leading-relaxed font-light max-w-3xl">
-                Whether your career has plateaued, a promotion decision is approaching, or you want
-                to build something that is as sustainable as it is ambitious.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal>
-            <div className="mt-16 max-w-3xl">
-              <p className="font-serif italic text-2xl md:text-[1.85rem] leading-snug text-[var(--gold)]">
-                A system, not just sessions.
-              </p>
-              <p className="mt-5 text-[15px] md:text-[16px] text-background/80 leading-relaxed font-light">
-                Grounded in research from HBR, INSEAD, McKinsey, and Gallup, ELEVATE gives you the
-                strategy, tools, and clarity to move from high performer to recognised leader. Over
-                six months and up to twelve private sessions, you will build a complete advancement
-                strategy — and leave with three formal deliverables you own, keep, and return to long
-                after the program ends.
-              </p>
-            </div>
-          </Reveal>
-
-          {/* Vertical timeline */}
-          <div className="mt-20 relative">
+            <p className="font-serif italic text-foreground">
+              This is not generic confidence coaching. It is{" "}
+              <em className="italic text-gold-warm">evidence-informed advancement strategy</em>{" "}
+              for women operating within real organizational systems.
+            </p>
+          </>
+        }
+        actions={
+          <>
+            <Link to="/contact" className="cta-primary w-full justify-between text-left lg:whitespace-nowrap max-lg:px-5 max-lg:text-[0.75rem] max-lg:tracking-[0.1em]">
+              Book a Strategic Clarity Call <CtaArrow />
+            </Link>
+            <Link
+              to="/organizations"
+              className="link-underline mt-3 self-start font-sans text-[length:var(--text-small)] uppercase tracking-[0.12em] sm:tracking-[0.16em] lg:whitespace-nowrap"
+            >
+              Exploring corporate support? Visit Organizations <CtaArrow />
+            </Link>
+          </>
+        }
+        aside={
+          <Reveal variant="fade-up" duration="slow" delay={140} className="relative mx-auto flex w-full max-w-[22rem] justify-center">
             <div
               aria-hidden
-              className="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-background/20"
+              className="absolute inset-x-0 bottom-0 top-[12%] rounded-t-full"
+              style={{
+                background:
+                  "radial-gradient(ellipse 70% 60% at 50% 45%, color-mix(in oklch, var(--gold-subtle) 70%, transparent), transparent 72%)",
+              }}
             />
-            <ol className="space-y-12 md:space-y-16">
-              {ELEVATE_TIMELINE.map((step, i) => (
-                <Reveal key={step.m} delay={i * 60} as="li" className="relative">
-                  <div className={`grid md:grid-cols-2 gap-6 md:gap-16 items-start ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}>
-                    {/* timeline dot */}
-                    <div
-                      aria-hidden
-                      className="absolute left-3 md:left-1/2 top-2 -translate-x-1/2 w-4 h-4 rounded-full bg-[var(--gold)] ring-4 ring-foreground"
-                    />
-                    <div className={`pl-12 md:pl-0 md:pr-12 md:[direction:ltr] ${i % 2 === 0 ? "md:text-right" : ""}`}>
-                      <div className="eyebrow text-[var(--gold)]">{step.m}</div>
-                      <h3 className="mt-3 font-serif text-[1.65rem] md:text-[1.85rem] leading-tight text-background">
-                        {step.t}
-                      </h3>
-                      <p className="mt-4 text-[14.5px] md:text-[15px] text-background/75 leading-relaxed">
-                        {step.d}
-                      </p>
-                    </div>
-                    <div className="hidden md:block md:[direction:ltr]" />
-                  </div>
-                </Reveal>
-              ))}
-            </ol>
-          </div>
+            <div aria-hidden className="absolute inset-x-[8%] bottom-0 top-[6%] rounded-t-full border border-[color-mix(in_oklch,var(--gold)_30%,transparent)]" />
+            <img
+              src={portrait}
+              alt="Amna Imran"
+              className="relative block h-[22rem] w-auto select-none sm:h-[28rem] lg:h-[34rem]"
+              draggable={false}
+            />
+          </Reveal>
+        }
+      />
 
-          {/* Deliverables */}
-          <div className="mt-20">
-            <Reveal>
-              <div className="eyebrow text-[var(--gold)]">What you leave with</div>
-              <Hairline className="mt-4 bg-background/20" />
-            </Reveal>
-            <div className="mt-8 grid gap-6 md:grid-cols-3">
-              {DELIVERABLES.map((d, i) => (
-                <Reveal key={d} delay={i * 70} as="div" className="border border-background/25 p-7">
-                  <div className="font-serif italic text-[var(--gold)] text-xl md:text-2xl">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
-                  <h3 className="mt-4 font-serif text-[20px] text-background leading-snug">{d}</h3>
-                </Reveal>
-              ))}
-            </div>
-          </div>
+      <Seam from="warm" into="cream" />
 
+      <VariantLabel
+        name="Option 1 — current layout"
+        note="Staggered cards"
+      />
+      {/* WHO THIS IS FOR — staggered cluster */}
+      <PageSection surface="cream">
+        <PageHeading eyebrow="Who This Is For">
+          Designed for high-performing women approaching advancement{" "}
+          <Accent>intentionally.</Accent>
+        </PageHeading>
+
+        <div className="mt-14 grid gap-x-6 gap-y-4 md:grid-cols-2 md:gap-y-6 lg:grid-cols-12 lg:items-start">
+          {FOR_YOU.map((f, i) => {
+            const layout = [
+              "lg:col-span-5",
+              "lg:col-span-7 lg:mt-8",
+              "lg:col-span-6 lg:-mt-2",
+              "lg:col-span-6 lg:mt-6",
+              "lg:col-span-7",
+              "lg:col-span-5 lg:mt-10",
+              "md:col-span-2 lg:col-span-8 lg:ml-10",
+            ][i];
+            return (
+              <Reveal
+                key={f}
+                delay={i * 60}
+                duration="slow"
+                as="article"
+                className={`${layout} group bg-background/60 border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] px-5 py-5 sm:px-7 sm:py-6 flex items-center gap-5 transition-all duration-500 hover:-translate-y-1 hover:border-[color-mix(in_oklch,var(--gold)_45%,transparent)] hover:bg-background`}
+              >
+                <span className={cn(NUMERAL, "transition-colors duration-500 group-hover:bg-[var(--gold)] group-hover:text-background")}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p className="type-body text-copy">{f}</p>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        <ChapterDivider className="mx-auto mt-16 max-w-3xl md:mt-20" />
+        <PageQuote className="mt-10">
+          You may be self-funding your development — or sponsored by your organization. Either
+          way, the work is{" "}
+          <em className="italic text-gold-warm">structured, strategic, and advancement-focused.</em>
+        </PageQuote>
+      </PageSection>
+
+      <VariantLabel
+        name="Option 2 — for client review"
+        note="Heading stays on the left · the seven points read as one numbered list joined by a gold line"
+      />
+      <WhoThisIsForSplit />
+
+      {/* PROGRAM OVERVIEW */}
+      <PageSection surface="cream" className="pt-4 md:pt-8">
+        <PageHeading eyebrow="Programs">
+          Two Programs. One <Accent>Strategic Foundation.</Accent>
+        </PageHeading>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <Reveal duration="slow">
+            <ProgramCard
+              dark
+              eyebrow="Signature Program"
+              title={
+                <>
+                  ELEVATE<span className="text-[var(--gold)]">™</span> Strategic Advancement Program
+                </>
+              }
+              body="A six-month, evidence-based coaching program to translate capability into recognised progression."
+              cta="Explore ELEVATE"
+              href="#elevate"
+            />
+          </Reveal>
+          <Reveal delay={100} duration="slow">
+            <ProgramCard
+              eyebrow="Career Continuity"
+              title={
+                <>
+                  Lead &amp; Thrive Through Motherhood<span className="text-[var(--gold)]">™</span>
+                </>
+              }
+              body="Strategic career continuity for high-potential women through maternity leave, re-entry, and identity transition."
+              cta="Explore Lead & Thrive"
+              href="#lead-thrive"
+            />
+          </Reveal>
+        </div>
+      </PageSection>
+
+      {/* ELEVATE DETAILED — timeline */}
+      <PageSection surface="dark" id="elevate">
+        <PageHeading dark eyebrow="Signature Program">
+          ELEVATE<span className="text-[var(--gold)]">™</span> —{" "}
+          <Accent>Strategic Advancement Program</Accent>
+        </PageHeading>
+        <Reveal delay={140} duration="slow">
+          <p className="mt-8 max-w-2xl type-body text-background/80">
+            High-performing women are passed over every day — not because they lack capability,
+            but because advancement is shaped by visibility, perception, and sponsorship as
+            much as it is by results. ELEVATE is a six-month, evidence-based coaching program
+            designed to change that.
+          </p>
+        </Reveal>
+
+        <Reveal duration="slow">
+          <div className="mt-14 border border-background/20 bg-background/5 p-7 md:p-9 max-w-4xl">
+            <p className="eyebrow text-gold">Who this is for</p>
+            <p className="mt-5 font-serif font-light text-[clamp(1.4rem,1vw+1rem,1.85rem)] leading-snug text-background">
+              Senior women who are performing well and ready to move with intention.
+            </p>
+            <p className="mt-5 type-body text-background/80 max-w-3xl">
+              Whether your career has plateaued, a promotion decision is approaching, or you want
+              to build something that is as sustainable as it is ambitious.
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal duration="slow">
+          <div className="mt-16 max-w-3xl">
+            <p className="font-serif italic text-[clamp(1.5rem,1.2vw+1rem,2.2rem)] leading-tight text-gold-warm">
+              A system, not just sessions.
+            </p>
+            <p className="mt-5 type-body text-background/80">
+              Grounded in research from HBR, INSEAD, McKinsey, and Gallup, ELEVATE gives you the
+              strategy, tools, and clarity to move from high performer to recognised leader. Over
+              six months and up to twelve private sessions, you will build a complete advancement
+              strategy — and leave with three formal deliverables you own, keep, and return to long
+              after the program ends.
+            </p>
+          </div>
+        </Reveal>
+
+        <ChapterDivider className="mt-16 md:mt-20" />
+        <ElevateJourney />
+
+        <ChapterDivider className="mt-20" />
+
+        {/* Deliverables */}
+        <div className="mt-16">
           <Reveal>
-            <div className="relative mt-20 overflow-hidden border border-background/15 bg-background/[0.04] p-6 md:p-10">
-              <div className="relative grid gap-10 md:grid-cols-12 md:items-start">
-                <div className="md:col-span-5">
-              <div className="eyebrow text-[var(--gold)]">ELEVATE Experience</div>
-              <h3 className="mt-5 font-serif text-3xl md:text-4xl leading-tight text-background max-w-3xl">
-                What participants typically experience.
-              </h3>
-              <p className="mt-5 max-w-2xl text-[14px] text-background/60 leading-relaxed italic">
-                Results vary by individual. These reflect what participants commonly report — not
-                guarantees.
-              </p>
-            </div>
-                <div className="md:col-span-7">
-            <Accordion type="single" collapsible className="border-t border-background/20">
-              {PARTICIPANT_EXPERIENCE.map((p) => (
-                <AccordionItem key={p.t} value={p.t} className="border-b border-background/20 transition-colors duration-300 data-[state=open]:bg-background/[0.06]">
-                  <AccordionTrigger className="px-3 py-6 text-left hover:no-underline group transition-colors duration-300 hover:bg-background/[0.05]">
-                    <div className="flex items-baseline pr-4">
-                      <span className="font-serif text-[18px] md:text-[20px] text-background leading-snug">
-                        {p.t}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-6 pl-3">
-                    <p className="text-[15px] text-background/75 leading-relaxed max-w-xl">{p.d}</p>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-                </div>
+            <p className="eyebrow text-gold">What you leave with</p>
+            <Hairline className="mt-4 bg-background/20" />
+          </Reveal>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            {DELIVERABLES.map((d, i) => (
+              <Reveal key={d} delay={i * 100} duration="slow" as="div" className="flex items-center gap-4 border border-background/25 p-5 md:block md:p-7">
+                <span className={cn(NUMERAL, "text-gold")}>{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="font-serif font-light type-h3 text-background leading-snug md:mt-5">{d}</h3>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        <Reveal duration="slow">
+          <div className="relative mt-20 overflow-hidden border border-background/15 bg-background/[0.04] p-6 md:p-10">
+            <div className="relative grid gap-10 md:grid-cols-12 md:items-start">
+              <div className="md:col-span-5">
+                <p className="eyebrow text-gold">ELEVATE Experience</p>
+                <h3 className="mt-5 font-serif font-light type-h1 text-background max-w-3xl">
+                  What participants typically experience.
+                </h3>
+                <p className="mt-5 max-w-2xl text-[length:var(--text-small)] text-background/60 leading-relaxed italic">
+                  Results vary by individual. These reflect what participants commonly report — not
+                  guarantees.
+                </p>
+              </div>
+              <div className="md:col-span-7">
+                <Accordion type="single" collapsible className="border-t border-background/20">
+                  {PARTICIPANT_EXPERIENCE.map((p) => (
+                    <AccordionItem key={p.t} value={p.t} className="border-b border-background/20 transition-colors duration-300 data-[state=open]:bg-background/[0.06]">
+                      <AccordionTrigger className="px-3 py-6 text-left hover:no-underline group transition-colors duration-300 hover:bg-background/[0.05]">
+                        <div className="flex items-baseline pr-4">
+                          <span className="font-serif text-[18px] md:text-[20px] text-background leading-snug">
+                            {p.t}
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-6 pl-3">
+                        <p className="type-body text-background/75 max-w-xl">{p.d}</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
             </div>
-          </Reveal>
-        </Container>
-      </section>
+          </div>
+        </Reveal>
+      </PageSection>
 
       {/* LEAD & THRIVE THROUGH MOTHERHOOD */}
-      <section id="lead-thrive" className="bg-[var(--cream)]/70 border-y border-[var(--hairline)]/60 py-20 md:py-32 scroll-mt-24">
-        <Container>
-          <Reveal>
-            <Eyebrow>Career Continuity</Eyebrow>
-            <h2 className="mt-6 font-serif text-[2.1rem] sm:text-4xl md:text-[2.6rem] lg:text-[3rem] leading-[1.08] text-foreground max-w-3xl">
-              Lead &amp; Thrive Through{" "}
-              <em
-                className="inline-block text-[var(--gold)] not-italic text-[3rem] leading-[0.85] sm:text-[4rem] md:text-[4.8rem] lg:text-[5.4rem]"
-                style={{
-                  fontFamily: '"Rastanty Cortez", cursive',
-                  fontFeatureSettings: "normal",
-                  fontVariantLigatures: "none",
-                  fontWeight: 700,
-                }}
-              >
-                Motherhood.
-              </em>
-            </h2>
-            <p className="mt-4 font-serif italic text-[var(--gold)] text-xl md:text-2xl">
-              Strategic Career Continuity for High-Potential Women
-            </p>
-          </Reveal>
+      <PageSection surface="cream" id="lead-thrive">
+        <PageHeading eyebrow="Career Continuity">
+          Lead &amp; Thrive Through <Accent>Motherhood.</Accent>
+        </PageHeading>
+        <Reveal delay={60} duration="slow">
+          <p className="mt-4 font-serif italic text-gold-warm text-[clamp(1.2rem,0.8vw+0.95rem,1.5rem)]">
+            Strategic Career Continuity for High-Potential Women
+          </p>
+        </Reveal>
 
-          <Reveal delay={80}>
-            <p className="mt-10 max-w-3xl font-serif text-2xl md:text-[1.85rem] leading-snug text-foreground">
-              Becoming a working parent is not simply a logistical shift. It is a{" "}
-              <em className="text-[var(--gold)] not-italic font-light">profound identity transition.</em>
-            </p>
-          </Reveal>
+        <Reveal delay={80} duration="slow">
+          <p className="mt-10 max-w-3xl font-serif font-light text-[clamp(1.4rem,1vw+1rem,1.85rem)] leading-snug text-foreground">
+            Becoming a working parent is not simply a logistical shift. It is a{" "}
+            <em className="italic text-gold-warm">profound identity transition.</em>
+          </p>
+        </Reveal>
 
-          <Reveal delay={140}>
-            <p className="mt-8 max-w-2xl text-[15px] md:text-[16px] text-foreground/75 leading-relaxed font-light">
-              Research consistently shows that while most expecting mothers intend to re-engage
-              fully with their careers, a significant portion leave the workforce within a year of
-              having a child. The gap between intention and outcome is not about ambition. It is
-              about structure, support, and strategic navigation.
-            </p>
-          </Reveal>
+        <Reveal delay={140} duration="slow">
+          <p className="mt-8 max-w-2xl type-body text-copy">
+            Research consistently shows that while most expecting mothers intend to re-engage
+            fully with their careers, a significant portion leave the workforce within a year of
+            having a child. The gap between intention and outcome is not about ambition. It is
+            about structure, support, and strategic navigation.
+          </p>
+        </Reveal>
 
-          {/* Large stat callouts */}
-          <div className="mt-14 grid gap-px bg-[var(--hairline)] border border-[var(--hairline)] md:grid-cols-3">
-            <Reveal as="div" className="bg-background p-8 md:p-10">
-              <div className="font-serif text-[3.5rem] md:text-[4.5rem] text-[var(--gold)] leading-none">
-                75%
-              </div>
-              <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed">
-                of expecting mothers intend to re-engage fully with their careers.
+        {/* Large stat callouts */}
+        <div className="mt-14 grid gap-px bg-[var(--hairline)] border border-[var(--hairline)] md:grid-cols-2 lg:grid-cols-3">
+          <Reveal as="div" duration="slow" className="bg-background p-8 md:p-10">
+            <div className="font-serif font-light text-[3.5rem] md:text-[4.5rem] text-gold-warm leading-none">
+              75%
+            </div>
+            <p className="mt-4 type-body text-copy">
+              of expecting mothers intend to re-engage fully with their careers.
+            </p>
+            <p className="mt-3 type-micro">Source label to confirm</p>
+          </Reveal>
+          <Reveal delay={80} as="div" duration="slow" className="bg-background p-8 md:p-10">
+            <div className="font-serif font-light text-[3.5rem] md:text-[4.5rem] text-gold-warm leading-none">
+              43%
+            </div>
+            <p className="mt-4 type-body text-copy">
+              leave the workforce within a year of having a child.
+            </p>
+            <p className="mt-3 type-micro">Source label to confirm</p>
+          </Reveal>
+          <Reveal delay={160} as="div" duration="slow" className="flex flex-col justify-end bg-background p-8 md:col-span-2 md:p-10 lg:col-span-1">
+            <div className="font-serif font-light text-[clamp(1.3rem,0.6vw+1.05rem,1.6rem)] text-foreground leading-snug">
+              How a return is managed often matters more than the length of leave.
+            </div>
+            <p className="mt-4 type-micro">Harvard Business Review</p>
+          </Reveal>
+        </div>
+
+        <Reveal delay={120} duration="slow">
+          <div className="mt-12 max-w-2xl border-l-2 border-[var(--gold)] pl-6 space-y-3">
+            <p className="type-body text-copy">
+              Mothers report significantly higher stress levels than other employees — and stress
+              increases further for those with more than one child.
+            </p>
+            <p className="type-body text-copy">
+              Without deliberate preparation and repositioning, this transition can quietly disrupt
+              leadership trajectory.
+            </p>
+          </div>
+        </Reveal>
+
+        <ChapterDivider className="mt-20" />
+
+        {/* A Different Approach */}
+        <div className="mt-16 grid gap-10 lg:gap-16 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <PageHeading as="h3" size="h1">
+              A Different Approach to <Accent>Working Parenthood.</Accent>
+            </PageHeading>
+            <Reveal delay={80} duration="slow">
+              <p className="mt-6 type-body text-copy">
+                Most return-to-work support focuses on emotional adjustment or work-life balance
+                alone. This program approaches the transition strategically.
               </p>
-              <p className="mt-3 type-micro">Source label to confirm</p>
-            </Reveal>
-            <Reveal delay={80} as="div" className="bg-background p-8 md:p-10">
-              <div className="font-serif text-[3.5rem] md:text-[4.5rem] text-[var(--gold)] leading-none">
-                43%
-              </div>
-              <p className="mt-4 text-[14px] md:text-[15px] text-foreground/80 leading-relaxed">
-                leave the workforce within a year of having a child.
+              <p className="mt-5 font-serif font-light text-[length:var(--text-lead)] leading-snug text-foreground">
+                Lead &amp; Thrive Through Motherhood is designed to:
               </p>
-              <p className="mt-3 type-micro">Source label to confirm</p>
-            </Reveal>
-            <Reveal delay={160} as="div" className="bg-background p-8 md:p-10">
-              <div className="font-serif text-[2rem] md:text-[2.4rem] text-foreground leading-snug">
-                How a return is managed often matters more than the length of leave.
-              </div>
-              <p className="mt-4 type-micro">Harvard Business Review</p>
             </Reveal>
           </div>
-
-          <Reveal delay={120}>
-            <div className="mt-12 max-w-2xl border-l-2 border-[var(--gold)] pl-6 space-y-3">
-              <p className="text-[15px] text-foreground/80 leading-relaxed">
-                Mothers report significantly higher stress levels than other employees — and stress
-                increases further for those with more than one child.
-              </p>
-              <p className="text-[15px] text-foreground/80 leading-relaxed">
-                Without deliberate preparation and repositioning, this transition can quietly disrupt
-                leadership trajectory.
-              </p>
-            </div>
-          </Reveal>
-
-          {/* A Different Approach */}
-          <div className="mt-24 grid gap-12 md:gap-16 md:grid-cols-12">
-            <div className="md:col-span-5">
-              <Reveal>
-                <h3 className="leading-[1.05] text-[clamp(1.8rem,3.5vw,2.6rem)]">
-                  <span className="voice-serif-light text-foreground">A Different Approach to </span>
-                  <span className="voice-serif-italic">Working Parenthood.</span>
-                </h3>
-              </Reveal>
-              <Reveal delay={80}>
-                <p className="mt-6 text-[15px] md:text-[16px] text-foreground/75 leading-relaxed">
-                  Most return-to-work support focuses on emotional adjustment or work-life balance
-                  alone. This program approaches the transition strategically.
-                </p>
-                <p className="mt-5 font-serif text-[1.35rem] md:text-[1.65rem] leading-snug text-foreground">
-                  Lead &amp; Thrive Through Motherhood is designed to:
-                </p>
-              </Reveal>
-            </div>
-            <div className="md:col-span-7">
-              <Reveal>
-                <ul className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
-                  {[
-                    "Protect your leadership positioning before leave",
-                    "Maintain visibility and influence during absence",
-                    "Re-establish executive presence upon return",
-                    "Navigate perception shifts proactively",
-                    "Build a sustainable model of ambition that integrates caregiving",
-                  ].map((it, i) => (
-                    <li key={it} className="flex items-baseline gap-6 py-4">
-                      <span className="font-serif italic text-[var(--gold)] text-xl md:text-2xl shrink-0 w-10">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="font-serif text-[18px] md:text-[20px] text-foreground leading-snug">
-                        {it}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            </div>
+          <div className="lg:col-span-7">
+            <ul className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+              {LT_DESIGNED_TO.map((it, i) => (
+                <Reveal key={it} as="li" delay={i * 100} duration="slow" className="flex items-center gap-5 py-4">
+                  <span className={NUMERAL}>{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-serif text-[length:var(--text-lead)] text-foreground leading-snug">
+                    {it}
+                  </span>
+                </Reveal>
+              ))}
+            </ul>
           </div>
+        </div>
 
-          <Reveal>
-            <div className="mt-16 max-w-3xl space-y-4">
-              <p className="font-serif text-2xl md:text-[1.85rem] leading-snug text-foreground">
-                Motherhood should not require professional self-erasure.
-              </p>
-              <p className="font-serif italic text-2xl md:text-[1.85rem] leading-snug text-[var(--gold)]">
-                Nor should it demand overcompensation through exhaustion.
-              </p>
-              <p className="text-[15px] md:text-[16px] text-foreground/75 leading-relaxed">
-                With evidence-based tools and structured preparation, this transition can become an
-                integrated chapter of leadership growth — not a derailment.
-              </p>
-            </div>
-          </Reveal>
+        <PageQuote
+          className="mt-20"
+          sub="With evidence-based tools and structured preparation, this transition can become an integrated chapter of leadership growth — not a derailment."
+        >
+          Motherhood should not require professional self-erasure.
+          <em className="mt-1 block italic text-gold-warm">
+            Nor should it demand overcompensation through exhaustion.
+          </em>
+        </PageQuote>
 
-          {/* Designed For + Outcomes */}
-          <div className="mt-20 grid gap-10 md:grid-cols-2">
-            <Reveal as="div" className="bg-background border border-[var(--hairline)] p-8 md:p-10">
-              <div className="eyebrow text-[var(--gold)]">Designed For</div>
-              <Hairline className="my-5" />
-              <ul className="space-y-3.5">
-                {LT_DESIGNED_FOR.map((d) => (
-                  <li key={d} className="flex gap-4 text-foreground/85">
-                    <span aria-hidden className="mt-2.5 h-px w-5 bg-[var(--gold)] shrink-0" />
-                    <span className="text-[15px] leading-relaxed">{d}</span>
+        {/* Designed For + Outcomes */}
+        <div className="mt-20 grid gap-6 md:grid-cols-2">
+          {[
+            { label: "Designed For", items: LT_DESIGNED_FOR },
+            { label: "The Outcome — Clients leave with", items: LT_OUTCOMES },
+          ].map((block, i) => (
+            <Reveal
+              key={block.label}
+              delay={i * 100}
+              duration="slow"
+              as="div"
+              className="border border-[color-mix(in_oklch,var(--gold)_20%,transparent)] bg-[color-mix(in_oklch,var(--background)_72%,transparent)] p-8 md:p-10"
+            >
+              <p className="eyebrow text-gold-ink">{block.label}</p>
+              <div className="my-6 h-px w-full bg-[color-mix(in_oklch,var(--gold)_30%,transparent)]" />
+              <ul className="space-y-3">
+                {block.items.map((d) => (
+                  <li key={d} className="flex gap-3 text-[length:var(--text-body)] leading-[1.55] text-copy">
+                    <span aria-hidden className="mt-[0.75em] h-px w-4 shrink-0 bg-[var(--gold)]" />
+                    {d}
                   </li>
                 ))}
               </ul>
             </Reveal>
-            <Reveal delay={100} as="div" className="bg-[var(--cream)]/80 border border-[var(--hairline)] p-8 md:p-10">
-              <div className="eyebrow text-[var(--gold)]">The Outcome — Clients leave with</div>
-              <Hairline className="my-5" />
-              <ul className="space-y-3.5">
-                {LT_OUTCOMES.map((o) => (
-                  <li key={o} className="flex gap-4 text-foreground/85">
-                    <span aria-hidden className="mt-2.5 h-px w-5 bg-[var(--gold)] shrink-0" />
-                    <span className="text-[15px] leading-relaxed">{o}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
+          ))}
+        </div>
 
-          <Reveal>
-            <p className="mt-16 max-w-3xl font-serif text-xl md:text-[1.65rem] leading-snug text-foreground">
-              When transition is handled intentionally,{" "}
-              <em className="text-[var(--gold)] not-italic">retention improves, satisfaction increases, and leadership continuity is preserved.</em>
-            </p>
-          </Reveal>
-        </Container>
-      </section>
+        <ChapterDivider className="mx-auto mt-16 max-w-3xl" />
+        <Reveal duration="slow">
+          <p className="mx-auto mt-10 max-w-3xl text-center font-serif font-light text-[clamp(1.3rem,0.9vw+1rem,1.65rem)] leading-snug text-foreground">
+            When transition is handled intentionally,{" "}
+            <em className="italic text-gold-warm">retention improves, satisfaction increases, and leadership continuity is preserved.</em>
+          </p>
+        </Reveal>
+      </PageSection>
 
-      {/* FINAL CTA */}
-      <section className="bg-foreground text-background">
-        <Container className="py-20 md:py-28">
-          <div className="max-w-3xl">
-            <Reveal variant="fade-in" duration="slow">
-              <div className="flex items-center gap-4">
-                <span className="h-px w-10 bg-[var(--gold)]" />
-                <span className="eyebrow text-[var(--gold)]" style={{ letterSpacing: "0.22em" }}>
-                  Begin
-                </span>
-              </div>
-            </Reveal>
-            <Reveal variant="slide-right" duration="slow" delay={80}>
-              <h2 className="mt-6 leading-[1.05] text-[clamp(2rem,4.5vw,3rem)]">
-                <span className="voice-serif-light text-background">Ready to Advance With </span>
-                <span className="voice-serif-italic">Intention?</span>
-              </h2>
-            </Reveal>
-            <Reveal variant="fade-up" duration="fast" delay={260}>
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center gap-2 bg-background text-foreground px-7 py-4 text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--cream)] transition-colors"
-                >
-                  Book a Strategic Clarity Call <span aria-hidden>→</span>
-                </Link>
-                <Link
-                  to="/organizations"
-                  className="inline-flex items-center gap-2 border-b border-background/50 pb-1 text-[11px] uppercase tracking-[0.22em] text-background hover:border-background"
-                >
-                  Exploring organizational support? <span aria-hidden>→</span>
-                </Link>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </section>
+      <PageCta
+        title={
+          <>
+            Ready to Advance With
+            <br />
+            <Accent>Intention?</Accent>
+          </>
+        }
+        actions={
+          <>
+            <Link to="/contact" className="cta-primary-invert justify-between px-6 text-left tracking-[0.12em] max-sm:px-5 max-sm:text-[0.75rem] max-sm:tracking-[0.1em]">
+              Book a Strategic Clarity Call <CtaArrow />
+            </Link>
+            <Link to="/organizations" className="cta-secondary-invert justify-between px-6 text-left tracking-[0.12em] max-sm:px-5 max-sm:text-[0.75rem] max-sm:tracking-[0.1em]">
+              Exploring organizational support? <CtaArrow />
+            </Link>
+          </>
+        }
+      />
     </>
   );
 }

@@ -54,14 +54,14 @@ export function SiteHeader() {
               )}
               draggable={false}
             />
-            <span className="hidden sm:flex flex-col leading-none">
+            <span className="hidden sm:flex lg:hidden xl:flex flex-col leading-none">
               <span className="text-[0.625rem] uppercase tracking-[0.22em] text-copy-muted">
                 Coaching · Consulting
               </span>
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-9">
+          <nav className="hidden lg:flex items-center gap-7 xl:gap-9">
             {NAV.map((item) => (
               <Link
                 key={item.to}
