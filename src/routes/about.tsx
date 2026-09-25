@@ -14,7 +14,6 @@ import {
 } from "@/components/site/page-kit";
 import { cn } from "@/lib/utils";
 import portrait from "@/assets/amna-insights.png";
-import realizationPortrait from "@/assets/amna-full-portrait.png";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -161,32 +160,15 @@ function About() {
 
       {/* A PERSONAL REALIZATION — letter-style */}
       <PageSection surface="blush">
-        <div className="grid gap-10 md:gap-16 lg:gap-20 md:grid-cols-12 items-start">
-          {/* LEFT — sticky portrait + heading */}
-          <div className="md:col-span-5 lg:sticky lg:top-24 self-start">
-            <Reveal><Eyebrow>A Personal Note</Eyebrow></Reveal>
-            <PageHeading>
-              A Personal <Accent>Realization.</Accent>
-            </PageHeading>
-            <Reveal delay={140} duration="slow">
-              <figure className="mt-6 md:mt-8">
-                <div className="overflow-hidden bg-[var(--cream)]/40 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
-                  <img
-                    src={realizationPortrait}
-                    alt="Amna Imran"
-                    className="block h-auto w-full scale-[2] translate-x-[-32px]"
-                  />
-                </div>
-                <figcaption className={cn(SCRIPT_LABEL, "mt-5")}>
-                  A personal note from Amna
-                </figcaption>
-              </figure>
-            </Reveal>
-          </div>
+        <div className="max-w-xl">
+          <Reveal><Eyebrow>A Personal Note</Eyebrow></Reveal>
+          <PageHeading>
+            A Personal <Accent>Realization.</Accent>
+          </PageHeading>
+        </div>
 
-          {/* RIGHT — letter panel */}
-          <div className="md:col-span-7">
-            <Reveal delay={120} duration="slow">
+        <div className="mt-10 md:mt-12 md:max-w-3xl md:mx-auto">
+          <Reveal delay={120} duration="slow">
               <article className="note-paper relative rotate-[-0.35deg] border border-[color-mix(in_oklch,var(--gold)_18%,transparent)] px-6 py-10 sm:px-10 md:rotate-[-0.5deg] md:px-14 md:py-14">
                 <div aria-hidden className="absolute left-1/2 top-0 h-3 w-16 -translate-x-1/2 -translate-y-1/2 bg-[color-mix(in_oklch,var(--gold)_35%,var(--cream))] shadow-[0_2px_6px_oklch(0.4_0.04_70_/_0.2)]" />
                 <div aria-hidden className="absolute top-0 left-0 h-px w-24 bg-[var(--gold)]" />
@@ -285,7 +267,6 @@ function About() {
                 </div>
               </article>
             </Reveal>
-          </div>
         </div>
       </PageSection>
 

@@ -17,7 +17,6 @@ import {
 } from "@/components/site/page-kit";
 import { cn } from "@/lib/utils";
 import portrait from "@/assets/amna-insights.png";
-import realizationPortrait from "@/assets/amna-full-portrait.png";
 
 export const Route = createFileRoute("/about-v2")({
   head: () => ({
@@ -318,39 +317,22 @@ function AboutV2() {
 
       {/* A PERSONAL REALIZATION — chapters on a gold spine */}
       <PageSection surface="blush">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
-            <Reveal>
-              <Eyebrow>A Personal Note</Eyebrow>
-            </Reveal>
-            <PageHeading>
-              A Personal <Accent>Realization.</Accent>
-            </PageHeading>
-            <Reveal delay={140} duration="slow">
-              <figure className="mt-8 max-w-sm">
-                <div className="relative">
-                  <div aria-hidden className="absolute -right-3 -top-3 bottom-3 left-3 border border-[color-mix(in_oklch,var(--gold)_40%,transparent)]" />
-                  <div className="relative overflow-hidden bg-[var(--cream)]/40 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)]">
-                    <img
-                      src={realizationPortrait}
-                      alt="Amna Imran"
-                      className="block h-auto w-full translate-x-[-32px] scale-[2]"
-                    />
-                  </div>
-                </div>
-                <figcaption className={cn(SCRIPT_LABEL, "mt-6")}>A personal note from Amna</figcaption>
-              </figure>
-            </Reveal>
-          </div>
+        <div className="max-w-xl">
+          <Reveal>
+            <Eyebrow>A Personal Note</Eyebrow>
+          </Reveal>
+          <PageHeading>
+            A Personal <Accent>Realization.</Accent>
+          </PageHeading>
+        </div>
 
-          <div className="lg:col-span-7">
-            <Reveal delay={120} duration="slow">
-              <div className="note-paper relative rotate-[-0.35deg] border border-[color-mix(in_oklch,var(--gold)_18%,transparent)] px-6 py-10 sm:px-10 md:rotate-[-0.5deg] md:px-12 md:py-14">
-                <div aria-hidden className="absolute left-1/2 top-0 h-3 w-16 -translate-x-1/2 -translate-y-1/2 bg-[color-mix(in_oklch,var(--gold)_35%,var(--cream))] shadow-[0_2px_6px_oklch(0.4_0.04_70_/_0.2)]" />
-                <PersonalChapters />
-              </div>
-            </Reveal>
-          </div>
+        <div className="mt-10 md:mt-12 md:max-w-3xl md:mx-auto">
+          <Reveal delay={120} duration="slow">
+            <div className="note-paper relative rotate-[-0.35deg] border border-[color-mix(in_oklch,var(--gold)_18%,transparent)] px-6 py-10 sm:px-10 md:rotate-[-0.5deg] md:px-12 md:py-14">
+              <div aria-hidden className="absolute left-1/2 top-0 h-3 w-16 -translate-x-1/2 -translate-y-1/2 bg-[color-mix(in_oklch,var(--gold)_35%,var(--cream))] shadow-[0_2px_6px_oklch(0.4_0.04_70_/_0.2)]" />
+              <PersonalChapters />
+            </div>
+          </Reveal>
         </div>
       </PageSection>
 

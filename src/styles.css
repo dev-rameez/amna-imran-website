@@ -313,6 +313,12 @@
     line-height: 0.9;
     vertical-align: -0.06em;
   }
+  /* Closing quotes sit at heading-1. Keep their script at the same visual size. */
+  .quote-voice .type-display-accent {
+    font-size: 1.18em;
+    line-height: 1.15;
+    vertical-align: -0.02em;
+  }
 
   /* Personal note — paper letter in a readable hand. Script stays regular weight. */
   .note-paper {

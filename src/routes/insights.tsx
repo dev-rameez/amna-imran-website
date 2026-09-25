@@ -9,7 +9,7 @@ import {
   Seam,
 } from "@/components/site/page-kit";
 import { cn } from "@/lib/utils";
-import portrait from "@/assets/amna-insights.png";
+import portrait from "@/assets/amna-full-portrait.png";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({
@@ -101,22 +101,29 @@ function Insights() {
           </p>
         }
         aside={
-          <Reveal variant="fade-up" duration="slow" delay={140} className="relative mx-auto flex w-full max-w-[20rem] justify-center">
+          <Reveal
+            variant="fade-up"
+            duration="slow"
+            delay={140}
+            className="relative mx-auto h-[20rem] w-[16rem] sm:h-[24rem] sm:w-[18rem] lg:h-[28rem] lg:w-[20rem]"
+          >
             <div
               aria-hidden
-              className="absolute inset-x-0 bottom-0 top-[10%] rounded-t-full"
+              className="absolute inset-0 rounded-t-full"
               style={{
                 background:
                   "radial-gradient(ellipse 70% 60% at 50% 45%, color-mix(in oklch, var(--gold-subtle) 70%, transparent), transparent 72%)",
               }}
             />
-            <div aria-hidden className="absolute inset-x-[6%] bottom-0 top-[4%] rounded-t-full border border-[color-mix(in_oklch,var(--gold)_30%,transparent)]" />
-            <img
-              src={portrait}
-              alt="Amna Imran"
-              className="relative block h-[20rem] w-auto select-none sm:h-[24rem] lg:h-[28rem]"
-              draggable={false}
-            />
+            <div aria-hidden className="absolute inset-[6%] rounded-t-full border border-[color-mix(in_oklch,var(--gold)_30%,transparent)]" />
+            <div className="absolute inset-0 overflow-hidden rounded-t-full">
+              <img
+                src={portrait}
+                alt="Amna Imran"
+                className="absolute inset-0 h-full w-full scale-[1.25] select-none object-cover object-[50%_52%]"
+                draggable={false}
+              />
+            </div>
           </Reveal>
         }
       />

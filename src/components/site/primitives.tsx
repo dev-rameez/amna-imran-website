@@ -130,11 +130,11 @@ export function SectionQuote({
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[5rem] leading-none text-gold/40 md:text-[6.25rem]"
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 select-none font-serif text-[2.5rem] leading-none text-gold/40"
       >
         “
       </span>
-      <div className="relative pt-7 font-serif text-[clamp(2rem,4.2vw,3.8rem)] leading-[1.24] tracking-[-0.02em] text-foreground md:pt-9">
+      <div className="quote-voice relative pt-7 font-serif font-light type-h1 leading-[1.2] tracking-[-0.02em] text-foreground md:pt-9">
         <Reveal variant="fade-in" duration="slow">
           {children}
         </Reveal>

@@ -662,9 +662,9 @@ function ChapterQuote({
   subAccent?: ReactNode;
 }) {
   const statement =
-    "font-serif font-light text-[clamp(1.6rem,1.5vw+0.95rem,2.45rem)] leading-[1.2] tracking-[-0.02em] text-foreground";
+    "font-serif font-light type-h1 leading-[1.2] tracking-[-0.02em] text-foreground";
   return (
-    <figure className="mx-auto max-w-3xl text-center">
+    <figure className="quote-voice mx-auto max-w-3xl text-center">
       <div aria-hidden className="flex items-center justify-center gap-4">
         <span className="h-px w-14 bg-gradient-to-r from-transparent to-[color-mix(in_oklch,var(--gold)_55%,transparent)]" />
         <span className="translate-y-2 font-serif text-[2.5rem] leading-none text-[color-mix(in_oklch,var(--gold)_60%,transparent)]">

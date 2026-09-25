@@ -263,7 +263,7 @@ export function PageQuote({
 }) {
   return (
     <Reveal variant="fade-in" duration="slow" className={className}>
-      <figure className="mx-auto max-w-3xl text-center">
+      <figure className="quote-voice mx-auto max-w-3xl text-center">
         <div aria-hidden className="flex items-center justify-center gap-4">
           <span className="h-px w-14 bg-gradient-to-r from-transparent to-[color-mix(in_oklch,var(--gold)_55%,transparent)]" />
           <span className="translate-y-2 font-serif text-[2.5rem] leading-none text-[color-mix(in_oklch,var(--gold)_60%,transparent)]">
@@ -271,7 +271,7 @@ export function PageQuote({
           </span>
           <span className="h-px w-14 bg-gradient-to-l from-transparent to-[color-mix(in_oklch,var(--gold)_55%,transparent)]" />
         </div>
-        <blockquote className="mt-3 font-serif font-light text-[clamp(1.45rem,1.2vw+0.95rem,2.1rem)] leading-[1.3] tracking-[-0.01em] text-foreground">
+        <blockquote className="mt-3 font-serif font-light type-h1 leading-[1.3] tracking-[-0.01em] text-foreground">
           {children}
         </blockquote>
         {sub && <p className="mx-auto mt-5 max-w-xl type-body text-copy">{sub}</p>}
