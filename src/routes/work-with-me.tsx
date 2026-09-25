@@ -445,6 +445,8 @@ function WorkWithMe() {
         </div>
       </PageSection>
 
+      <Seam from="cream" into="dark" />
+
       {/* ELEVATE DETAILED — timeline */}
       <PageSection surface="dark" id="elevate">
         <PageHeading dark eyebrow="Signature Program">
@@ -544,6 +546,8 @@ function WorkWithMe() {
           </div>
         </Reveal>
       </PageSection>
+
+      <Seam from="dark" into="cream" />
 
       {/* LEAD & THRIVE THROUGH MOTHERHOOD */}
       <PageSection surface="cream" id="lead-thrive">
@@ -692,6 +696,7 @@ function WorkWithMe() {
       </PageSection>
 
       <PageCta
+        from="cream"
         title={
           <>
             Ready to Advance With

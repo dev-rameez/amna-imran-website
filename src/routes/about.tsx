@@ -13,7 +13,7 @@ import {
   Seam,
 } from "@/components/site/page-kit";
 import { cn } from "@/lib/utils";
-import founderLeaning from "@/assets/amna-founder-leaning.png";
+import portrait from "@/assets/amna-insights.png";
 import realizationPortrait from "@/assets/amna-full-portrait.png";
 
 export const Route = createFileRoute("/about")({
@@ -81,6 +81,9 @@ function About() {
       <PageHero
         eyebrow="About · Amna Imran"
         eyebrowScript
+        containerClassName="pb-0"
+        asideAlign="end"
+        className="overflow-visible"
         size="h1"
         title={
           <>
@@ -108,18 +111,18 @@ function About() {
           </>
         }
         aside={
-          <Reveal variant="fade-up" duration="slow" delay={140}>
+          <Reveal variant="fade-up" duration="slow" delay={140} className="relative z-10 mx-auto -mb-20 w-[min(100%,16.5rem)] md:-mb-28 lg:w-[18rem]">
             <img
-              src={founderLeaning}
+              src={portrait}
               alt="Amna Imran portrait"
-              className="mx-auto block h-auto w-full max-w-[26rem] select-none md:max-w-none"
+              className="mx-auto block h-auto max-h-[24rem] w-full object-contain object-bottom select-none lg:max-h-[28rem]"
               draggable={false}
             />
           </Reveal>
         }
       />
 
-      <Seam from="warm" into="cream" />
+      <Seam from="warm" into="cream" intensity="soft" />
 
       {/* POSITIONING — At the intersection of capability */}
       <PageSection surface="cream">
@@ -184,7 +187,8 @@ function About() {
           {/* RIGHT — letter panel */}
           <div className="md:col-span-7">
             <Reveal delay={120} duration="slow">
-              <article className="relative bg-[#FBF7EE] border border-[var(--hairline)]/70 shadow-[0_40px_80px_-40px_rgba(60,40,10,0.18)] px-6 sm:px-10 md:px-14 py-10 md:py-14">
+              <article className="note-paper relative rotate-[-0.35deg] border border-[color-mix(in_oklch,var(--gold)_18%,transparent)] px-6 py-10 sm:px-10 md:rotate-[-0.5deg] md:px-14 md:py-14">
+                <div aria-hidden className="absolute left-1/2 top-0 h-3 w-16 -translate-x-1/2 -translate-y-1/2 bg-[color-mix(in_oklch,var(--gold)_35%,var(--cream))] shadow-[0_2px_6px_oklch(0.4_0.04_70_/_0.2)]" />
                 <div aria-hidden className="absolute top-0 left-0 h-px w-24 bg-[var(--gold)]" />
 
                 <PersonalLabel>Lived experience across cultures</PersonalLabel>
@@ -277,7 +281,7 @@ function About() {
 
                 <div className="mt-12 flex items-center gap-4">
                   <span aria-hidden className="h-px w-12 bg-[var(--gold)]" />
-                  <p className="font-serif italic text-[20px] md:text-[22px] text-foreground">Amna</p>
+                  <p className={SCRIPT_LABEL}>Amna</p>
                 </div>
               </article>
             </Reveal>
@@ -355,6 +359,7 @@ function About() {
       </PageSection>
 
       <PageCta
+        from="sand"
         title={
           <>
             Ready to move forward

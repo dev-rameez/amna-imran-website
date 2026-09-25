@@ -600,8 +600,8 @@ function HighPerformanceSection() {
           <div className="lg:col-span-7 lg:pl-8 xl:pl-14">
             <Reveal variant="fade-up" duration="slow" delay={TRADITIONAL.length * 100}>
               <h3 className="font-serif font-light text-[clamp(1.6rem,1.5vw+0.95rem,2.45rem)] leading-[1.15] tracking-[-0.02em] text-foreground">
-                Yet progression often
-                <em className="type-display-accent mt-1 block text-gold-warm">stalls</em>
+                Yet progression often{" "}
+                <em className="type-display-accent whitespace-nowrap text-gold-warm">stalls</em>
               </h3>
             </Reveal>
             <Reveal variant="fade-in" duration="slow" delay={TRADITIONAL.length * 100 + 150}>
@@ -854,9 +854,7 @@ function ProgressNarrativeSection() {
             />
           </Reveal>
 
-          <ChapterDivider className="my-12 md:my-14" />
-
-          <Reveal variant="fade-in" duration="slow">
+          <Reveal variant="fade-in" duration="slow" className="mt-8 md:mt-10">
             <ChapterQuote
               lead="These dynamics are rarely"
               accent="explicit or intentional"
@@ -922,20 +920,22 @@ function MotherhoodSection() {
       style={{ background: "color-mix(in oklch, var(--blush-subtle) 62%, var(--warm-cream))" }}
     >
       <Container className="relative z-10">
-        <Reveal variant="fade-in" duration="slow">
+        <div className="grid gap-10 md:grid-cols-12 md:items-start md:gap-10">
+        <Reveal variant="fade-in" duration="slow" className="md:col-span-5">
           <p className="eyebrow text-gold-ink mb-6">Life transitions</p>
           <h2 className="type-display max-w-4xl font-light">
             The{" "}
-            <em className="type-display-accent accent-oval not-italic text-gold-warm">
+            <em className="type-display-accent not-italic text-gold-warm">
               Motherhood
             </em>{" "}
             <span className="block sm:inline">Penalty</span>
             <br />
             <span className="text-foreground/90">and Life Transitions</span>
           </h2>
+          <span aria-hidden className="mt-8 hidden h-px w-24 bg-gradient-to-r from-[var(--gold)] to-transparent md:block" />
         </Reveal>
 
-        <div className="mt-10 max-w-2xl space-y-5 type-body text-copy md:mt-12 md:ml-auto md:max-w-2xl md:border-l md:border-[color-mix(in_oklch,var(--gold)_35%,transparent)] md:pl-8">
+        <div className="max-w-2xl space-y-5 type-body text-copy md:col-span-7 md:mt-10 md:border-l md:border-[color-mix(in_oklch,var(--gold)_35%,transparent)] md:pl-8">
           {/* Three deliberately different weights rather than three identical
               paragraphs: the finding, the contrast that lands it, then the
               conclusion. Review flagged this block as paragraph-heavy. */}
@@ -969,6 +969,7 @@ function MotherhoodSection() {
             </p>
           </Reveal>
         </div>
+        </div>
 
         {/* Psychological impact — same surface */}
         <div className="relative mt-14 md:mt-20">
@@ -977,7 +978,7 @@ function MotherhoodSection() {
               <p className="eyebrow text-gold-ink mb-3">What it feels like</p>
               <h3 className="type-h1">
                 The{" "}
-                <em className="type-display-accent accent-oval not-italic text-gold-warm">Psychological</em>{" "}
+                <em className="type-display-accent not-italic text-gold-warm">Psychological</em>{" "}
                 impact
               </h3>
             </div>
@@ -1061,7 +1062,7 @@ function StrategicWayForwardSection() {
         <Reveal variant="fade-in" duration="slow">
           <h2 className="type-display max-w-4xl font-light">
             A More Strategic Way{" "}
-            <em className="type-display-accent accent-oval not-italic text-gold-warm">
+            <em className="type-display-accent not-italic text-gold-warm">
               Forward
             </em>
           </h2>
@@ -2306,7 +2307,7 @@ function TwoPathwaysSection() {
           <h2 className="type-display max-w-4xl font-light">
             Choose the pathway that
             <br />
-            <em className="type-display-accent accent-oval not-italic text-gold-warm">
+            <em className="type-display-accent not-italic text-gold-warm">
               fits your context.
             </em>
           </h2>

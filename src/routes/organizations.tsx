@@ -292,6 +292,8 @@ function Organizations() {
         </Reveal>
       </PageSection>
 
+      <Seam from="cream" into="dark" />
+
       {/* RESEARCH + OUTCOMES — one dark chapter */}
       <PageSection surface="dark">
         <Reveal duration="slow">
@@ -334,6 +336,8 @@ function Organizations() {
           ))}
         </div>
       </PageSection>
+
+      <Seam from="dark" into="sand" />
 
       {/* ORGANIZATIONS SERIOUS ABOUT PROGRESSION */}
       <PageSection surface="sand">
@@ -421,6 +425,7 @@ function Organizations() {
       </PageSection>
 
       <PageCta
+        from="cream"
         title={
           <>
             Strengthen the pipeline. Support the leaders <Accent>already within it.</Accent>

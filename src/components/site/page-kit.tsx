@@ -41,6 +41,15 @@ export function Seam({
   );
 }
 
+/* Glows sit well inside the section so they never meet a seam as a hard edge. */
+const SECTION_GLOW: Record<PageSurface, string> = {
+  warm: "radial-gradient(ellipse 45% 32% at 14% 32%, color-mix(in oklch, var(--gold-subtle) 55%, transparent), transparent 70%), radial-gradient(ellipse 40% 30% at 88% 68%, color-mix(in oklch, var(--blush-subtle) 60%, transparent), transparent 70%)",
+  cream: "radial-gradient(ellipse 45% 32% at 86% 30%, color-mix(in oklch, var(--gold-subtle) 55%, transparent), transparent 70%), radial-gradient(ellipse 40% 30% at 10% 70%, color-mix(in oklch, var(--blush-subtle) 50%, transparent), transparent 70%)",
+  blush: "radial-gradient(ellipse 45% 32% at 12% 30%, color-mix(in oklch, var(--background) 60%, transparent), transparent 70%), radial-gradient(ellipse 40% 30% at 88% 70%, color-mix(in oklch, var(--gold-subtle) 50%, transparent), transparent 70%)",
+  sand: "radial-gradient(ellipse 45% 32% at 88% 30%, color-mix(in oklch, var(--blush-subtle) 55%, transparent), transparent 70%), radial-gradient(ellipse 40% 30% at 12% 70%, color-mix(in oklch, var(--gold-subtle) 55%, transparent), transparent 70%)",
+  dark: "radial-gradient(ellipse 45% 32% at 12% 30%, color-mix(in oklch, var(--gold) 13%, transparent), transparent 70%), radial-gradient(ellipse 40% 30% at 88% 70%, color-mix(in oklch, var(--gold) 9%, transparent), transparent 70%)",
+};
+
 export function PageSection({
   surface,
   id,
@@ -58,12 +67,13 @@ export function PageSection({
     <section
       id={id}
       className={cn(
-        "relative scroll-mt-24 py-16 md:py-24",
+        "relative scroll-mt-24 overflow-x-clip py-16 md:py-24",
         surface === "dark" && "text-background",
         className,
       )}
       style={{ background: PAGE_SURFACE[surface] }}
     >
+      <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: SECTION_GLOW[surface] }} />
       <Container className={cn("relative", containerClassName)}>{children}</Container>
     </section>
   );
@@ -113,10 +123,15 @@ export function PageHero({
   inlineActions = false,
   eyebrowScript = false,
   containerClassName,
+  asideAlign = "center",
+  className,
   children,
 }: {
   /** Overrides for the hero's padding, e.g. a tighter bottom on short pages. */
   containerClassName?: string;
+  /** Pin the portrait to the bottom of the hero instead of vertically centering it. */
+  asideAlign?: "center" | "end";
+  className?: string;
   eyebrow?: React.ReactNode;
   /** Set the eyebrow in the gold script accent instead of small caps. */
   eyebrowScript?: boolean;
@@ -130,10 +145,16 @@ export function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="relative overflow-x-clip" style={{ background: PAGE_SURFACE.warm }}>
+    <section className={cn("relative", className ?? "overflow-x-clip")} style={{ background: PAGE_SURFACE.warm }}>
       <Container className={cn("relative pt-12 pb-14 md:pt-20 md:pb-20", containerClassName)}>
-        <div className={cn("grid gap-12 md:gap-10", aside && "md:grid-cols-12 md:items-center")}>
-          <div className={cn(aside ? "md:col-span-7" : "max-w-4xl")}>
+        <div
+          className={cn(
+            "grid gap-12 md:gap-10",
+            aside && "md:grid-cols-12",
+            aside && (asideAlign === "end" ? "md:items-end" : "md:items-center"),
+          )}
+        >
+          <div className={cn(aside ? (asideAlign === "end" ? "md:col-span-8" : "md:col-span-7") : "max-w-4xl")}>
             {eyebrow && (
               <Reveal variant="fade-in" duration="slow">
                 <p className={cn(eyebrowScript ? cn(SCRIPT_LABEL, "mb-4") : "eyebrow text-gold-ink mb-5")}>{eyebrow}</p>
@@ -167,7 +188,9 @@ export function PageHero({
               </Reveal>
             )}
           </div>
-          {aside && <div className="md:col-span-5">{aside}</div>}
+          {aside && (
+            <div className={cn("md:col-span-5", asideAlign === "end" && "md:col-span-4")}>{aside}</div>
+          )}
         </div>
         {children}
       </Container>
@@ -181,16 +204,22 @@ export function PageCta({
   body,
   actions,
   inlineActions = false,
+  from,
 }: {
   title: React.ReactNode;
   body?: React.ReactNode;
   actions: React.ReactNode;
   /** Buttons side by side from `sm`, wrapping if the band is too narrow. */
   inlineActions?: boolean;
+  /** Surface of the section above, so the band waves in instead of cutting in. */
+  from?: Exclude<PageSurface, "dark">;
 }) {
   return (
-    <section className="bg-foreground text-background">
-      <Container className="flex flex-col gap-10 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
+    <>
+    {from && <Seam from={from} into="dark" intensity="soft" />}
+    <section className="relative overflow-hidden bg-foreground text-background">
+      <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: SECTION_GLOW.dark }} />
+      <Container className="relative flex flex-col gap-10 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <Reveal variant="fade-up" className="max-w-2xl">
           <h2 className="type-display font-serif font-light text-background">{title}</h2>
           {body && <p className="mt-6 max-w-xl text-background/75">{body}</p>}
@@ -207,6 +236,7 @@ export function PageCta({
         </Reveal>
       </Container>
     </section>
+    </>
   );
 }
 

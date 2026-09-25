@@ -22,6 +22,7 @@ import {
   SOUND_FAMILIAR,
   STATS,
 } from "@/components/site/organizations-content";
+import portrait from "@/assets/amna-hero-v2.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
@@ -111,6 +112,32 @@ function OrganizationsFigma() {
           <Link to="/contact" className={cn("cta-primary w-full sm:w-auto sm:self-start", ONE_LINE_CTA)}>
             Schedule an Organizational Consultation <CtaArrow />
           </Link>
+        }
+        aside={
+          <Reveal
+            variant="fade-up"
+            duration="slow"
+            delay={140}
+            className="relative mx-auto h-[22rem] w-[17rem] sm:h-[26rem] sm:w-[20rem] lg:h-[32rem] lg:w-[24rem]"
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 rounded-t-full"
+              style={{
+                background:
+                  "radial-gradient(ellipse 70% 60% at 50% 45%, color-mix(in oklch, var(--gold-subtle) 70%, transparent), transparent 72%)",
+              }}
+            />
+            <div aria-hidden className="absolute inset-[6%] rounded-t-full border border-[color-mix(in_oklch,var(--gold)_30%,transparent)]" />
+            <div className="absolute inset-0 overflow-hidden rounded-t-full">
+              <img
+                src={portrait}
+                alt="Amna Imran"
+                className="absolute inset-0 h-full w-full scale-[1.35] select-none object-cover object-[50%_70%]"
+                draggable={false}
+              />
+            </div>
+          </Reveal>
         }
       />
 
@@ -278,6 +305,8 @@ function OrganizationsFigma() {
         </Reveal>
       </PageSection>
 
+      <Seam from="sand" into="dark" intensity="soft" />
+
       {/* WHAT THE RESEARCH SAYS */}
       <PageSection surface="dark" className="py-12 md:py-16">
         <Reveal duration="slow">
@@ -299,6 +328,8 @@ function OrganizationsFigma() {
           ))}
         </div>
       </PageSection>
+
+      <Seam from="dark" into="cream" intensity="soft" />
 
       {/* OUTCOMES */}
       <PageSection surface="cream" className="py-12 md:py-16">
@@ -388,6 +419,8 @@ function OrganizationsFigma() {
           ))}
         </div>
       </PageSection>
+
+      <Seam from="cream" into="dark" intensity="soft" />
 
       {/* BEGIN */}
       <section className="bg-foreground text-background">

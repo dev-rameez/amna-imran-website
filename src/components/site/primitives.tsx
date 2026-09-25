@@ -184,31 +184,53 @@ export function SectionSeam({
 }) {
   const fromFill = fromOverride ?? SEAM_FILL[from];
   const intoFill = intoOverride ?? SEAM_FILL[into];
+  const touchesDark = from === "dark" || into === "dark";
   const height =
     intensity === "soft"
-      ? "h-12 md:h-16"
+      ? "h-16 md:h-24"
       : intensity === "bold"
-        ? "h-24 md:h-32"
-        : "h-16 md:h-24";
+        ? "h-28 md:h-40"
+        : "h-20 md:h-28";
+
+  /* Light-to-light seams blend through a midpoint so the wave edge never reads
+     as a hard colour break; dark seams keep a crisp wave instead of a muddy fade. */
+  const background = touchesDark
+    ? fromFill
+    : `linear-gradient(to bottom, ${fromFill} 0%, ${fromFill} 15%, color-mix(in oklch, ${fromFill} 50%, ${intoFill}) 70%, ${intoFill} 100%)`;
 
   return (
     <div
       aria-hidden
-      className={cn("section-seam pointer-events-none relative z-[5] -mb-px", className)}
-      style={{ background: fromFill }}
+      className={cn("section-seam pointer-events-none relative z-[5] -my-px", className)}
+      style={{ background }}
     >
       <div className={cn("relative w-full overflow-hidden", height)}>
+        {!touchesDark && (
+        <>
         <svg
-          className="absolute inset-0 h-full w-full opacity-50"
+          className="absolute inset-0 h-full w-full opacity-40"
           viewBox="0 0 1440 120"
           preserveAspectRatio="none"
           style={{ color: intoFill }}
         >
           <path
             fill="currentColor"
-            d="M0 72 C180 28 320 96 480 64 C640 32 780 8 960 40 C1140 72 1280 20 1440 48 L1440 120 L0 120 Z"
+            d="M0 64 C180 22 320 92 480 58 C640 26 780 4 960 34 C1140 66 1280 14 1440 42 L1440 120 L0 120 Z"
           />
         </svg>
+        <svg
+          className="absolute inset-0 h-full w-full opacity-70"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          style={{ color: intoFill }}
+        >
+          <path
+            fill="currentColor"
+            d="M0 78 C200 40 360 104 540 70 C720 38 880 12 1080 46 C1240 72 1340 34 1440 52 L1440 120 L0 120 Z"
+          />
+        </svg>
+        </>
+        )}
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 1440 120"
@@ -217,7 +239,15 @@ export function SectionSeam({
         >
           <path
             fill="currentColor"
-            d="M0 88 C200 48 360 110 540 78 C720 46 880 18 1080 52 C1240 78 1340 40 1440 58 L1440 120 L0 120 Z"
+            d="M0 94 C220 66 380 116 560 90 C740 64 900 44 1100 70 C1260 90 1350 62 1440 74 L1440 120 L0 120 Z"
+          />
+          <path
+            fill="none"
+            stroke="var(--gold)"
+            strokeOpacity={touchesDark ? 0.45 : 0.32}
+            strokeWidth={1}
+            vectorEffect="non-scaling-stroke"
+            d="M0 78 C200 40 360 104 540 70 C720 38 880 12 1080 46 C1240 72 1340 34 1440 52"
           />
         </svg>
       </div>

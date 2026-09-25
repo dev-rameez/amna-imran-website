@@ -16,7 +16,7 @@ import {
   Seam,
 } from "@/components/site/page-kit";
 import { cn } from "@/lib/utils";
-import founderLeaning from "@/assets/amna-founder-leaning.png";
+import portrait from "@/assets/amna-insights.png";
 import realizationPortrait from "@/assets/amna-full-portrait.png";
 
 export const Route = createFileRoute("/about-v2")({
@@ -220,6 +220,9 @@ function AboutV2() {
       <PageHero
         eyebrow="About · Amna Imran"
         eyebrowScript
+        containerClassName="pb-0"
+        asideAlign="end"
+        className="overflow-visible"
         size="h1"
         title={
           <>
@@ -247,7 +250,7 @@ function AboutV2() {
           </>
         }
         aside={
-          <Reveal variant="fade-up" duration="slow" delay={140} className="relative mx-auto w-full max-w-[28rem]">
+          <Reveal variant="fade-up" duration="slow" delay={140} className="relative z-10 mx-auto -mb-20 w-[min(100%,16.5rem)] md:-mb-28 lg:w-[18rem]">
             <div
               aria-hidden
               className="absolute inset-[4%] rounded-full"
@@ -259,16 +262,16 @@ function AboutV2() {
             <div aria-hidden className="absolute inset-[8%] rounded-full border border-[color-mix(in_oklch,var(--gold)_35%,transparent)]" />
             <div aria-hidden className="absolute inset-[15%] rounded-full border border-[color-mix(in_oklch,var(--gold)_15%,transparent)]" />
             <img
-              src={founderLeaning}
+              src={portrait}
               alt="Amna Imran portrait"
-              className="relative mx-auto block h-auto w-full select-none"
+              className="relative mx-auto block h-auto max-h-[24rem] w-full object-contain object-bottom select-none lg:max-h-[28rem]"
               draggable={false}
             />
           </Reveal>
         }
       />
 
-      <Seam from="warm" into="cream" />
+      <Seam from="warm" into="cream" intensity="soft" />
 
       {/* POSITIONING — three connected points */}
       <PageSection surface="cream">
@@ -341,10 +344,17 @@ function AboutV2() {
           </div>
 
           <div className="lg:col-span-7">
-            <PersonalChapters />
+            <Reveal delay={120} duration="slow">
+              <div className="note-paper relative rotate-[-0.35deg] border border-[color-mix(in_oklch,var(--gold)_18%,transparent)] px-6 py-10 sm:px-10 md:rotate-[-0.5deg] md:px-12 md:py-14">
+                <div aria-hidden className="absolute left-1/2 top-0 h-3 w-16 -translate-x-1/2 -translate-y-1/2 bg-[color-mix(in_oklch,var(--gold)_35%,var(--cream))] shadow-[0_2px_6px_oklch(0.4_0.04_70_/_0.2)]" />
+                <PersonalChapters />
+              </div>
+            </Reveal>
           </div>
         </div>
       </PageSection>
+
+      <Seam from="blush" into="dark" />
 
       {/* WHY THIS MATTERS — five shifts as one journey */}
       <PageSection surface="dark">
@@ -407,6 +417,8 @@ function AboutV2() {
         </Reveal>
       </PageSection>
 
+      <Seam from="dark" into="sand" />
+
       {/* THE WORK — closing statement */}
       <PageSection surface="sand">
         <PageQuote sub={<span className="eyebrow text-copy-muted">— The Work</span>}>
@@ -416,6 +428,7 @@ function AboutV2() {
       </PageSection>
 
       <PageCta
+        from="sand"
         title={
           <>
             Ready to move forward
